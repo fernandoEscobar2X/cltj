@@ -268,8 +268,8 @@
       gap: 1px;
       background: rgba(255,255,255,0.06);
     }
-    /* 3 servicios en mobile: primera ocupa fila completa */
-    .service-card:first-child { grid-column: 1 / -1; }
+    /* 4 servicios: grid 2x2 en mobile y desktop */
+    /* sin override, todas ocupan 1 col */
 
     .service-card {
       background: var(--negro);
@@ -609,7 +609,7 @@
       .featured { padding: 5rem 4rem; }
 
       /* Servicios: 3 cols en desktop, sin truco de primera fila */
-      .services-grid { grid-template-columns: repeat(3, 1fr); }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
       .service-card:first-child { grid-column: auto; }
 
       /* Trabajos: 3 cols, sin card grande */
@@ -769,6 +769,11 @@
       <span class="service-icon">◇</span>
       <div class="service-name">Grabado en Objetos</div>
       <p class="service-desc">Regalos corporativos, reconocimientos, placas y artículos personalizados con tu diseño.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">⬡</span>
+      <div class="service-name">Llaveros NFC</div>
+      <p class="service-desc">Llaveros acrílico con chip NFC integrado. Un toque del celular y tus clientes ven tu menú, redes o contacto al instante.</p>
     </div>
   </div>
 </section>
