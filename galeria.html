@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería | Corte Láser Tijuana</title>
+  <meta name="description" content="Galería de trabajos de corte láser y grabado en Tijuana. Acrílico, madera, displays, llaveros y más.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --negro: #0a0a0a;
+      --rojo: #e8001d;
+      --plata: #c8c8c8;
+      --blanco: #f5f5f0;
+      --gris: #1a1a1a;
+    }
+
+    body {
+      background: var(--negro);
+      color: var(--blanco);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,10,0.97);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--blanco);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--rojo); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-link {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--plata);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--rojo); }
+
+    .btn-wa {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #25d366;
+      color: white;
+      padding: 0.55rem 1.2rem;
+      border-radius: 2px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    /* HEADER */
+    .page-header {
+      padding: 4rem 4rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .page-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 6rem);
+      letter-spacing: 0.03em;
+      line-height: 1;
+    }
+
+    .page-header h1 span { color: var(--rojo); }
+
+    .count-badge {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--plata);
+    }
+
+    /* FILTER TABS */
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1.5rem 4rem;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .filter-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--plata);
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      border-color: var(--rojo);
+      color: var(--blanco);
+      background: rgba(232,0,29,0.1);
+    }
+
+    /* MASONRY GRID */
+    .gallery-container {
+      padding: 2rem 4rem 6rem;
+      columns: 4;
+      column-gap: 0.75rem;
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s ease, filter 0.3s;
+      filter: brightness(0.85);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: brightness(1.05);
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.96);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .lightbox-inner img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      font-size: 1.5rem;
+      color: white;
+      cursor: pointer;
+      background: none;
+      border: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .lightbox-close:hover { opacity: 1; }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      padding: 1rem 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .lightbox-nav:hover { background: rgba(232,0,29,0.5); }
+    .lightbox-nav.prev { left: -3.5rem; }
+    .lightbox-nav.next { right: -3.5rem; }
+
+    /* WhatsApp float */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 56px;
+      height: 56px;
+      background: #25d366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+
+    .whatsapp-float:hover { transform: scale(1.1); }
+    .whatsapp-float svg { width: 30px; height: 30px; fill: white; }
+
+    /* Loading state */
+    .loading-msg {
+      text-align: center;
+      padding: 4rem;
+      color: var(--plata);
+      font-weight: 300;
+    }
+
+    @media (max-width: 1100px) { .gallery-container { columns: 3; } }
+    @media (max-width: 700px) {
+      .gallery-container { columns: 2; padding: 1.5rem; }
+      .page-header { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      .filters { padding: 1rem 1.5rem; }
+      nav { padding: 1rem 1.5rem; }
+      .lightbox-nav { display: none; }
+    }
+    @media (max-width: 400px) { .gallery-container { columns: 1; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Corte<span>Láser</span> TJ</a>
+    <div class="nav-right">
+      <a href="index.html" class="back-link">← Inicio</a>
+      <a href="https://wa.me/526633634237?text=Hola,%20vi%20su%20galería%20y%20me%20gustaría%20cotizar" class="btn-wa" target="_blank">
+        Cotizar
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div>
+      <h1>Galería <span>Completa</span></h1>
+      <p style="color:var(--plata);font-weight:300;font-size:0.9rem;margin-top:0.3rem;">Todos nuestros trabajos recientes</p>
+    </div>
+    <div class="count-badge" id="countBadge">Cargando...</div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterGallery('all', this)">Todos</button>
+    <button class="filter-btn" onclick="filterGallery('display', this)">Displays</button>
+    <button class="filter-btn" onclick="filterGallery('llavero', this)">Llaveros</button>
+    <button class="filter-btn" onclick="filterGallery('decoracion', this)">Decoración</button>
+  </div>
+
+  <div class="gallery-container" id="galleryContainer">
+    <div class="loading-msg" id="loadingMsg">Cargando galería...</div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="handleLightboxClick(event)">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+      <button class="lightbox-nav prev" onclick="event.stopPropagation(); navigateLightbox(-1)">‹</button>
+      <img id="lightboxImg" src="" alt="Trabajo de corte láser">
+      <button class="lightbox-nav next" onclick="event.stopPropagation(); navigateLightbox(1)">›</button>
+    </div>
+  </div>
+
+  <a href="https://wa.me/526633634237?text=Hola,%20vi%20su%20galería%20y%20me%20gustaría%20cotizar" class="whatsapp-float" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script>
+    const container = document.getElementById('galleryContainer');
+    const countBadge = document.getElementById('countBadge');
+
+    // Featured + gallery images
+    const featuredImages = [
+      { src: 'img-featured/display-shulas.jpeg',   category: 'display' },
+      { src: 'img-featured/letrero-agara.jpeg',    category: 'display' },
+      { src: 'img-featured/display-santiago.jpeg', category: 'display' },
+      { src: 'img-featured/letrero-wafflix.jpeg',  category: 'display' },
+      { src: 'img-featured/display-barber.jpeg',   category: 'display' },
+      { src: 'img-featured/mapa-mundi-led.jpeg',   category: 'decoracion' },
+      { src: 'img-featured/numero-50-dorado.jpeg', category: 'decoracion' },
+      { src: 'img-featured/cuadro-mom.jpeg',       category: 'decoracion' },
+      { src: 'img-featured/reloj-turbo.jpeg',      category: 'decoracion' },
+      { src: 'img-featured/placas-halcon.jpeg',    category: 'display' },
+      { src: 'img-featured/llavero-ana.jpeg',      category: 'llavero' },
+      { src: 'img-featured/llavero-espejo.jpeg',   category: 'llavero' },
+    ];
+
+    // Generate all image paths (WA0024 - WA0163)
+    const galleryBase = [];
+    for (let i = 24; i <= 163; i++) {
+      const num = i.toString().padStart(4, '0');
+      galleryBase.push({
+        src: `img/IMG-20250520-WA${num}.jpg`,
+        category: getCategoryFromIndex(i)
+      });
+    }
+    const allImages = [...featuredImages, ...galleryBase];
+
+    function getCategoryFromIndex(i) {
+      // Simple distribution — you can customize this
+      if (i % 7 === 0) return 'display';
+      if (i % 5 === 0) return 'llavero';
+      if (i % 4 === 0) return 'decoracion';
+      return 'all';
+    }
+
+    let currentImages = [...allImages];
+    let lightboxIndex = 0;
+    let visibleImages = [];
+
+    function renderGallery(images) {
+      document.getElementById('loadingMsg')?.remove();
+      container.innerHTML = '';
+      visibleImages = [];
+
+      images.forEach((imgData, idx) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.dataset.category = imgData.category;
+
+        const img = document.createElement('img');
+        img.src = imgData.src;
+        img.alt = 'Trabajo de corte láser Tijuana';
+        img.loading = 'lazy';
+        img.onerror = function() { item.remove(); };
+        img.onload = function() { visibleImages.push(imgData.src); };
+
+        item.onclick = () => openLightbox(idx);
+        item.appendChild(img);
+        container.appendChild(item);
+      });
+
+      countBadge.textContent = `${images.length} trabajos`;
+    }
+
+    function filterGallery(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filtered = cat === 'all' ? allImages : allImages.filter(i => i.category === cat);
+      currentImages = filtered;
+      renderGallery(filtered);
+    }
+
+    function openLightbox(idx) {
+      lightboxIndex = idx;
+      document.getElementById('lightboxImg').src = currentImages[idx].src;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function navigateLightbox(dir) {
+      lightboxIndex = (lightboxIndex + dir + currentImages.length) % currentImages.length;
+      document.getElementById('lightboxImg').src = currentImages[lightboxIndex].src;
+    }
+
+    function handleLightboxClick(e) {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+    });
+
+    // Initial render
+    renderGallery(allImages);
+  </script>
+</body>
+</html>
