@@ -27,7 +27,7 @@ export default function ServicesSection() {
             </p>
             <h2 className="m-0 text-[3.2rem] md:text-[5.5rem] font-black text-[var(--ink)] leading-[0.85] tracking-tighter">
               Servicios que venden,
-              <span className="block text-[var(--laser)] mt-2">señalizan y recuerdan.</span>
+              <span className="block text-[var(--laser-ink)] mt-2">señalizan y recuerdan.</span>
             </h2>
           </div>
           <div className="md:text-right flex flex-col md:items-end gap-6">
@@ -81,7 +81,7 @@ export default function ServicesSection() {
                   {/* Right: Description */}
                   <div className="w-1/3 flex flex-col items-end gap-4">
                     {service.highlight && (
-                      <span className="font-mono text-xs uppercase tracking-widest bg-[var(--laser)] text-white px-3 py-1 font-bold">
+                      <span className="font-mono text-xs uppercase tracking-widest bg-[var(--laser-deep)] text-white px-3 py-1 font-bold">
                         Nuevo · TJ
                       </span>
                     )}
@@ -116,7 +116,10 @@ export default function ServicesSection() {
               >
                 <div>
                   <div className="flex justify-between items-start mb-12">
-                    <span className="font-mono text-3xl font-bold text-white/20">
+                    {/* /20 daba 1.71:1 sobre el negro de la tarjeta y el numero
+                        no se leia; /40 es el minimo que cumple 3:1 en texto
+                        grande sin dejar de verse atenuado. */}
+                    <span className="font-mono text-3xl font-bold text-white/40">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     {Icon && (

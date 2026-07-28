@@ -5,7 +5,10 @@ export default function WorkCard({ item, onOpen, featured = false }) {
         type="button"
         onClick={() => onOpen(item.id)}
         className="work-card__button group block w-full text-left"
-        aria-label={`Abrir ${item.title}`}
+        // aria-labelledby y no aria-label: con un label inventado, el nombre
+        // accesible no coincidia con el texto visible y el control por voz
+        // ("abrir Shulas Boutique") no encontraba el boton.
+        aria-labelledby={`work-card-title-${item.id}`}
       >
         <div className="work-card__frame editorial-card glass-panel overflow-hidden transition duration-300">
           <div
@@ -40,7 +43,10 @@ export default function WorkCard({ item, onOpen, featured = false }) {
                 </span>
               </div>
               <div>
-                <h3 className="font-['Saira_Condensed'] text-[1.8rem] leading-[0.95] tracking-[-0.02em]">
+                <h3
+                  id={`work-card-title-${item.id}`}
+                  className="font-['Saira_Condensed'] text-[1.8rem] leading-[0.95] tracking-[-0.02em]"
+                >
                   {item.title}
                 </h3>
                 <p className="mt-2 max-w-xl text-sm leading-6 text-white/78">

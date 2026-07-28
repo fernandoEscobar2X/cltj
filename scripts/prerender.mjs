@@ -22,7 +22,12 @@ const PORT = 4178;
 // exista. Por eso tampoco hace falta el redirect catch-all del SPA.
 const ROUTES = [
   { path: "/", out: "index.html" },
-  { path: "/galeria", out: "galeria/index.html" },
+  // galeria.html y no galeria/index.html: con la carpeta, Netlify respondia a
+  // /galeria con un 301 hacia /galeria/, mientras el canonical y el sitemap
+  // apuntaban a /galeria. Google entraba por una URL que redirigia y encontraba
+  // un canonical de vuelta a esa misma. Como archivo suelto responde 200 directo
+  // y las tres cosas coinciden.
+  { path: "/galeria", out: "galeria.html" },
   { path: "/__404__", out: "404.html" },
 ];
 
