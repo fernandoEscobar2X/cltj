@@ -12,7 +12,7 @@
 import { createServer } from "node:http";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { dirname, extname, join } from "node:path";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 
 const DIST = "dist";
 const PORT = 4178;
@@ -26,40 +26,7 @@ const ROUTES = [
   { path: "/__404__", out: "404.html" },
 ];
 
-const CHROME_CANDIDATES = [
-  "C:/Program Files/Google/Chrome/Application/chrome.exe",
-  "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
-  "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
-  "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
-];
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpeg": "image/jpeg",
-  ".jpg": "image/jpeg",
-  ".webp": "image/webp",
-  ".woff2": "font/woff2",
-  ".xml": "application/xml",
-  ".txt": "text/plain",
-};
-
-async function findChrome() {
-  for (const candidate of CHROME_CANDIDATES) {
-    try {
-      await readFile(candidate);
-      return candidate;
-    } catch {
-      // El binario no existe en esta ruta; se prueba la siguiente.
-    }
-  }
-  throw new Error(
-    "No se encontro Chrome ni Edge. Ajusta CHROME_CANDIDATES en scripts/prerender.mjs.",
-  );
-}
 
 // El shell se lee UNA vez, antes de escribir nada. Si se releyera del disco en
 // cada peticion, /galeria se cargaria sobre el dist/index.html ya prerenderizado
@@ -96,8 +63,21 @@ const server = createServer(async (req, res) => {
 
 await new Promise((resolve) => server.listen(PORT, resolve));
 
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpeg": "image/jpeg",
+  ".jpg": "image/jpeg",
+  ".webp": "image/webp",
+  ".woff2": "font/woff2",
+  ".xml": "application/xml",
+  ".txt": "text/plain",
+};
+
 const browser = await puppeteer.launch({
-  executablePath: await findChrome(),
   headless: true,
   args: ["--no-sandbox", "--disable-dev-shm-usage"],
 });
