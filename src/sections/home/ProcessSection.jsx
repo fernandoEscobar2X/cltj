@@ -1,7 +1,17 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { processSteps, faqs } from "../../data/siteContent";
 import { Plus } from "lucide-react";
 
 export default function ProcessSection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"],
+  });
+
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
   return (
     <section id="proceso" className="bg-[#0a0a0a] py-20 lg:py-32 text-white border-t-[3px] border-[var(--ink)]">
       
@@ -17,18 +27,35 @@ export default function ProcessSection() {
           </h2>
         </div>
         
-        <div className="grid md:grid-cols-4 gap-8 md:gap-12 border-t border-white/10 pt-12 relative">
-          <div className="hidden md:block absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-[var(--laser)] to-transparent opacity-50" />
+        <div className="relative pt-12" ref={containerRef}>
+          {/* Desktop Horizontal Line */}
+          <div className="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-white/10" />
           
-          {processSteps.map((step, idx) => (
-            <div key={idx} className="relative group">
-              <span className="text-[var(--laser)] font-mono text-sm tracking-widest block mb-6 font-bold">
-                PASO {step.step}
-              </span>
-              <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-[var(--laser)] transition-colors">{step.title}</h3>
-              <p className="text-white/60 leading-relaxed">{step.description}</p>
-            </div>
-          ))}
+          {/* Mobile Vertical Line (Background) */}
+          <div className="md:hidden absolute top-12 bottom-0 left-[15px] w-[2px] bg-white/10" />
+          
+          {/* Mobile Vertical Line (Animated Laser Fill) */}
+          <motion.div 
+            className="md:hidden absolute top-12 left-[15px] w-[2px] bg-[var(--laser)] origin-top shadow-[0_0_15px_rgba(198,91,255,0.6)]"
+            style={{ height: lineHeight }}
+          />
+          
+          <div className="grid md:grid-cols-4 gap-12 md:gap-12 relative z-10">
+            {processSteps.map((step, idx) => (
+              <div key={idx} className="relative group pl-10 md:pl-0">
+                {/* Mobile Dot */}
+                <div className="md:hidden absolute left-0 top-1 w-[32px] h-[32px] rounded-full bg-[#0a0a0a] border-2 border-white/20 flex items-center justify-center transition-colors duration-500 z-10 group-hover:border-[var(--laser)]">
+                  <div className="w-2 h-2 rounded-full bg-white/20 group-hover:bg-[var(--laser)] transition-colors duration-500" />
+                </div>
+                
+                <span className="text-[var(--laser)] font-mono text-sm tracking-widest block mb-6 font-bold pt-1 md:pt-0">
+                  PASO {step.step}
+                </span>
+                <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-[var(--laser)] transition-colors">{step.title}</h3>
+                <p className="text-white/60 leading-relaxed">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

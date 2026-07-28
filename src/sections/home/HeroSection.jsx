@@ -7,7 +7,7 @@ import GlowingEmbers from "../../components/ui/GlowingEmbers";
 import { siteConfig } from "../../data/siteConfig";
 // Importado (no desde /public) para que lleve hash y un cambio de imagen no
 // quede atrapado en la cache del navegador.
-import heroBg from "../../assets/hero-bg.webp";
+import heroBg from "../../assets/hero-bg-laser-logo.webp";
 
 export default function HeroSection() {
   const ref = useRef(null);

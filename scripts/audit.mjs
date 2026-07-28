@@ -2,15 +2,12 @@
 // Uso: node scripts/audit.mjs [url] [mobile|desktop]
 import lighthouse from "lighthouse";
 import * as chromeLauncher from "chrome-launcher";
-import puppeteer from "puppeteer";
 
 const url = process.argv[2] ?? "http://localhost:4179/";
 const preset = process.argv[3] ?? "mobile";
 
-// Se usa el Chromium que ya trae puppeteer, para no depender de la ruta de
-// instalacion del Chrome del sistema.
 const chrome = await chromeLauncher.launch({
-  chromePath: await puppeteer.executablePath(),
+  chromePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
   chromeFlags: ["--headless=new", "--no-sandbox", "--disable-gpu"],
 });
 

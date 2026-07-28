@@ -1,0 +1,602 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+:root {
+  /* Paper — fondo primario cálido estilo rótulo Tijuana */
+  --bg: #f3ead7;
+  --bg-raised: #ebe0c7;
+  --bg-deep: #e2d3b2;
+  --bg-ink: #14100d;        /* bloques de contraste oscuro (uso selectivo) */
+
+  /* Ink — texto y detalles */
+  --ink: #14100d;
+  --ink-soft: #3b322b;
+  --ink-mute: #7a6e62;
+  --line: rgba(20, 16, 13, 0.14);
+  --line-strong: rgba(20, 16, 13, 0.26);
+
+  /* Laser — acento principal */
+  --laser: #c65bff;
+  --laser-bright: #d97aff;
+  --laser-soft: #edd8ff;
+  --laser-glow: rgba(198, 91, 255, 0.32);
+
+  /* Hazard — amarillo taller/señalética */
+  --hazard: #f5d400;
+  --hazard-deep: #d4b800;
+
+  /* Magenta rótulo Tijuana */
+  --magenta: #ff3d8a;
+  --magenta-deep: #e02d75;
+
+  /* Legacy aliases (secciones todavía referencian estos) */
+  --surface: var(--bg-raised);
+  --surface-strong: var(--bg-deep);
+  --surface-muted: var(--bg-raised);
+  --shadow-lg: 0 24px 60px rgba(20, 16, 13, 0.16);
+  --shadow-md: 0 14px 36px rgba(20, 16, 13, 0.1);
+  --whatsapp: var(--laser);
+  --laser-strong: var(--laser-bright);
+
+  /* Legacy paper/ink reversed aliases (sweep anterior) */
+  --paper: var(--ink);
+  --paper-soft: var(--ink-soft);
+  --paper-mute: var(--ink-mute);
+  --ink-line: var(--line);
+  --ink-line-strong: var(--line-strong);
+  --ink-raised: var(--bg-raised);
+  --ink-higher: var(--bg-deep);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--ink);
+  font-family: "Instrument Sans", Arial, sans-serif;
+  background: var(--bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+#root {
+  position: relative;
+  min-height: 100svh;
+  z-index: 1;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--laser);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 3px solid var(--laser);
+  outline-offset: 3px;
+}
+
+/* ─── Containers ─────────────────────────────────── */
+
+.layout-shell {
+  width: min(100% - 1.5rem, 1320px);
+  margin-inline: auto;
+}
+
+.editorial-shell {
+  width: min(100% - 1.25rem, 1500px);
+  margin-inline: auto;
+}
+
+.bleed-shell {
+  width: 100%;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+
+/* ─── Typography helpers ─────────────────────────── */
+
+.font-display {
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+}
+
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.section-eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: var(--laser);
+}
+
+/* ─── Surfaces ───────────────────────────────────── */
+
+.paper-panel {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+}
+
+.paper-panel-deep {
+  background: var(--bg-deep);
+  border: 1px solid var(--line-strong);
+}
+
+.ink-block {
+  background: var(--bg-ink);
+  color: var(--bg);
+}
+
+/* Legacy aliases — ahora rinden paper/cream */
+.glass-panel {
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.editorial-card {
+  border-radius: 0;
+  border: 1px solid var(--line);
+}
+
+.editorial-shot {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-raised);
+}
+
+/* ─── Laser primitives ───────────────────────────── */
+
+.laser-line {
+  height: 2px;
+  background: var(--laser);
+  box-shadow: 0 0 12px var(--laser-glow);
+}
+
+.laser-text {
+  color: var(--laser);
+}
+
+.laser-glow {
+  box-shadow: 0 0 0 1px var(--laser), 0 0 24px var(--laser-glow);
+}
+
+/* ─── Buttons (cut / brutalist) ──────────────────── */
+
+.cut-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 52px;
+  padding-inline: 1.5rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease,
+    border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cut-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cut-btn--laser {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 14px 28px rgba(20, 16, 13, 0.2);
+}
+
+.cut-btn--laser:hover {
+  background: var(--laser);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--laser), 0 18px 38px var(--laser-glow);
+}
+
+.cut-btn--ghost {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.cut-btn--ghost:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.cut-btn--hazard {
+  background: var(--hazard);
+  color: var(--ink);
+  box-shadow: 0 12px 24px rgba(245, 212, 0, 0.24);
+}
+
+.cut-btn--hazard:hover {
+  background: var(--hazard-deep);
+}
+
+.cut-btn--magenta {
+  background: var(--magenta);
+  color: var(--bg);
+}
+
+.cut-btn--magenta:hover {
+  background: var(--magenta-deep);
+}
+
+.cut-btn--sm {
+  min-height: 40px;
+  padding-inline: 1rem;
+  font-size: 0.7rem;
+}
+
+.cut-btn--lg {
+  min-height: 60px;
+  padding-inline: 2rem;
+  font-size: 0.85rem;
+}
+
+/* ─── Typography treatments ──────────────────────── */
+
+.text-outline {
+  -webkit-text-stroke: 2px var(--ink);
+  color: transparent;
+}
+
+.text-outline-laser {
+  -webkit-text-stroke: 2px var(--laser);
+  color: transparent;
+}
+
+.text-giant {
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 0.82;
+  font-size: clamp(3.8rem, 14vw, 13rem);
+}
+
+.text-display-xl {
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 0.88;
+  font-size: clamp(2.6rem, 7vw, 5.8rem);
+}
+
+/* ─── Ticker band ────────────────────────────────── */
+
+.ticker-band {
+  background: var(--ink);
+  color: var(--bg);
+  padding-block: 1.1rem;
+  border-block: 1px solid var(--ink);
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-band--hazard {
+  background: var(--hazard);
+  color: var(--ink);
+}
+
+.ticker-band--laser {
+  background: var(--laser);
+  color: var(--ink);
+}
+
+/* ─── Blueprint overlay (WorkCard hover) ─────────── */
+
+.blueprint-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(20, 16, 13, 0.88), rgba(20, 16, 13, 0.92)),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 22px,
+      rgba(198, 91, 255, 0.22) 22px 23px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 22px,
+      rgba(198, 91, 255, 0.22) 22px 23px
+    );
+  color: var(--bg);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.work-tile:hover .blueprint-overlay,
+.work-tile:focus-within .blueprint-overlay {
+  opacity: 1;
+}
+
+.blueprint-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--laser);
+  border-style: solid;
+  border-width: 0;
+}
+
+.blueprint-corner--tl { top: 8px; left: 8px; border-top-width: 2px; border-left-width: 2px; }
+.blueprint-corner--tr { top: 8px; right: 8px; border-top-width: 2px; border-right-width: 2px; }
+.blueprint-corner--bl { bottom: 8px; left: 8px; border-bottom-width: 2px; border-left-width: 2px; }
+.blueprint-corner--br { bottom: 8px; right: 8px; border-bottom-width: 2px; border-right-width: 2px; }
+
+/* ─── Process sticky number ──────────────────────── */
+
+.process-number {
+  font-family: "Saira Condensed", "Arial Narrow", sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 0.78;
+  font-size: clamp(9rem, 22vw, 26rem);
+  color: var(--laser);
+  text-shadow: 0 0 36px var(--laser-glow);
+}
+
+/* ─── Hero image frame ───────────────────────────── */
+
+.hero-frame {
+  clip-path: polygon(
+    10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%
+  );
+  transform: rotate(-1.5deg);
+  transform-origin: center center;
+}
+
+.hero-tape {
+  position: absolute;
+  top: -1.2rem;
+  left: 12%;
+  right: 12%;
+  height: 2.4rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--hazard) 0 14px,
+    var(--ink) 14px 28px
+  );
+  transform: rotate(-2deg);
+  box-shadow: 0 10px 20px rgba(20, 16, 13, 0.2);
+}
+
+/* ─── Magnetic CTA wrapper ───────────────────────── */
+
+.magnetic-wrap {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+/* ─── Hazard tape ────────────────────────────────── */
+
+.hazard-tape {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--hazard) 0 14px,
+    var(--ink) 14px 28px
+  );
+}
+
+/* ─── Stickers / badges ──────────────────────────── */
+
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  clip-path: polygon(
+    0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
+    100% calc(100% - 6px), calc(100% - 6px) 100%,
+    6px 100%, 0 calc(100% - 6px)
+  );
+}
+
+.sticker--paper {
+  background: var(--bg);
+  color: var(--ink);
+  outline: 1px solid var(--line-strong);
+  outline-offset: -1px;
+}
+
+.sticker--laser {
+  background: var(--laser);
+  color: var(--ink);
+}
+
+.sticker--hazard {
+  background: var(--hazard);
+  color: var(--ink);
+}
+
+.sticker--magenta {
+  background: var(--magenta);
+  color: var(--bg);
+}
+
+.sticker--ghost {
+  background: transparent;
+  color: var(--ink);
+  outline: 1px solid var(--line-strong);
+  outline-offset: -1px;
+}
+
+/* ─── Paper grain overlay ────────────────────────── */
+
+.noise-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+}
+
+/* ─── Marquee ────────────────────────────────────── */
+
+.marquee {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  gap: 3rem;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}
+
+.marquee__track {
+  display: flex;
+  gap: 3rem;
+  flex-shrink: 0;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+.marquee--reverse .marquee__track {
+  animation-direction: reverse;
+}
+
+.marquee--slow .marquee__track {
+  animation-duration: 60s;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+/* ─── Custom laser cursor ────────────────────────── */
+
+.laser-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--laser);
+  box-shadow: 0 0 0 2px rgba(243, 234, 215, 0.6),
+    0 0 28px var(--laser-glow);
+  pointer-events: none;
+  z-index: 90;
+  transform: translate(-50%, -50%);
+  transition: width 0.18s ease, height 0.18s ease, opacity 0.18s ease,
+    background 0.18s ease;
+}
+
+.laser-cursor--hover {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--laser);
+}
+
+.laser-cursor--hide {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .laser-cursor { display: none; }
+}
+
+/* ─── WorkCard hover ─────────────────────────────── */
+
+.work-card__button:hover .work-card__image,
+.work-card__button:focus-visible .work-card__image {
+  transform: scale(1.04);
+}
+
+.work-card__button:hover .work-card__frame,
+.work-card__button:focus-visible .work-card__frame {
+  transform: translateY(-4px);
+}
+
+/* ─── Gallery filter scrollbar ───────────────────── */
+
+.gallery-filter::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gallery-filter::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+}
+
+.faq-card summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ─── Prefers reduced motion ─────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  .laser-cursor { display: none; }
+}
+
+@media (min-width: 768px) {
+  .layout-shell {
+    width: min(100% - 2rem, 1320px);
+  }
+
+  .editorial-shell {
+    width: min(100% - 2rem, 1500px);
+  }
+}
