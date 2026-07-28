@@ -10,6 +10,8 @@ export default function WorkTile({ item, onOpen, aspectClass = "aspect-[4/5]" })
         <img
           className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
           src={item.src}
+          srcSet={`${item.src.replace(/\.webp$/, "-small.webp")} ${Math.round(item.width / 2)}w, ${item.src} ${item.width}w`}
+          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
           alt={item.alt}
           width={item.width}
           height={item.height}

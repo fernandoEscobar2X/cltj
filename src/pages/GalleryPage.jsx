@@ -1,5 +1,5 @@
 import { startTransition, useDeferredValue, useState } from "react";
-import BrandLogo from "../components/branding/BrandLogo";
+import { motion, useReducedMotion } from "framer-motion";
 import ActionLink from "../components/shared/ActionLink";
 import Lightbox from "../components/shared/Lightbox";
 import Reveal from "../components/shared/Reveal";
@@ -40,6 +40,12 @@ export default function GalleryPage() {
       ? portfolioItems
       : portfolioItems.filter((item) => item.category === deferredCategory);
   const lightbox = useLightbox(visibleWorks);
+  const reduceMotion = useReducedMotion();
+
+  // Use a highly visual piece for the hero background
+  const coverWork =
+    portfolioItems.find((item) => item.id === "display-santiago") ??
+    portfolioItems[0];
 
   const handleFilterChange = (nextCategory) => {
     startTransition(() => {
@@ -48,7 +54,7 @@ export default function GalleryPage() {
   };
 
   return (
-    <>
+    <div className="bg-[#050505] min-h-svh">
       <Seo
         title="Galería de trabajos | CorteLáser TJ Tijuana"
         description="Portafolio de CorteLáser TJ en Tijuana. Displays, señalética, llaveros, decoración y reconocimientos hechos con precisión láser."
@@ -56,62 +62,66 @@ export default function GalleryPage() {
         jsonLd={gallerySchema}
       />
 
-      <section className="pb-10 pt-8 lg:pb-14 lg:pt-10">
-        <div className="editorial-shell grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-          <Reveal>
-            <div className="grid gap-5">
-              <p className="section-eyebrow">Portafolio · CorteLáser TJ</p>
-              <h1 className="max-w-[11ch] font-['Saira_Condensed'] text-[clamp(3rem,7vw,6.1rem)] font-extrabold leading-[0.86] tracking-[-0.03em] text-[var(--paper)]">
-                Trabajos recientes
-              </h1>
-              <p className="max-w-2xl text-base leading-8 text-[#3a342f]">
-                Cada pieza es única y hecha a medida. Filtra por tipo de trabajo
-                para ver displays, señalética, llaveros, decoración o
-                reconocimientos.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <ActionLink href={siteConfig.whatsappGalleryUrl} variant="dark">
-                  Cotizar por WhatsApp
-                </ActionLink>
-                <ActionLink to="/#proceso" variant="soft">
-                  Ver proceso
-                </ActionLink>
-              </div>
-            </div>
-          </Reveal>
+      {/* IMMERSIVE HERO */}
+      <section className="relative flex min-h-[70svh] w-full flex-col justify-end overflow-hidden bg-[#050505] pb-16 pt-32">
+        {/* Fondo ambiental: alt vacio porque el h1 ya nombra la seccion, y el
+            zoom infinito se apaga con prefers-reduced-motion (WCAG 2.2.2). */}
+        <motion.div
+          className="absolute inset-0 h-[115%] w-full"
+          initial={reduceMotion ? false : { scale: 1.0 }}
+          animate={reduceMotion ? undefined : { scale: 1.08 }}
+          transition={
+            reduceMotion
+              ? undefined
+              : {
+                  duration: 25,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "linear",
+                }
+          }
+        >
+          <img
+            src={coverWork.src}
+            srcSet={`${coverWork.src.replace(/\.webp$/, "-small.webp")} ${Math.round(coverWork.width / 2)}w, ${coverWork.src} ${coverWork.width}w`}
+            sizes="100vw"
+            alt=""
+            width={coverWork.width}
+            height={coverWork.height}
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover opacity-40 grayscale-[20%]"
+          />
+        </motion.div>
+        
+        {/* Dark Gradient Overlay to ensure text and logo pop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-[#050505]/40" />
 
-          <Reveal>
-            <div className="glass-panel editorial-card grid gap-5 overflow-hidden p-6">
-              <div className="laser-line w-full" />
-              <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-start">
-                <div className="grid gap-2">
-                  <p className="section-eyebrow">En galería</p>
-                  <strong className="font-['Saira_Condensed'] text-[clamp(2.4rem,6vw,4.2rem)] font-extrabold leading-[0.86] text-[var(--paper)]">
-                    {visibleWorks.length} trabajo
-                    {visibleWorks.length === 1 ? "" : "s"}
-                  </strong>
-                  <p className="text-sm leading-7 text-[#3a342f]">
-                    Filtro directo por categoría. Haz clic en cualquier pieza
-                    para verla en grande.
-                  </p>
-                </div>
-                <BrandLogo size="xs" className="max-w-[8rem] justify-self-start lg:justify-self-end" />
-              </div>
-              <img
-                src="/img-featured/display-santiago.jpeg"
-                alt="Display premium de CorteLáser TJ."
-                width="1200"
-                height="1600"
-                className="max-h-[340px] w-full rounded-[1.5rem] object-cover"
-              />
-            </div>
+        <div className="w-full px-6 md:px-12 xl:px-[5vw] relative z-10 flex flex-col md:flex-row justify-between items-end gap-8">
+          <Reveal className="flex-1">
+            <p className="text-white/50 font-mono uppercase tracking-[0.3em] mb-4 text-sm md:text-base">
+              Portafolio Exclusivo
+            </p>
+            <h1 className="m-0 text-[clamp(4.5rem,11vw,16rem)] font-black tracking-tighter text-white drop-shadow-2xl leading-[0.85]">
+              GALERÍA<span className="text-[var(--laser)]">.</span>
+            </h1>
+          </Reveal>
+          
+          <Reveal delay={0.2} className="shrink-0 mb-4 md:mb-8">
+            <ActionLink href={siteConfig.whatsappGalleryUrl} className="!bg-[var(--laser)] !text-black hover:scale-105 shadow-[0_0_30px_rgba(198,91,255,0.3)]">
+              Cotizar un proyecto
+            </ActionLink>
           </Reveal>
         </div>
       </section>
 
-      <section className="pb-18 lg:pb-24">
-        <div className="layout-shell grid gap-6">
-          <div className="gallery-filter flex gap-3 overflow-x-auto pb-2">
+      {/* MASONRY GRID SECTION */}
+      <section className="pb-18 lg:pb-32 bg-[#050505]">
+        <div className="w-full px-6 md:px-12 xl:px-[5vw] grid gap-8">
+          {/* Sticky Filter Bar (Dark Mode) */}
+          {/* pr-20 en movil: el boton flotante de WhatsApp se monta sobre la
+              esquina inferior derecha y tapaba el ultimo filtro cuando la barra
+              quedaba a esa altura. El espacio deja correrlo fuera del boton. */}
+          <div className="gallery-filter flex gap-3 overflow-x-auto pb-2 pr-20 lg:pr-0 sticky top-[76px] z-20 bg-[#050505]/90 backdrop-blur-xl py-6 border-b border-white/5">
             {portfolioCategories.map((category) => {
               const isActive = activeCategory === category.id;
 
@@ -120,10 +130,10 @@ export default function GalleryPage() {
                   key={category.id}
                   type="button"
                   onClick={() => handleFilterChange(category.id)}
-                  className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-semibold transition ${
+                  className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-6 text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
                     isActive
-                      ? "border-[rgba(198,91,255,0.28)] bg-[rgba(198,91,255,0.14)] text-[var(--paper)]"
-                      : "border-black/10 bg-white/75 text-[#3a342f] hover:text-[var(--paper)]"
+                      ? "border-[rgba(198,91,255,0.4)] bg-[var(--laser)] text-black shadow-[0_0_20px_rgba(198,91,255,0.3)]"
+                      : "border-white/10 bg-white/5 text-white/50 hover:text-white hover:border-white/30 hover:bg-white/10"
                   }`}
                   aria-pressed={isActive}
                 >
@@ -133,10 +143,15 @@ export default function GalleryPage() {
             })}
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {/* Las piezas usan h3, asi que sin este h2 el documento salta de h1
+              a h3 y rompe el orden de encabezados para lectores de pantalla. */}
+          <h2 className="sr-only">Piezas del portafolio</h2>
+
+          {/* Masonry Columns */}
+          <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 mt-4">
             {visibleWorks.map((item, index) => (
-              <Reveal key={item.id} delay={index * 0.03}>
-                <WorkCard item={item} onOpen={lightbox.open} />
+              <Reveal key={item.id} delay={index * 0.03} className="break-inside-avoid">
+                <WorkCard item={item} onOpen={lightbox.open} featured={false} />
               </Reveal>
             ))}
           </div>
@@ -151,6 +166,6 @@ export default function GalleryPage() {
         onPrev={lightbox.goPrev}
         onNext={lightbox.goNext}
       />
-    </>
+    </div>
   );
 }

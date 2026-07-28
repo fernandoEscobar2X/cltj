@@ -1,6 +1,5 @@
 import ActionLink from "../../components/shared/ActionLink";
 import Lightbox from "../../components/shared/Lightbox";
-import Reveal from "../../components/shared/Reveal";
 import SectionIntro from "../../components/shared/SectionIntro";
 import WorkCard from "../../components/shared/WorkCard";
 import useLightbox from "../../hooks/useLightbox";
@@ -8,30 +7,36 @@ import { featuredPortfolio } from "../../data/portfolio";
 
 export default function FeaturedSection() {
   const lightbox = useLightbox(featuredPortfolio);
+  
+  // Triplicar los items para asegurar un loop perfecto en pantallas ultrawide
+  const marqueeItems = [...featuredPortfolio, ...featuredPortfolio, ...featuredPortfolio];
 
   return (
-    <section id="trabajos" className="border-y border-[var(--ink-line)] bg-[var(--ink-raised)]/40 py-18 lg:py-24">
-      <div className="layout-shell grid gap-10">
+    <section id="trabajos" className="border-y-[3px] border-[var(--ink)] bg-[var(--bg)] py-20 lg:py-32 overflow-hidden">
+      <div className="layout-shell mb-16">
         <SectionIntro
-          eyebrow="Portafolio"
+          eyebrow="02 · Portafolio"
           title="Trabajos recientes"
-          description="Cada pieza es única. Algunos de nuestros favoritos."
+          description="Cada pieza es única. Algunos de nuestros proyectos favoritos entregados en Tijuana."
           action={
-            <ActionLink to="/galeria" variant="soft">
+            <ActionLink to="/galeria" variant="soft" className="text-[var(--ink)] font-bold">
               Ver todos los trabajos
             </ActionLink>
           }
         />
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {featuredPortfolio.map((item, index) => (
-            <Reveal key={item.id} delay={index * 0.05}>
+      {/* Infinite Image Marquee */}
+      <div className="marquee">
+        <div className="marquee__track" style={{ animationDuration: '60s' }}>
+          {marqueeItems.map((item, index) => (
+            <div key={`${item.id}-${index}`} className="w-[300px] md:w-[450px] shrink-0">
               <WorkCard
                 item={item}
-                onOpen={lightbox.open}
-                featured={index === 0}
+                onOpen={() => lightbox.open(item)}
+                featured={false}
               />
-            </Reveal>
+            </div>
           ))}
         </div>
       </div>

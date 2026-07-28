@@ -1,133 +1,121 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, MapPin, Nfc, Zap } from "lucide-react";
 import { useRef } from "react";
 import Button from "../../components/ui/Button";
 import Sticker from "../../components/ui/Sticker";
-import { portfolioItems } from "../../data/portfolio";
+import GlowingEmbers from "../../components/ui/GlowingEmbers";
 import { siteConfig } from "../../data/siteConfig";
-
-const heroVisual =
-  portfolioItems.find((item) => item.id === "letrero-agara") ?? portfolioItems[0];
+// Importado (no desde /public) para que lleve hash y un cambio de imagen no
+// quede atrapado en la cache del navegador.
+import heroBg from "../../assets/hero-bg.webp";
 
 export default function HeroSection() {
   const ref = useRef(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1.08, 1]);
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
-  const stickerRotate = useTransform(scrollYProgress, [0, 1], [-8, 4]);
+  
+  // Parallax effect for the background video container
+  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
 
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden bg-[var(--bg)] pb-10 pt-6 lg:pb-16 lg:pt-10"
+      // min-h-svh y no min-h-screen: en moviles con barra dinamica, 100vh mide
+      // de mas y el hero queda cortado hasta que el usuario hace scroll.
+      className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-[#0a0a0a] pt-24 pb-16"
     >
-      <div className="bleed-shell grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-end lg:gap-10">
-        {/* LEFT — Typography block */}
-        <div className="relative grid gap-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <Sticker variant="ghost" icon={MapPin}>
-              {siteConfig.heroKicker}
-            </Sticker>
-            <Sticker variant="laser" icon={Nfc}>
-              NFC Ready
-            </Sticker>
-            <Sticker variant="hazard" icon={Zap}>
-              24H Express
-            </Sticker>
-          </div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="m-0 text-giant"
-          >
-            <span className="block text-[var(--ink)]">corte</span>
-            <span className="block">
-              <span className="text-outline">&amp; grabado</span>
-            </span>
-            <span className="block laser-text">LÁSER</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="m-0 max-w-xl text-base leading-8 text-[var(--ink-soft)] lg:text-[1.05rem]"
-          >
-            {siteConfig.heroDescription}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="flex flex-col gap-3 sm:flex-row"
-          >
-            <Button href={siteConfig.whatsappUrl} variant="laser" size="lg">
-              Cotizar por WhatsApp
-              <ArrowUpRight size={18} strokeWidth={2.25} />
-            </Button>
-            <Button to="/galeria" variant="ghost" size="lg">
-              Ver galería
-            </Button>
-          </motion.div>
-        </div>
-
-        {/* RIGHT — Image block */}
-        <div className="relative mx-auto w-full max-w-[520px] lg:mx-0">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <div className="hero-tape" aria-hidden="true" />
-            <div className="hero-frame relative aspect-[4/5] overflow-hidden border border-[var(--ink)] bg-[var(--bg-ink)] shadow-[0_40px_80px_rgba(20,16,13,0.24)]">
-              <motion.img
-                style={{ scale: imageScale, y: imageY }}
-                src={heroVisual.src}
-                alt={heroVisual.alt}
-                width={heroVisual.width}
-                height={heroVisual.height}
-                loading="eager"
-                decoding="async"
-                fetchPriority="high"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-
-            <motion.div
-              style={{ rotate: stickerRotate }}
-              className="absolute -bottom-6 -left-6 hidden sm:block"
-            >
-              <Sticker variant="laser" className="shadow-[0_14px_32px_rgba(198,91,255,0.35)]">
-                Hecho en TJ
-              </Sticker>
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 top-8 hidden md:block"
-            >
-              <Sticker variant="hazard" className="shadow-[0_12px_24px_rgba(245,212,0,0.28)]">
-                Trabajo real
-              </Sticker>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Floating giant glyph */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-8 bottom-0 hidden select-none font-display text-[22rem] font-black leading-none text-[var(--line)] lg:block"
+      {/* Background Image with Slow Zoom */}
+      <motion.div 
+        style={{ y: videoY }}
+        className="absolute inset-0 h-[115%] w-full"
       >
-        ✦
+        {/* Imagen ambiental: el h1 ya comunica el contenido, asi que va con alt
+            vacio para que los lectores de pantalla no la anuncien.
+            El zoom infinito se apaga con prefers-reduced-motion (WCAG 2.2.2). */}
+        <motion.img
+          initial={reduceMotion ? false : { scale: 1.0 }}
+          animate={reduceMotion ? undefined : { scale: 1.08 }}
+          transition={
+            reduceMotion
+              ? undefined
+              : {
+                  duration: 25,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "linear",
+                }
+          }
+          src={heroBg}
+          alt=""
+          width="1024"
+          height="1024"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover opacity-85"
+        />
+        <GlowingEmbers />
+      </motion.div>
+      
+      {/* Dark Gradient Overlay for text readability (darker on the left) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/20" />
+
+      {/* Content */}
+      <div className="w-full px-6 md:px-12 lg:px-24 xl:px-[5vw] relative z-10 flex flex-col items-start gap-8 mt-12 md:mt-24">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-wrap items-center gap-3"
+        >
+          <Sticker variant="ghost-invert" icon={MapPin}>
+            {siteConfig.heroKicker}
+          </Sticker>
+          <Sticker variant="laser" icon={Nfc}>
+            NFC Ready
+          </Sticker>
+          <Sticker variant="hazard" icon={Zap}>
+            24H Express
+          </Sticker>
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          className="m-0 text-[clamp(4rem,10vw,18rem)] font-black tracking-tighter text-white drop-shadow-2xl"
+          style={{ lineHeight: "0.85" }}
+        >
+          <span className="block">Corte y Grabado</span>
+          <span className="block laser-text mt-2 md:mt-4 text-[1.1em]">LÁSER</span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="m-0 max-w-xl text-lg leading-relaxed text-white/80 lg:text-xl drop-shadow-lg"
+        >
+          Precisión que destaca tu negocio. Displays acrílicos, señalética y piezas personalizadas con la más alta calidad en Tijuana.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          // items-start y no items-center: en movil la columna centraba los
+          // botones mientras el titulo y el parrafo iban a la izquierda.
+          className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
+        >
+          <Button href={siteConfig.whatsappUrl} variant="laser" size="lg" className="px-10 py-5 text-[1.1rem] font-bold shadow-[0_0_30px_rgba(198,91,255,0.4)] transition-all hover:shadow-[0_0_40px_rgba(198,91,255,0.6)] hover:-translate-y-1">
+            Cotizar por WhatsApp
+            <ArrowUpRight size={24} strokeWidth={2.5} />
+          </Button>
+          <Button to="/galeria" variant="ghost" size="lg" className="!border-white/40 !text-white backdrop-blur-sm hover:!bg-white/10 px-8 py-5 text-[1.1rem]">
+            Ver proyectos
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

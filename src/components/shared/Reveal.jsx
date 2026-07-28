@@ -1,6 +1,9 @@
-import { useRef } from "react";
-import { gsap, useGSAP } from "../../lib/gsap";
+import { motion, useReducedMotion } from "framer-motion";
 
+// Antes esto era GSAP + ScrollTrigger solo para un fade-up. Se reimplemento
+// sobre framer-motion, que ya estaba en el bundle por el parallax del hero, y
+// asi el sitio carga una sola libreria de animacion en vez de dos.
+// El start "top 84%" de ScrollTrigger equivale al margin negativo del viewport.
 export default function Reveal({
   children,
   className = "",
@@ -8,37 +11,21 @@ export default function Reveal({
   delay = 0,
   once = true,
 }) {
-  const ref = useRef(null);
+  const reduceMotion = useReducedMotion();
 
-  useGSAP(
-    () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return;
-      }
-
-      gsap.fromTo(
-        ref.current,
-        { autoAlpha: 0, y },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.9,
-          delay,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ref.current,
-            start: "top 84%",
-            once,
-          },
-        },
-      );
-    },
-    { scope: ref },
-  );
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
-    <div ref={ref} className={className}>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once, margin: "0px 0px -5% 0px" }}
+      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }

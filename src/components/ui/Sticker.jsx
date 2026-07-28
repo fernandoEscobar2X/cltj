@@ -3,6 +3,7 @@ const variantMap = {
   laser: "sticker sticker--laser",
   hazard: "sticker sticker--hazard",
   ghost: "sticker sticker--ghost",
+  "ghost-invert": "sticker sticker--ghost-invert",
 };
 
 export default function Sticker({

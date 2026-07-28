@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 :root {
   /* Paper — fondo primario cálido estilo rótulo Tijuana */
@@ -10,12 +11,17 @@
   /* Ink — texto y detalles */
   --ink: #14100d;
   --ink-soft: #3b322b;
-  --ink-mute: #7a6e62;
+  --ink-mute: #71665b; /* 4.68:1 sobre --bg; antes #7a6e62 daba 4.15:1 */
+  /* Para texto chico sobre fondos teñidos (--bg-raised, --hazard), que son mas
+     oscuros que el papel: ahi --ink-mute se queda corto (3.8:1 en el amarillo). */
+  --ink-mute-strong: #635950;
   --line: rgba(20, 16, 13, 0.14);
   --line-strong: rgba(20, 16, 13, 0.26);
 
   /* Laser — acento principal */
   --laser: #c65bff;
+  --laser-ink: #bd57f4; /* acento como TEXTO sobre papel: 3.01:1 (texto grande) */
+  --laser-deep: #a64cd6; /* acento como RELLENO con texto blanco encima: 4.52:1 */
   --laser-bright: #d97aff;
   --laser-soft: #edd8ff;
   --laser-glow: rgba(198, 91, 255, 0.32);
@@ -47,9 +53,14 @@
   --ink-higher: var(--bg-deep);
 }
 
+/* El fondo del documento es lo que asoma cuando el scroll rebota en los
+   extremos (overscroll de iOS y Android). Antes era --bg (papel), pero el hero
+   arriba y el footer abajo son casi negros, asi que al volver al tope se veia
+   una franja beige y luego desaparecia. Va en negro para que el rebote no
+   rompa la pieza; --bg sigue intacto para las secciones claras. */
 html {
   scroll-behavior: smooth;
-  background: var(--bg);
+  background: #0a0a0a;
 }
 
 body {
@@ -57,7 +68,7 @@ body {
   min-width: 320px;
   color: var(--ink);
   font-family: "Instrument Sans", Arial, sans-serif;
-  background: var(--bg);
+  background: #0a0a0a;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -192,7 +203,10 @@ select {
 }
 
 .laser-text {
-  color: var(--laser);
+  /* --laser sobre el fondo papel da 2.77:1 y WCAG pide 3:1 para texto grande.
+     Se usa una variante 4% mas oscura SOLO para texto; los rellenos, bordes y
+     glows siguen con --laser, donde el criterio de contraste no aplica. */
+  color: var(--laser-ink);
 }
 
 .laser-glow {
@@ -472,6 +486,18 @@ select {
   color: var(--ink);
   outline: 1px solid var(--line-strong);
   outline-offset: -1px;
+}
+
+/* Version para secciones oscuras (hero). Hace falta como variante y no como
+   utilidad suelta: estas reglas viven fuera de las capas de Tailwind, asi que
+   .sticker--ghost le gana a un text-white/90 aplicado por className y el
+   sticker quedaba texto negro sobre fondo negro. */
+.sticker--ghost-invert {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  outline: 1px solid rgba(255, 255, 255, 0.42);
+  outline-offset: -1px;
+  backdrop-filter: blur(8px);
 }
 
 /* ─── Paper grain overlay ────────────────────────── */

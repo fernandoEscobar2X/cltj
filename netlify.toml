@@ -7,18 +7,44 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    # 'unsafe-inline' en script-src lo exige el bloque JSON-LD que inyecta
+    # react-helmet-async; aun asi se sigue bloqueando cualquier script externo.
+    # En style-src lo exigen Tailwind, GSAP y framer-motion (estilos inline).
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; upgrade-insecure-requests"
+
+# Solo /assets/* lleva hash en el nombre, asi que es el unico seguro de marcar
+# como immutable. Las imagenes de /public conservan su nombre entre deploys: con
+# immutable, quien ya visito el sitio se queda con la version vieja durante un
+# ano aunque se corrija la foto.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Los woff2 llevan familia, peso y subset en el nombre: si cambia el contenido
+# cambia el nombre, asi que immutable es seguro aqui.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/img-featured/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
 
 [[headers]]
   for = "/branding/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=2592000"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Sin catch-all a proposito. Las dos rutas publicas se prerenderizan como
+# archivos reales (dist/index.html y dist/galeria/index.html), y Netlify sirve
+# dist/404.html con status 404 ante cualquier otra URL. Con el redirect anterior
+# ("/*" -> /index.html, 200) toda ruta inexistente respondia 200 y Google podia
+# indexar soft-404 infinitos.
+#
+# Al agregar una ruta nueva hay que darla de alta en scripts/prerender.mjs.

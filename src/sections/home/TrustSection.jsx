@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Sparkles } from "lucide-react";
 import { trustFacts } from "../../data/siteContent";
 
 function parseNumeric(raw) {
@@ -50,46 +49,49 @@ function CountUp({ target, suffix, duration = 1400 }) {
 }
 
 export default function TrustSection() {
+  const [f1, f2, f3] = trustFacts;
+  const p1 = parseNumeric(f1.value);
+  const p2 = parseNumeric(f2.value);
+  const p3 = parseNumeric(f3.value);
+
   return (
-    <section id="confianza" className="relative overflow-hidden bg-[var(--bg)] py-10 lg:py-14">
-      <div className="bleed-shell grid gap-0 border-y-2 border-[var(--ink)] md:grid-cols-3">
-        {trustFacts.map((fact, index) => {
-          const parsed = parseNumeric(fact.value);
-          return (
-            <article
-              key={fact.label}
-              className={`relative grid gap-3 py-8 md:py-10 ${
-                index !== 0 ? "md:border-l-2 md:border-[var(--ink)]" : ""
-              } ${index !== trustFacts.length - 1 ? "border-b-2 border-[var(--ink)] md:border-b-0" : ""} ${
-                index % 2 === 1 ? "md:pl-8" : "md:pl-6"
-              } pr-6 pl-6`}
-            >
-              <p className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.28em] text-[var(--ink-mute)]">
-                {String(index + 1).padStart(2, "0")} · {fact.label}
-              </p>
-              <strong className="text-display-xl text-[var(--ink)]">
-                {parsed ? (
-                  <>
-                    <CountUp target={parsed.value} suffix={parsed.suffix} />
-                    {fact.value.includes("+") && !parsed.suffix.includes("+") ? "+" : ""}
-                  </>
-                ) : (
-                  fact.value
-                )}
-              </strong>
-              <p className="max-w-xs text-sm leading-7 text-[var(--ink-soft)]">
-                {fact.description}
-              </p>
-              {index === 1 ? (
-                <Sparkles
-                  size={18}
-                  strokeWidth={2}
-                  className="absolute right-5 top-5 text-[var(--laser)]"
-                />
-              ) : null}
-            </article>
-          );
-        })}
+    <section id="confianza" className="bg-[var(--bg)] pt-20 pb-16 lg:pt-32 lg:pb-24 border-b-[3px] border-[var(--ink)]">
+      <div className="layout-shell">
+        {/* Las cifras son h3, asi que sin este h2 el documento salta de h1 a h3
+            y rompe el orden de encabezados para lectores de pantalla. */}
+        <h2 className="sr-only">Por qué confiar en nosotros</h2>
+
+        <div className="grid gap-x-12 gap-y-16 lg:grid-cols-12 items-end">
+
+          {/* Columna Principal - Enorme */}
+          <article className="lg:col-span-5 lg:border-b-4 border-[var(--ink)] pb-6">
+            <h3 className="text-[6rem] lg:text-[9rem] font-black text-[var(--ink)] leading-[0.8] tracking-tighter mb-6">
+              {p1 ? <CountUp target={p1.value} suffix={p1.suffix} /> : f1.value}
+              <span className="text-[var(--laser-ink)] text-[5rem] lg:text-[7rem] leading-none">+</span>
+            </h3>
+            <p className="font-mono text-sm uppercase tracking-widest text-[var(--ink-mute)] mb-4">{f1.label}</p>
+            <p className="text-xl text-[var(--ink-soft)] max-w-sm leading-relaxed">{f1.description}</p>
+          </article>
+
+          {/* Columna Secundaria - Grande */}
+          <article className="lg:col-span-4 lg:border-b-4 border-[var(--ink)] pb-6">
+            <h3 className="text-[5rem] lg:text-[7rem] font-black text-[var(--ink)] leading-[0.8] tracking-tighter mb-6">
+              {p2 ? <CountUp target={p2.value} suffix={p2.suffix} /> : f2.value}
+            </h3>
+            <p className="font-mono text-sm uppercase tracking-widest text-[var(--ink-mute)] mb-4">{f2.label}</p>
+            <p className="text-xl text-[var(--ink-soft)] max-w-sm leading-relaxed">{f2.description}</p>
+          </article>
+
+          {/* Columna Terciaria - Mediana */}
+          <article className="lg:col-span-3 pb-6">
+            <h3 className="text-[4rem] lg:text-[5rem] font-black text-[var(--ink)] leading-[0.8] tracking-tighter mb-6">
+              {p3 ? <CountUp target={p3.value} suffix={p3.suffix} /> : f3.value}
+            </h3>
+            <p className="font-mono text-sm uppercase tracking-widest text-[var(--ink-mute)] mb-4">{f3.label}</p>
+            <p className="text-xl text-[var(--ink-soft)] max-w-sm leading-relaxed">{f3.description}</p>
+          </article>
+
+        </div>
       </div>
     </section>
   );

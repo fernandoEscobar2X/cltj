@@ -5,19 +5,19 @@ import { faqs } from "../../data/siteContent";
 
 export default function FaqSection() {
   return (
-    <section id="faq" className="border-y border-[var(--ink-line)] bg-[var(--ink-raised)]/40 py-18 lg:py-24">
-      <div className="layout-shell grid gap-10">
+    <section id="faq" className="border-y border-[var(--ink-line)] bg-[var(--ink-raised)]/40 py-14 lg:py-20">
+      <div className="layout-shell grid gap-8">
         <SectionIntro
           eyebrow="Preguntas"
           title="Antes de escribir"
-          description="Lo que más nos preguntan antes de cotizar."
+          description="Lo que más nos preguntan antes de cotizar por WhatsApp."
         />
 
         <div className="grid gap-4 lg:grid-cols-2">
           {faqs.map((faq, index) => (
-            <Reveal key={faq.question} delay={index * 0.04}>
+            <Reveal key={faq.question} y={30} delay={(index % 2) * 0.08}>
               <article className="faq-card glass-panel editorial-card overflow-hidden">
-                <details className="group p-6">
+                <details className="group p-6" open={index === 0}>
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-['Saira_Condensed'] text-[1.65rem] font-bold leading-[0.95] tracking-[-0.02em] text-[var(--paper)]">
                     <span>{faq.question}</span>
                     <Plus

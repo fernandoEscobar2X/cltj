@@ -21,8 +21,10 @@ export default function useLightbox(items) {
     }
   });
 
+  const isOpen = activeItem !== null;
+
   useEffect(() => {
-    if (!activeItem) {
+    if (!isOpen) {
       return undefined;
     }
 
@@ -34,7 +36,33 @@ export default function useLightbox(items) {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeItem, onKeyDown]);
+  }, [isOpen, onKeyDown]);
+
+  // En movil el gesto natural para salir de una imagen es el boton atras. Sin
+  // esto salia de la galeria entera y mandaba al inicio. Se agrega una entrada
+  // de historial al abrir: atras la consume y solo cierra la imagen. Depende de
+  // isOpen y no de activeItem para no apilar una entrada por cada pieza que se
+  // navegue con las flechas.
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    window.history.pushState({ lightbox: true }, "");
+
+    const onPopState = () => setActiveId(null);
+    window.addEventListener("popstate", onPopState);
+
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+
+      // Si se cerro desde la interfaz, la entrada que agregamos sigue en la
+      // pila y hay que consumirla para no dejar un "atras" que no hace nada.
+      if (window.history.state?.lightbox) {
+        window.history.back();
+      }
+    };
+  }, [isOpen]);
 
   const open = (itemId) => setActiveId(itemId);
   const close = () => setActiveId(null);

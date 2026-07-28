@@ -1,18 +1,18 @@
 import Seo from "../components/seo/Seo";
 import { portfolioItems } from "../data/portfolio";
+import { faqs } from "../data/siteContent";
 import { siteConfig } from "../data/siteConfig";
 import { toAbsoluteUrl } from "../lib/url";
 import ContactSection from "../sections/home/ContactSection";
-import FaqSection from "../sections/home/FaqSection";
 import FeaturedSection from "../sections/home/FeaturedSection";
 import HeroSection from "../sections/home/HeroSection";
 import ProcessSection from "../sections/home/ProcessSection";
 import ServicesSection from "../sections/home/ServicesSection";
 import TrustSection from "../sections/home/TrustSection";
 
-const homeSchema = {
-  "@context": "https://schema.org",
+const businessSchema = {
   "@type": "LocalBusiness",
+  "@id": `${toAbsoluteUrl("/")}#business`,
   name: siteConfig.name,
   alternateName: siteConfig.legalName,
   image: toAbsoluteUrl(siteConfig.shareImage),
@@ -44,6 +44,24 @@ const homeSchema = {
   })),
 };
 
+const faqSchema = {
+  "@type": "FAQPage",
+  "@id": `${toAbsoluteUrl("/")}#faq`,
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@graph": [businessSchema, faqSchema],
+};
+
 export default function HomePage() {
   return (
     <>
@@ -58,7 +76,6 @@ export default function HomePage() {
       <ServicesSection />
       <FeaturedSection />
       <ProcessSection />
-      <FaqSection />
       <ContactSection />
     </>
   );

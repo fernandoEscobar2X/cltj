@@ -14,16 +14,23 @@ export default function WorkCard({ item, onOpen, featured = false }) {
             }`}
           >
             <img
-              className="work-card__image h-full w-full object-cover transition duration-500"
+              className="work-card__image h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               src={item.src}
+              srcSet={`${item.src.replace(/\.webp$/, "-small.webp")} ${Math.round(item.width / 2)}w, ${item.src} ${item.width}w`}
+              sizes={
+                featured
+                  ? "(min-width: 1280px) 66vw, 100vw"
+                  : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+              }
               alt={item.alt}
               width={item.width}
               height={item.height}
               loading="lazy"
               decoding="async"
             />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 grid gap-2 p-4 text-white">
+            {/* Absolute Contrast Gradient */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/95 via-black/50 to-transparent transition-opacity duration-500 opacity-90 group-hover:opacity-100" />
+            <div className="absolute inset-x-0 bottom-0 grid gap-2 p-6 text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full bg-white/18 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.14em] backdrop-blur">
                   {item.categoryLabel}
