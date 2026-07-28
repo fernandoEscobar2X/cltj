@@ -1,5 +1,12 @@
 [build]
-  command = "npm run build"
+  # El prerender necesita un Chrome de verdad. puppeteer lo descarga en su
+  # postinstall, pero Netlify restaura node_modules desde cache y entonces ese
+  # postinstall no vuelve a correr, mientras que el navegador vive FUERA de
+  # node_modules (~/.cache/puppeteer) y esa carpeta no se cachea. Resultado:
+  # build sin navegador. Instalarlo explicitamente es idempotente y barato si ya
+  # esta. Si algun dia falla, el deploy debe romperse y no publicar el sitio sin
+  # prerenderizar: los crawlers recibirian un HTML vacio.
+  command = "npx puppeteer browsers install chrome && npm run build"
   publish = "dist"
 
 [[headers]]
