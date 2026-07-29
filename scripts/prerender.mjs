@@ -128,6 +128,23 @@ try {
 
       await pause(60);
 
+      // index.html trae og:/twitter: estaticos (para crawlers sin JS) y
+      // react-helmet añade los suyos por ruta al hidratar, asi que el HTML
+      // capturado queda con ambos. En /galeria eso dejaba og:url y og:title
+      // duplicados con valores distintos, y los lectores de Open Graph suelen
+      // quedarse con el primero: compartir la galeria mostraba la home.
+      // Helmet inserta despues, asi que se conserva la ultima de cada clave.
+      const seen = new Map();
+      for (const meta of document.querySelectorAll(
+        'head meta[property^="og:"], head meta[name^="twitter:"]',
+      )) {
+        const key = meta.getAttribute("property") ?? meta.getAttribute("name");
+        if (seen.has(key)) {
+          seen.get(key).remove();
+        }
+        seen.set(key, meta);
+      }
+
       for (const el of document.querySelectorAll("#root [style]")) {
         const computed = getComputedStyle(el);
 
@@ -151,7 +168,19 @@ try {
       }
     });
 
-    const html = await page.content();
+    let html = await page.content();
+
+    // El <link rel=stylesheet> es lo unico que bloquea el primer render: obliga
+    // a una ida y vuelta extra antes de pintar nada. Comprimida, la hoja pesa
+    // menos que ese round trip, asi que se incrusta y se elimina la peticion.
+    // El resto de assets (JS, fuentes, imagenes) no bloquean.
+    for (const [, tag, href] of html.matchAll(
+      /(<link[^>]+rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>)/g,
+    )) {
+      const css = await readFile(join(DIST, href), "utf8");
+      html = html.replace(tag, `<style>${css}</style>`);
+    }
+
     const outPath = join(DIST, route.out);
 
     await mkdir(dirname(outPath), { recursive: true });

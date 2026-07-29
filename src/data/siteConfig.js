@@ -11,7 +11,7 @@ import logoLight from "../assets/logo-tj-laser-light.webp";
 
 // Dominio canonico. Al migrar a dominio propio se cambia aqui y ademas en
 // index.html, public/robots.txt y public/sitemap.xml.
-export const siteUrl = "https://cltj.netlify.app";
+export const siteUrl = "https://tjlaser.com.mx";
 
 export const siteConfig = {
   siteUrl,

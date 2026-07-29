@@ -1,7 +1,6 @@
 import Seo from "../components/seo/Seo";
-import { portfolioItems } from "../data/portfolio";
+import { businessRef, businessSchema, websiteSchema } from "../data/schema";
 import { faqs } from "../data/siteContent";
-import { siteConfig } from "../data/siteConfig";
 import { toAbsoluteUrl } from "../lib/url";
 import ContactSection from "../sections/home/ContactSection";
 import FeaturedSection from "../sections/home/FeaturedSection";
@@ -10,43 +9,14 @@ import ProcessSection from "../sections/home/ProcessSection";
 import ServicesSection from "../sections/home/ServicesSection";
 import TrustSection from "../sections/home/TrustSection";
 
-const businessSchema = {
-  "@type": "LocalBusiness",
-  "@id": `${toAbsoluteUrl("/")}#business`,
-  name: siteConfig.name,
-  alternateName: siteConfig.legalName,
-  image: toAbsoluteUrl(siteConfig.shareImage),
-  url: toAbsoluteUrl("/"),
-  telephone: siteConfig.phoneIntl,
-  description:
-    "Corte y grabado láser en Tijuana. Displays acrílicos, llaveros, señalética y piezas personalizadas con entrega express.",
-  areaServed: ["Tijuana", "Baja California", "México"],
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Tijuana",
-    addressRegion: "Baja California",
-    addressCountry: "MX",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    telephone: siteConfig.phoneIntl,
-    contactType: "customer service",
-    areaServed: "MX",
-    availableLanguage: ["es"],
-  },
-  makesOffer: portfolioItems.slice(0, 5).map((item) => ({
-    "@type": "Offer",
-    itemOffered: {
-      "@type": "Product",
-      name: item.title,
-      description: item.description,
-    },
-  })),
-};
-
+// El FAQ vive dentro de ProcessSection: el texto es visible en la pagina, que
+// es lo que Google exige para aceptar FAQPage. isPartOf lo cuelga de la entidad
+// del sitio para que no quede como un bloque suelto.
 const faqSchema = {
   "@type": "FAQPage",
   "@id": `${toAbsoluteUrl("/")}#faq`,
+  inLanguage: "es-MX",
+  about: businessRef,
   mainEntity: faqs.map((faq) => ({
     "@type": "Question",
     name: faq.question,
@@ -59,7 +29,7 @@ const faqSchema = {
 
 const homeSchema = {
   "@context": "https://schema.org",
-  "@graph": [businessSchema, faqSchema],
+  "@graph": [websiteSchema, businessSchema, faqSchema],
 };
 
 export default function HomePage() {

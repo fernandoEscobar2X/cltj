@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cltj.netlify.app/sitemap.xml
+Sitemap: https://tjlaser.com.mx/sitemap.xml

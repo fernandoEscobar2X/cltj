@@ -7,29 +7,57 @@ import Seo from "../components/seo/Seo";
 import WorkCard from "../components/shared/WorkCard";
 import useLightbox from "../hooks/useLightbox";
 import { portfolioCategories, portfolioItems } from "../data/portfolio";
+import { breadcrumbSchema, businessRef, websiteId } from "../data/schema";
 import { siteConfig } from "../data/siteConfig";
 import { toAbsoluteUrl } from "../lib/url";
 
+// about y publisher apuntan por @id al MISMO negocio declarado en la home, en
+// vez de volver a describirlo aqui. Antes cada pagina definia su propio
+// LocalBusiness suelto y los buscadores veian dos negocios distintos con el
+// mismo nombre en lugar de una entidad con dos paginas.
 const gallerySchema = {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: `Galería ${siteConfig.name}`,
-  url: toAbsoluteUrl("/galeria"),
-  image: toAbsoluteUrl(siteConfig.shareImage),
-  description:
-    "Portafolio de trabajos de corte y grabado láser de CorteLáser TJ en Tijuana.",
-  about: {
-    "@type": "LocalBusiness",
-    name: siteConfig.name,
-    alternateName: siteConfig.legalName,
-    telephone: siteConfig.phoneIntl,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Tijuana",
-      addressRegion: "Baja California",
-      addressCountry: "MX",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${toAbsoluteUrl("/galeria")}#page`,
+      name: `Galería ${siteConfig.name}`,
+      url: toAbsoluteUrl("/galeria"),
+      description:
+        "Portafolio de trabajos de corte y grabado láser de CorteLáser TJ en Tijuana.",
+      inLanguage: "es-MX",
+      about: businessRef,
+      publisher: businessRef,
+      isPartOf: { "@id": websiteId },
+      // Cada pieza como ImageObject con su material y categoria: los buscadores
+      // reciben trabajos descritos, no un muro de fotos sin contexto.
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: portfolioItems.length,
+        itemListElement: portfolioItems.map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "ImageObject",
+            "@id": `${toAbsoluteUrl("/galeria")}#${item.id}`,
+            name: item.title,
+            caption: item.alt,
+            description: item.description,
+            contentUrl: toAbsoluteUrl(item.src),
+            width: item.width,
+            height: item.height,
+            material: item.material,
+            genre: item.categoryLabel,
+            creator: businessRef,
+          },
+        })),
+      },
     },
-  },
+    breadcrumbSchema([
+      ["Inicio", "/"],
+      ["Galería", "/galeria"],
+    ]),
+  ],
 };
 
 export default function GalleryPage() {
