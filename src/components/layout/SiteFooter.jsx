@@ -51,10 +51,10 @@ export default function SiteFooter() {
 
               <a
                 className="text-white/50 hover:text-white transition-colors"
-                href="https://www.instagram.com/tj_laser_/"
+                href={siteConfig.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label="Instagram de TJ Láser"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -62,17 +62,30 @@ export default function SiteFooter() {
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
+              {/* Facebook: oculto hasta que exista la pagina.
+                  Estaba con href="#" y target="_blank", asi que al pulsarlo
+                  abria una pestaña nueva con esta misma pagina. Para los
+                  buscadores era un enlace roto, y un perfil vacio o inexistente
+                  en sameAs debilita la asociacion de la entidad en vez de
+                  reforzarla: es mejor no declararlo que declararlo mal.
+
+                  Para reactivarlo: descomenta este bloque, cambia el href por
+                  {siteConfig.social.facebook} y agrega esa clave en
+                  siteConfig.social. El JSON-LD lo recoge solo, porque sameAs
+                  sale de Object.values(siteConfig.social).
+
               <a
                 className="text-white/50 hover:text-white transition-colors"
-                href="#"
+                href={siteConfig.social.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
+                aria-label="Facebook de TJ Láser"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
               </a>
+              */}
             </div>
           </div>
 
@@ -80,6 +93,15 @@ export default function SiteFooter() {
           <div className="flex flex-col xl:items-end gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 shrink-0">
             <span className="text-white font-sans font-black text-xl tracking-tighter mb-1">TJ LÁSER<span className="text-[var(--laser)]">.</span></span>
             <span>&copy; {new Date().getFullYear()} {siteConfig.legalName}</span>
+            {/* Sin este enlace, /privacidad solo seria alcanzable desde el
+                banner de cookies, que desaparece tras la primera decision:
+                quedaria huerfana para el usuario y para los buscadores. */}
+            <Link
+              className="transition-colors hover:text-white"
+              to="/privacidad"
+            >
+              Aviso de privacidad
+            </Link>
           </div>
 
         </div>

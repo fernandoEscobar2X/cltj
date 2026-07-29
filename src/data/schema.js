@@ -50,6 +50,10 @@ export const businessSchema = {
     areaServed: "MX",
     availableLanguage: ["es"],
   },
+  // sameAs es lo que le permite a Google unir este sitio con los perfiles
+  // sociales y tratarlos como una sola entidad. Solo perfiles verificados: una
+  // URL equivocada aqui asocia el negocio con una cuenta ajena.
+  sameAs: Object.values(siteConfig.social),
   // Fotos reales de trabajos entregados: refuerzan la ficha local con
   // evidencia visual en vez de solo la imagen de portada.
   image: portfolioItems

@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import CookieConsent from "./CookieConsent";
 import LaserCursor from "../ui/LaserCursor";
 import NoiseOverlay from "../ui/NoiseOverlay";
 import RouteEffects from "./RouteEffects";
@@ -30,6 +31,7 @@ export default function SiteLayout() {
         </main>
         <SiteFooter />
         <WhatsAppFab />
+        <CookieConsent />
       </div>
     </>
   );

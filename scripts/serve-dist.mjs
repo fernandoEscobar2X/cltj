@@ -51,13 +51,22 @@ function cacheFor(url) {
   return "public, max-age=0, must-revalidate";
 }
 
-const SECURITY = {
-  "X-Frame-Options": "DENY",
-  "X-Content-Type-Options": "nosniff",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Content-Security-Policy":
-    "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'",
-};
+// Las cabeceras se leen de netlify.toml en vez de copiarse aqui.
+//
+// Estaban duplicadas y se desincronizaron: al abrir la CSP para GA4 en
+// netlify.toml, este servidor seguia con la politica vieja y bloqueaba el
+// script de Google. La prueba local decia que la analitica no cargaba cuando en
+// produccion si iba a cargar. Un servidor de pruebas que miente es peor que no
+// tenerlo, asi que ahora hay una sola fuente de verdad.
+const netlifyToml = await readFile("netlify.toml", "utf8");
+const globalHeaderBlock =
+  netlifyToml.split('for = "/*"')[1]?.split("[[")[0] ?? "";
+
+const SECURITY = Object.fromEntries(
+  [...globalHeaderBlock.matchAll(/^\s*([A-Za-z-]+)\s*=\s*"([^"]*)"/gm)].map(
+    ([, key, value]) => [key, value],
+  ),
+);
 
 const server = createServer(async (req, res) => {
   const url = decodeURIComponent(req.url.split("?")[0]);

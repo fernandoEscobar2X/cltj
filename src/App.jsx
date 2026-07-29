@@ -5,6 +5,7 @@ import SiteLayout from "./components/layout/SiteLayout";
 import GalleryPage from "./pages/GalleryPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 // GalleryPage NO va en lazy(): con la ruta prerenderizada, el fallback de
 // Suspense sustituia la galeria ya pintada por un placeholder al hidratar y el
@@ -20,6 +21,7 @@ export default function App() {
             <Route element={<SiteLayout />}>
               <Route index element={<HomePage />} />
               <Route path="/galeria" element={<GalleryPage />} />
+              <Route path="/privacidad" element={<PrivacyPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>

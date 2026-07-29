@@ -33,6 +33,19 @@ export const siteConfig = {
   whatsappGalleryUrl:
     "https://wa.me/526633634237?text=Hola,%20vi%20su%20galer%C3%ADa%20y%20quiero%20cotizar%20un%20proyecto%20con%20CorteL%C3%A1ser%20TJ",
   whatsappQr: "/branding/qr-whatsapp.svg",
+  // Perfiles oficiales. Se declaran aqui, y no sueltos en el footer, porque de
+  // esta misma lista sale el sameAs del JSON-LD: si el enlace visible y el dato
+  // estructurado apuntan a distinto lado, Google deja de asociar el perfil con
+  // el negocio. Agregar aqui una red nueva la refleja en ambos lugares.
+  social: {
+    instagram: "https://www.instagram.com/tj_laser_/",
+  },
+  // Pega aqui el ID de medicion de GA4 (formato G-XXXXXXXXXX). Mientras este
+  // vacio no se carga ningun script de Google ni aparece el banner de cookies:
+  // el sitio funciona igual, simplemente no mide.
+  analytics: {
+    ga4Id: "G-RVDJ10LG2Z",
+  },
   // Hay dos versiones del logo porque el trazo es solido: la clara para
   // superficies oscuras (header, footer) y la oscura para fondo papel. Los PNG
   // fuente pesaban ~370 KB cada uno; en WebP bajan a 21 KB. Se pinta a 162 px

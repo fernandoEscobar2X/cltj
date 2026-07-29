@@ -28,6 +28,7 @@ const ROUTES = [
   // un canonical de vuelta a esa misma. Como archivo suelto responde 200 directo
   // y las tres cosas coinciden.
   { path: "/galeria", out: "galeria.html" },
+  { path: "/privacidad", out: "privacidad.html" },
   { path: "/__404__", out: "404.html" },
 ];
 
@@ -128,15 +129,36 @@ try {
 
       await pause(60);
 
-      // index.html trae og:/twitter: estaticos (para crawlers sin JS) y
-      // react-helmet añade los suyos por ruta al hidratar, asi que el HTML
-      // capturado queda con ambos. En /galeria eso dejaba og:url y og:title
-      // duplicados con valores distintos, y los lectores de Open Graph suelen
-      // quedarse con el primero: compartir la galeria mostraba la home.
-      // Helmet inserta despues, asi que se conserva la ultima de cada clave.
+      // index.html trae title, description y og:/twitter: estaticos, pensados
+      // para los crawlers que no ejecutan JS. Al hidratar, react-helmet añade
+      // los suyos por ruta SIN quitar los estaticos, asi que el HTML capturado
+      // termina con ambos: /galeria salia con dos <title> y dos description con
+      // valores distintos, y compartirla mostraba los datos de la home.
+      //
+      // Ojo: el orden no es el mismo para los dos casos. Helmet gestiona el
+      // <title> en su lugar (queda primero) pero AÑADE las metas al final, asi
+      // que deducir por posicion seria fragil. Para el titulo se usa
+      // document.title, que es el valor autoritativo del navegador; para las
+      // metas se conserva la ultima de cada clave.
+      // El banner de cookies no debe viajar en el HTML estatico: si se hornea,
+      // quien ya decidio lo ve reaparecer un instante en cada carga hasta que
+      // React hidrata. Hoy no ocurre porque la analitica se desactiva en
+      // localhost, pero eso es una coincidencia del entorno de build, no una
+      // garantia: aqui se elimina de forma explicita.
+      document
+        .querySelectorAll('[aria-labelledby="cookie-title"]')
+        .forEach((el) => el.remove());
+
+      const canonicalTitle = document.title;
+      const titles = [...document.querySelectorAll("head title")];
+      titles.slice(1).forEach((tag) => tag.remove());
+      if (titles[0]) {
+        titles[0].textContent = canonicalTitle;
+      }
+
       const seen = new Map();
       for (const meta of document.querySelectorAll(
-        'head meta[property^="og:"], head meta[name^="twitter:"]',
+        'head meta[name="description"], head meta[name="robots"], head meta[property^="og:"], head meta[name^="twitter:"]',
       )) {
         const key = meta.getAttribute("property") ?? meta.getAttribute("name");
         if (seen.has(key)) {
