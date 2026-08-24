@@ -35,9 +35,7 @@ export default function SeasonalPromo() {
   useEffect(() => {
     if (!open) return undefined;
 
-    const previousOverflow = document.body.style.overflow;
     const previouslyFocused = document.activeElement;
-    document.body.style.overflow = "hidden";
     setOverlayOpen(true);
     closeRef.current?.focus();
 
@@ -48,7 +46,6 @@ export default function SeasonalPromo() {
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
       setOverlayOpen(false);
       if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
     };
@@ -70,7 +67,7 @@ export default function SeasonalPromo() {
           initial={reduceMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[80] grid place-items-center bg-black/72 p-3 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-[80] flex overflow-y-auto bg-black/76 p-2 backdrop-blur-sm sm:items-center sm:p-6"
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) dismiss();
@@ -84,7 +81,7 @@ export default function SeasonalPromo() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="seasonal-promo-title"
-            className="relative min-h-[36rem] w-full max-w-[64rem] overflow-hidden rounded-[1rem] bg-[#111] text-white shadow-[0_32px_100px_rgba(0,0,0,0.5)] sm:min-h-[34rem]"
+            className="relative my-auto min-h-[calc(100dvh-1rem)] w-full max-w-[58rem] overflow-hidden bg-[#111] text-white shadow-[0_32px_100px_rgba(0,0,0,0.5)] sm:min-h-[34rem] sm:rounded-[0.8rem]"
           >
             <img
               src={seasonalTags}
@@ -93,42 +90,40 @@ export default function SeasonalPromo() {
               height="960"
               className="absolute inset-0 h-full w-full object-cover object-[58%_center] sm:object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/72 to-black/10 sm:bg-gradient-to-r sm:from-black/95 sm:via-black/65 sm:to-black/5" />
-            <div className="pointer-events-none absolute -left-16 top-[22%] h-[2px] w-[80%] -rotate-6 bg-[var(--laser)] shadow-[0_0_16px_var(--laser-glow)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,7,10,0.03)_20%,rgba(8,7,10,0.96)_82%)] sm:bg-[linear-gradient(90deg,rgba(8,7,10,0.94)_0%,rgba(8,7,10,0.62)_54%,rgba(8,7,10,0.06)_100%)]" />
+            <div className="pointer-events-none absolute left-0 top-[38%] h-1 w-[72%] -rotate-3 bg-[var(--laser)] shadow-[0_0_16px_var(--laser-glow)]" />
 
             <button
               ref={closeRef}
               type="button"
               onClick={dismiss}
-              className="absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full border border-white/45 bg-black/35 text-white backdrop-blur transition-colors hover:bg-white hover:text-black"
+              className="absolute right-3 top-3 z-20 grid h-11 w-11 place-items-center bg-black/72 text-white backdrop-blur transition-colors hover:bg-white hover:text-black sm:right-4 sm:top-4"
               aria-label="Cerrar promoción"
             >
               <X size={21} strokeWidth={1.8} />
             </button>
 
-            <div className="relative z-10 flex min-h-[36rem] max-w-[38rem] flex-col justify-end p-6 sm:min-h-[34rem] sm:justify-center sm:p-12 lg:p-14">
-              <p className="mb-5 w-fit border border-[var(--hazard)] px-3 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[var(--hazard)]">
-                Regreso a clases
+            <div className="relative z-10 flex min-h-[calc(100dvh-1rem)] max-w-[36rem] flex-col justify-end p-5 pb-7 sm:min-h-[34rem] sm:justify-center sm:p-10 lg:p-12">
+              <p className="mb-4 w-fit bg-[var(--laser)] px-3 py-2 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-white">
+                Temporada escolar
               </p>
               <h2
                 id="seasonal-promo-title"
-                className="font-['Saira_Condensed'] text-[clamp(3.8rem,7vw,6.8rem)] font-black uppercase leading-[0.78] tracking-[-0.035em]"
+                className="max-w-[9ch] text-[clamp(3.15rem,13vw,6.3rem)] font-bold leading-[0.86] tracking-[-0.06em]"
               >
-                Su mochila.
-                <span className="block">Su nombre.</span>
-                <span className="block text-[var(--laser-bright)]">Su estilo.</span>
+                Su mochila, <span className="text-[var(--laser-bright)]">su nombre.</span>
               </h2>
-              <p className="mt-6 max-w-md text-base leading-7 text-white/78 sm:text-lg">
-                Tags y llaveros personalizados en acrílico, hechos en Tijuana.
-                Elige nombre, color y estilo.
+              <p className="mt-4 max-w-md text-sm leading-6 text-white/78 sm:mt-6 sm:text-lg sm:leading-7">
+                Tags y llaveros personalizados en acrílico. Tú eliges el nombre,
+                los colores y el estilo; nosotros lo hacemos en Tijuana.
               </p>
 
-              <div className="mt-7 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <div className="mt-6 flex flex-col items-start gap-4 sm:mt-7 sm:flex-row sm:items-center">
                 <a
                   href={siteConfig.whatsappTagsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-14 items-center justify-center gap-3 rounded-[0.65rem] bg-white px-6 text-sm font-bold uppercase tracking-[0.08em] text-black transition-transform hover:-translate-y-0.5"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-3 bg-white px-5 text-sm font-bold text-black transition-transform hover:-translate-y-0.5 sm:w-auto"
                 >
                   Ver modelos y cotizar
                   <ArrowUpRight size={19} strokeWidth={2} />

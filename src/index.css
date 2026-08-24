@@ -2,33 +2,32 @@
 @import "./fonts.css";
 
 :root {
-  /* Paper — fondo primario cálido estilo rótulo Tijuana */
-  --bg: #f3ead7;
-  --bg-raised: #ebe0c7;
-  --bg-deep: #e2d3b2;
-  --bg-ink: #14100d;        /* bloques de contraste oscuro (uso selectivo) */
+  /* La marca real vive en blanco, negro y el destello violeta del logo. */
+  --bg: #f8f7f5;
+  --bg-raised: #ffffff;
+  --bg-deep: #ece9ef;
+  --bg-ink: #111014;
 
   /* Ink — texto y detalles */
-  --ink: #14100d;
-  --ink-soft: #3b322b;
-  --ink-mute: #71665b; /* 4.68:1 sobre --bg; antes #7a6e62 daba 4.15:1 */
+  --ink: #111014;
+  --ink-soft: #36333a;
+  --ink-mute: #6d6872;
   /* Para texto chico sobre fondos teñidos (--bg-raised, --hazard), que son mas
      oscuros que el papel: ahi --ink-mute se queda corto (3.8:1 en el amarillo). */
-  --ink-mute-strong: #635950;
-  --line: rgba(20, 16, 13, 0.14);
-  --line-strong: rgba(20, 16, 13, 0.26);
+  --ink-mute-strong: #5d5862;
+  --line: rgba(17, 16, 20, 0.13);
+  --line-strong: rgba(17, 16, 20, 0.28);
 
   /* Laser — acento principal */
-  --laser: #c65bff;
-  --laser-ink: #bd57f4; /* acento como TEXTO sobre papel: 3.01:1 (texto grande) */
-  --laser-deep: #a64cd6; /* acento como RELLENO con texto blanco encima: 4.52:1 */
-  --laser-bright: #d97aff;
-  --laser-soft: #edd8ff;
-  --laser-glow: rgba(198, 91, 255, 0.32);
+  --laser: #c12bff;
+  --laser-ink: #a51edb;
+  --laser-deep: #8f16bf;
+  --laser-bright: #dc72ff;
+  --laser-soft: #f0dcf8;
+  --laser-glow: rgba(193, 43, 255, 0.34);
 
-  /* Hazard — amarillo taller/señalética */
-  --hazard: #f5d400;
-  --hazard-deep: #d4b800;
+  --hazard: #dfff38;
+  --hazard-deep: #c7e82b;
 
   /* Magenta rótulo Tijuana */
   --magenta: #ff3d8a;
@@ -71,7 +70,7 @@ body {
   background: #0a0a0a;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 #root {
@@ -222,7 +221,7 @@ select {
   gap: 0.55rem;
   min-height: 52px;
   padding-inline: 1.5rem;
-  border-radius: 0.7rem;
+  border-radius: 0.08rem;
   font-family: "Instrument Sans", Arial, sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
@@ -243,7 +242,7 @@ select {
 .cut-btn--laser {
   background: var(--ink);
   color: var(--bg);
-  box-shadow: 0 14px 28px rgba(20, 16, 13, 0.2);
+  box-shadow: none;
 }
 
 .cut-btn--laser:hover {

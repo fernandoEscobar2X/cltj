@@ -7,7 +7,6 @@ import FeaturedSection from "../sections/home/FeaturedSection";
 import HeroSection from "../sections/home/HeroSection";
 import ProcessSection from "../sections/home/ProcessSection";
 import ServicesSection from "../sections/home/ServicesSection";
-import TrustSection from "../sections/home/TrustSection";
 import SeasonalPromo from "../components/layout/SeasonalPromo";
 
 // El FAQ vive dentro de ProcessSection: el texto es visible en la pagina, que
@@ -43,7 +42,6 @@ export default function HomePage() {
         jsonLd={homeSchema}
       />
       <HeroSection />
-      <TrustSection />
       <ServicesSection />
       <FeaturedSection />
       <ProcessSection />

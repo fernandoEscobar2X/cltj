@@ -1,73 +1,86 @@
 import { ArrowUpRight, Expand } from "lucide-react";
 import Lightbox from "../../components/shared/Lightbox";
 import Button from "../../components/ui/Button";
-import { featuredPortfolio } from "../../data/portfolio";
+import { portfolioItems } from "../../data/portfolio";
 import useLightbox from "../../hooks/useLightbox";
 
-const showcase = featuredPortfolio.slice(0, 4);
+const selectedIds = [
+  "letrero-wafflix",
+  "tags-mochila",
+  "display-shulas",
+  "llavero-roberto",
+  "topper-feliz-cumple",
+  "papel-picado-personalizado",
+];
+
+const showcase = selectedIds.map((id) => portfolioItems.find((item) => item.id === id)).filter(Boolean);
+
+const frames = [
+  "col-span-2 sm:col-span-4 sm:row-span-2",
+  "sm:col-span-2 sm:row-span-1",
+  "sm:col-span-2 sm:row-span-2",
+  "sm:col-span-2 sm:row-span-1",
+  "sm:col-span-2 sm:row-span-2",
+  "col-span-2 sm:col-span-4 sm:row-span-1",
+];
 
 export default function FeaturedSection() {
   const lightbox = useLightbox(showcase);
 
   return (
-    <section id="trabajos" className="bg-[#f8f3e8] py-20 lg:py-28">
+    <section id="trabajos" className="bg-white py-16 text-[var(--ink)] sm:py-20 lg:py-28">
       <div className="layout-shell">
-        <div className="mb-12 flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
+        <header className="mb-9 flex flex-col gap-5 border-b-2 border-[var(--ink)] pb-7 sm:mb-12 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Hecho por TJ Láser</p>
-            <h2 className="max-w-[10ch] font-['Saira_Condensed'] text-[clamp(4rem,7vw,7rem)] font-black leading-[0.8] tracking-[-0.04em]">
-              Mira cómo se ve una idea terminada.
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Así se ve lo que hacemos</p>
+            <h2 className="text-[clamp(3rem,8vw,6.2rem)] font-bold leading-[0.88] tracking-[-0.06em]">
+              Hecho aquí.<br />Fotografiado aquí.
             </h2>
           </div>
-          <div className="max-w-md">
-            <p className="mb-6 text-lg leading-8 text-[var(--ink-soft)]">
-              Piezas reales para negocios y personas en Tijuana. Cada trabajo se
-              adapta al espacio, la marca y el uso que tendrá.
-            </p>
-            <Button to="/galeria" variant="ghost">
-              Explorar la galería <ArrowUpRight size={18} />
-            </Button>
-          </div>
+          <p className="max-w-md text-base leading-7 text-[var(--ink-soft)] sm:text-lg">
+            No usamos imágenes de catálogo. Son trabajos reales para negocios,
+            regalos y eventos de nuestros clientes.
+          </p>
+        </header>
+
+        <div className="grid auto-rows-[13rem] grid-cols-2 gap-x-2 gap-y-7 sm:auto-rows-[18rem] sm:grid-cols-6 sm:gap-x-4 sm:gap-y-9 lg:auto-rows-[21rem]">
+          {showcase.map((item, index) => (
+            <article key={item.id} className={`group min-w-0 ${frames[index]}`}>
+              <button
+                type="button"
+                onClick={() => lightbox.open(item.id)}
+                className="relative block h-[calc(100%_-_3.5rem)] min-h-[9rem] w-full overflow-hidden bg-[#ece9ef] text-left"
+                aria-label={`Abrir ${item.title}`}
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  width={item.width}
+                  height={item.height}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.025]"
+                />
+                <span className="absolute right-2 top-2 grid h-9 w-9 place-items-center bg-white text-black opacity-90 sm:right-3 sm:top-3">
+                  <Expand size={16} strokeWidth={1.8} />
+                </span>
+              </button>
+              <div className="flex items-start justify-between gap-2 pt-2.5">
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-bold sm:text-base">{item.title}</h3>
+                  <p className="mt-0.5 truncate text-[0.65rem] font-semibold uppercase tracking-[0.1em] text-[var(--ink-mute)] sm:text-xs">
+                    {item.categoryLabel}
+                  </p>
+                </div>
+                <span className="text-[0.62rem] font-bold text-[var(--laser-deep)] sm:text-xs">0{index + 1}</span>
+              </div>
+            </article>
+          ))}
         </div>
 
-        <div className="grid auto-rows-[16rem] gap-5 md:grid-cols-12 md:auto-rows-[18rem]">
-          {showcase.map((item, index) => {
-            const positions = [
-              "md:col-span-7 md:row-span-2",
-              "md:col-span-5 md:row-span-1",
-              "md:col-span-5 md:row-span-2",
-              "md:col-span-7 md:row-span-1",
-            ];
-            return (
-              <article key={item.id} className={`group relative overflow-hidden rounded-[1rem] bg-[var(--ink)] ${positions[index]}`}>
-                <button
-                  type="button"
-                  onClick={() => lightbox.open(item.id)}
-                  className="absolute inset-0 w-full text-left"
-                  aria-label={`Abrir ${item.title}`}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    width={item.width}
-                    height={item.height}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-transparent to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-5 text-white md:p-7">
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/62">{item.categoryLabel} · {item.material}</p>
-                      <h3 className="mt-2 font-['Saira_Condensed'] text-3xl font-black leading-none md:text-4xl">{item.title}</h3>
-                    </div>
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/45 bg-black/25 backdrop-blur">
-                      <Expand size={17} strokeWidth={1.8} />
-                    </span>
-                  </div>
-                </button>
-              </article>
-            );
-          })}
+        <div className="mt-10 flex justify-center sm:mt-14">
+          <Button to="/galeria" variant="ghost" size="lg">
+            Ver todos los trabajos <ArrowUpRight size={18} />
+          </Button>
         </div>
       </div>
 

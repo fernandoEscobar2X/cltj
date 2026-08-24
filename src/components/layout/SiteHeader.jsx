@@ -29,17 +29,17 @@ export default function SiteHeader() {
       <header
         className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-500 ${
           scrolled
-            ? "border-black/10 bg-[var(--bg)]/92 shadow-[0_14px_34px_rgba(20,16,13,0.08)] backdrop-blur-2xl"
-            : "border-black/8 bg-[var(--bg)]/78 backdrop-blur-xl"
+            ? "border-black/12 bg-white/96 shadow-[0_10px_24px_rgba(17,16,20,0.07)] backdrop-blur-xl"
+            : "border-black/8 bg-white/94 backdrop-blur-lg"
         }`}
       >
-        <div className="w-full px-6 md:px-12 xl:px-[5vw] flex min-h-[76px] items-center justify-between py-3">
+        <div className="flex min-h-[72px] w-full items-center justify-between px-4 py-3 sm:px-6 md:px-12 xl:px-[5vw]">
           <Link 
             className="shrink-0 transition-transform duration-300 hover:opacity-80 active:scale-95" 
             to="/" 
             aria-label="CorteLáser TJ inicio"
           >
-            <BrandLogo size="sm" variant="dark" priority className="max-w-[120px] md:max-w-none" />
+            <BrandLogo size="sm" variant="dark" priority className="max-w-[112px] sm:max-w-[132px] md:max-w-none" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -81,7 +81,7 @@ export default function SiteHeader() {
           {/* Mobile Hamburger Trigger */}
           <button
             type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-[var(--ink)] text-white transition-all active:scale-95 lg:hidden"
+            className="flex h-11 w-11 items-center justify-center bg-[var(--ink)] text-white transition-all active:scale-95 lg:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
             aria-expanded={menuOpen}

@@ -1,54 +1,48 @@
-import { MapPin, MessageCircle, PackageCheck, Palette, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { faqs, processSteps } from "../../data/siteContent";
-
-const stepIcons = [MessageCircle, Palette, PackageCheck, MapPin];
 
 export default function ProcessSection() {
   return (
-    <section id="proceso" className="bg-[var(--laser-soft)]/55 py-20 text-[var(--ink)] lg:py-28">
+    <section id="proceso" className="bg-[var(--ink)] py-16 text-white sm:py-20 lg:py-28">
       <div className="layout-shell">
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <header className="grid gap-5 border-b border-white/25 pb-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Así trabajamos</p>
-            <h2 className="max-w-[10ch] font-['Saira_Condensed'] text-[clamp(4rem,7vw,7rem)] font-black leading-[0.8] tracking-[-0.04em]">
-              De una idea a algo que puedes tocar.
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-bright)]">Del mensaje a tus manos</p>
+            <h2 className="max-w-[9ch] text-[clamp(3rem,8vw,6.4rem)] font-bold leading-[0.88] tracking-[-0.06em]">
+              Lo hacemos contigo.
             </h2>
-            <p className="mt-7 max-w-md text-lg leading-8 text-[var(--ink-soft)]">
-              Te acompañamos desde la referencia inicial hasta la entrega. Sin
-              formularios largos y sin exigir que llegues con un archivo perfecto.
-            </p>
           </div>
+          <p className="max-w-xl text-base leading-7 text-white/65 sm:text-lg lg:justify-self-end">
+            Puedes llegar con un archivo, una foto o solo una idea. Nosotros te
+            ayudamos a decidir cómo convertirla en una pieza real.
+          </p>
+        </header>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {processSteps.map((step, index) => {
-              const Icon = stepIcons[index];
-              return (
-                <article key={step.step} className="rounded-[1rem] border border-black/10 bg-white/65 p-6 shadow-[0_14px_34px_rgba(20,16,13,0.06)] md:p-7">
-                  <div className="mb-8 flex items-center justify-between">
-                    <Icon size={27} strokeWidth={1.6} className="text-[var(--laser-deep)]" />
-                    <span className="text-sm font-bold text-[var(--ink-mute-strong)]">0{index + 1}</span>
-                  </div>
-                  <h3 className="text-2xl font-bold tracking-[-0.02em]">{step.title}</h3>
-                  <p className="mt-3 leading-7 text-[var(--ink-soft)]">{step.description}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
+        <ol className="border-b border-white/25">
+          {processSteps.map((step, index) => (
+            <li key={step.step} className="grid gap-3 border-t border-white/15 py-6 first:border-t-0 sm:grid-cols-[4rem_0.7fr_1fr] sm:items-start sm:gap-6 sm:py-8">
+              <span className="text-xs font-bold tracking-[0.16em] text-[var(--laser-bright)]">0{index + 1}</span>
+              <h3 className="text-xl font-bold tracking-[-0.02em] sm:text-2xl">{step.title}</h3>
+              <p className="max-w-xl text-sm leading-6 text-white/62 sm:text-base sm:leading-7">{step.description}</p>
+            </li>
+          ))}
+        </ol>
 
-        <div className="mt-20 grid gap-10 border-t border-black/10 pt-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+        <div className="mt-16 grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Antes de cotizar</p>
-            <h3 className="mt-4 font-['Saira_Condensed'] text-5xl font-black leading-[0.86]">Preguntas rápidas, respuestas claras.</h3>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-bright)]">Dudas comunes</p>
+            <h3 className="mt-4 max-w-[9ch] text-4xl font-bold leading-[0.95] tracking-[-0.045em] sm:text-5xl">
+              Antes de mandar mensaje.
+            </h3>
           </div>
-          <div className="border-t border-black/12">
+          <div className="border-t border-white/20">
             {faqs.map((faq) => (
-              <details key={faq.question} className="group border-b border-black/12 py-1">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-bold">
+              <details key={faq.question} className="group border-b border-white/20">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-base font-bold sm:py-6 sm:text-lg">
                   {faq.question}
-                  <Plus size={21} strokeWidth={1.8} className="shrink-0 text-[var(--laser-deep)] transition-transform group-open:rotate-45" />
+                  <Plus size={20} className="shrink-0 text-[var(--laser-bright)] transition-transform group-open:rotate-45" />
                 </summary>
-                <p className="max-w-2xl pb-6 pr-10 leading-7 text-[var(--ink-soft)]">{faq.answer}</p>
+                <p className="max-w-2xl pb-6 pr-8 text-sm leading-7 text-white/62 sm:text-base">{faq.answer}</p>
               </details>
             ))}
           </div>

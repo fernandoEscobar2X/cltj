@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import CookieConsent from "./CookieConsent";
-import NoiseOverlay from "../ui/NoiseOverlay";
 import RouteEffects from "./RouteEffects";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
@@ -10,8 +9,6 @@ export default function SiteLayout() {
   return (
     <>
       <RouteEffects />
-      <NoiseOverlay />
-
       {/* Salto al contenido: sin el, quien navega con teclado o lector de
           pantalla tiene que recorrer todo el header en cada pagina (WCAG 2.4.1).
           Solo se hace visible al recibir foco. */}
@@ -22,7 +19,7 @@ export default function SiteLayout() {
         Saltar al contenido
       </a>
 
-      <div className="flex min-h-svh flex-col overflow-hidden bg-[var(--bg)] selection:bg-[var(--laser)] selection:text-[var(--ink)]">
+      <div className="flex min-h-svh flex-col overflow-x-clip bg-[var(--bg)] selection:bg-[var(--laser)] selection:text-[var(--ink)]">
         <SiteHeader />
         <main id="contenido" className="flex-1">
           <Outlet />
