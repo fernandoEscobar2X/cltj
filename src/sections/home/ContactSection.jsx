@@ -22,7 +22,7 @@ export default function ContactSection() {
               href={siteConfig.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-h-16 w-full items-center justify-between gap-5 bg-[var(--ink)] px-6 text-base font-bold text-white transition-transform hover:-translate-y-1 sm:min-h-20 sm:px-8 sm:text-lg"
+              className="flex min-h-16 w-full items-center justify-between gap-5 bg-[var(--ink)] px-6 text-base font-bold !text-white transition-transform hover:-translate-y-1 sm:min-h-20 sm:px-8 sm:text-lg"
             >
               Cuéntanos tu idea <ArrowUpRight size={24} />
             </a>

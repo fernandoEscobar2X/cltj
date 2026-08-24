@@ -51,7 +51,7 @@ export default function ServicesSection() {
               href={siteConfig.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative block min-h-[27rem] overflow-hidden bg-[var(--ink)] text-white sm:min-h-[30rem] lg:min-h-[35rem]"
+              className="group relative block min-h-[27rem] overflow-hidden bg-[var(--ink)] !text-white sm:min-h-[30rem] lg:min-h-[35rem]"
             >
               <img
                 src={route.image}

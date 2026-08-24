@@ -123,7 +123,7 @@ export default function SeasonalPromo() {
                   href={siteConfig.whatsappTagsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-14 w-full items-center justify-center gap-3 bg-white px-5 text-sm font-bold text-black transition-transform hover:-translate-y-0.5 sm:w-auto"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-3 bg-white px-5 text-sm font-bold !text-black transition-transform hover:-translate-y-0.5 sm:w-auto"
                 >
                   Ver modelos y cotizar
                   <ArrowUpRight size={19} strokeWidth={2} />
