@@ -1,165 +1,108 @@
-import { useState, useRef } from "react";
-import { ArrowUpRight, KeyRound, Nfc, Signpost, Stamp, ChevronRight } from "lucide-react";
+import { ArrowUpRight, Gift, QrCode, Store } from "lucide-react";
+import seasonalTags from "../../assets/seasonal-tags.webp";
 import Button from "../../components/ui/Button";
-import { services } from "../../data/siteContent";
 import { siteConfig } from "../../data/siteConfig";
 
-const iconMap = {
-  Signpost,
-  KeyRound,
-  Stamp,
-  Nfc,
-};
+const solutions = [
+  {
+    icon: Store,
+    eyebrow: "Para que te encuentren",
+    title: "Haz visible tu negocio",
+    description:
+      "Letreros, logotipos, señalética y vinil diseñados para tu fachada, recepción o espacio de atención.",
+    items: "Letreros · Señalética · Vinil · Acrílico espejo",
+    image: "/img-featured/letrero-agara.webp",
+    alt: "Letrero comercial de Agara en acrílico espejo dorado",
+    className: "lg:col-span-7",
+  },
+  {
+    icon: QrCode,
+    eyebrow: "Para vender y atender mejor",
+    title: "Dale vida a tu mostrador",
+    description:
+      "Displays, porta-menús, códigos QR y piezas NFC que organizan información sin perder el estilo de tu marca.",
+    items: "Displays · Menús QR · NFC · Porta-precios",
+    image: "/img-featured/display-santiago.webp",
+    alt: "Display de mostrador para Santiago Reyes Studio",
+    className: "lg:col-span-5",
+  },
+];
 
 export default function ServicesSection() {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const scrollContainerRef = useRef(null);
-
   return (
-    <section id="servicios" className="bg-[var(--bg)] py-20 lg:py-32 overflow-hidden">
+    <section id="servicios" className="overflow-hidden bg-[var(--bg)] py-20 lg:py-28">
       <div className="layout-shell">
-        
-        {/* Intro */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-10 md:mb-16 lg:mb-24">
-          <div className="max-w-2xl">
-            <p className="font-mono text-[0.78rem] uppercase tracking-[0.26em] text-[var(--ink-mute)] mb-6">
-              01 · Lo que hacemos
+        <div className="mb-12 grid gap-6 lg:grid-cols-[1fr_0.7fr] lg:items-end">
+          <div>
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">
+              Lo que podemos hacer contigo
             </p>
-            <h2 className="m-0 text-[3.2rem] md:text-[5.5rem] font-black text-[var(--ink)] leading-[0.85] tracking-tighter">
-              Servicios que venden,
-              <span className="block text-[var(--laser-ink)] mt-2">señalizan y recuerdan.</span>
+            <h2 className="max-w-[11ch] font-['Saira_Condensed'] text-[clamp(3.8rem,7vw,7rem)] font-black leading-[0.82] tracking-[-0.04em]">
+              No vendemos cortes. Creamos presencia.
             </h2>
           </div>
-          <div className="md:text-right flex flex-col md:items-end gap-6">
-            <p className="max-w-xs text-lg leading-relaxed text-[var(--ink-soft)] hidden md:block">
-              Cortamos y grabamos con precisión láser. Cada pieza es única y
-              hecha a medida para tu negocio.
-            </p>
-            <Button href={siteConfig.whatsappUrl} variant="ghost" size="lg" className="border-[var(--ink)] text-[var(--ink)] font-bold hidden md:flex">
-              Pedir cotización
-              <ArrowUpRight size={20} strokeWidth={2.5} />
-            </Button>
-          </div>
+          <p className="max-w-xl text-lg leading-8 text-[var(--ink-soft)] lg:justify-self-end">
+            Empezamos por lo que quieres comunicar y dónde se va a usar. Después
+            elegimos material, tamaño y acabado para que la pieza funcione de
+            verdad en tu negocio, evento o regalo.
+          </p>
         </div>
 
-        {/* Desktop: Interactive Typography Accordion */}
-        <div className="hidden md:block border-t-[3px] border-[var(--ink)]">
-          {services.map((service, index) => {
-            const Icon = iconMap[service.icon];
-            const isHovered = hoveredIndex === index;
-            
+        <div className="grid gap-5 lg:grid-cols-12">
+          {solutions.map((solution) => {
+            const Icon = solution.icon;
             return (
               <article
-                key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className="group border-b-[3px] border-[var(--ink)] transition-colors duration-300 hover:bg-[#050505]"
+                key={solution.title}
+                className={`group relative min-h-[34rem] overflow-hidden rounded-[1rem] bg-[var(--ink)] ${solution.className}`}
               >
-                <div className="py-12 px-8 flex items-center justify-between gap-12 cursor-default">
-                  
-                  {/* Left: Number + Title */}
-                  <div className="flex items-center gap-12 w-1/2">
-                    <span className="font-mono text-2xl font-bold text-[var(--ink-mute)] group-hover:text-white/30 transition-colors">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="text-[3.5rem] font-black text-[var(--ink)] tracking-tighter leading-none group-hover:text-white transition-colors">
-                      {service.title}
-                    </h3>
-                  </div>
-
-                  {/* Middle: Icon */}
-                  <div className="flex justify-center w-[100px]">
-                    {Icon && (
-                      <Icon 
-                        size={48} 
-                        strokeWidth={1.5} 
-                        className={`transition-all duration-500 ${isHovered ? 'text-[var(--laser)] scale-110 opacity-100' : 'text-transparent scale-50 opacity-0'}`} 
-                      />
-                    )}
-                  </div>
-
-                  {/* Right: Description */}
-                  <div className="w-1/3 flex flex-col items-end gap-4">
-                    {service.highlight && (
-                      <span className="font-mono text-xs uppercase tracking-widest bg-[var(--laser-deep)] text-white px-3 py-1 font-bold">
-                        Nuevo · TJ
-                      </span>
-                    )}
-                    <p className="text-lg text-[var(--ink-soft)] group-hover:text-white/70 transition-colors text-right leading-relaxed">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-      </div>
-
-      {/* Mobile: Snap Scroll Impact Cards */}
-      <div className="md:hidden relative w-full mt-4">
-        <style dangerouslySetInnerHTML={{__html: `
-          .hide-scrollbar::-webkit-scrollbar { display: none; }
-          .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}} />
-        <div 
-          ref={scrollContainerRef}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-8 pt-4 hide-scrollbar"
-        >
-          {services.map((service, index) => {
-            const Icon = iconMap[service.icon];
-            return (
-              <article 
-                key={index}
-                className="relative snap-center shrink-0 w-[85vw] bg-[#050505] p-8 flex flex-col justify-between border border-white/10 shadow-2xl"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-12">
-                    {/* /20 daba 1.71:1 sobre el negro de la tarjeta y el numero
-                        no se leia; /40 es el minimo que cumple 3:1 en texto
-                        grande sin dejar de verse atenuado. */}
-                    <span className="font-mono text-3xl font-bold text-white/40">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    {Icon && (
-                      <Icon size={36} className="text-[var(--laser)] opacity-90" strokeWidth={1.5} />
-                    )}
-                  </div>
-                  
-                  {service.highlight && (
-                    <span className="inline-block font-mono text-[10px] uppercase tracking-widest bg-[var(--laser)]/20 text-white border border-[var(--laser)]/30 px-3 py-1 font-bold mb-4 rounded-full">
-                      Destacado
-                    </span>
-                  )}
-                  
-                  <h3 className="text-4xl font-black text-white tracking-tighter leading-[0.95] mb-4 font-['Saira_Condensed']">
-                    {service.title}
+                <img
+                  src={solution.image}
+                  alt={solution.alt}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.035]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-black/5" />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
+                  <Icon size={28} strokeWidth={1.6} className="mb-5 text-[var(--laser-bright)]" />
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/62">{solution.eyebrow}</p>
+                  <h3 className="mt-2 font-['Saira_Condensed'] text-5xl font-black leading-[0.86] tracking-[-0.03em] md:text-6xl">
+                    {solution.title}
                   </h3>
-                  <p className="text-base text-white/70 leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-                
-                <div className="mt-12 pt-6 border-t border-white/10">
-                  <a 
-                    href={siteConfig.whatsappUrl}
-                    className="flex items-center justify-between bg-white text-black px-6 py-4 rounded-full font-bold text-sm tracking-widest uppercase group transition-transform active:scale-95 shadow-lg"
-                  >
-                    Cotizar servicio
-                    <ChevronRight size={18} className="text-[var(--laser)] transition-transform group-active:translate-x-2" />
-                  </a>
+                  <p className="mt-4 max-w-xl text-base leading-7 text-white/76">{solution.description}</p>
+                  <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--hazard)]">{solution.items}</p>
                 </div>
               </article>
             );
           })}
-        </div>
-        
-        {/* Mobile Swipe Indicator (Dots) */}
-        <div className="flex justify-center gap-2 mt-2" aria-hidden="true">
-           {services.map((_, i) => (
-             <div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--ink)] opacity-30" />
-           ))}
+
+          <article className="relative overflow-hidden rounded-[1rem] bg-[#111] text-white lg:col-span-12 lg:min-h-[30rem]">
+            <img
+              src={seasonalTags}
+              alt="Tags y llaveros personalizados fabricados por TJ Láser"
+              width="1280"
+              height="960"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover object-center opacity-78"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent lg:bg-gradient-to-r lg:from-black/95 lg:via-black/65 lg:to-black/5" />
+            <div className="relative flex min-h-[34rem] max-w-2xl flex-col justify-end p-6 md:p-8 lg:min-h-[30rem] lg:justify-center lg:p-12">
+              <Gift size={30} strokeWidth={1.6} className="mb-5 text-[var(--hazard)]" />
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--hazard)]">Para regalar, celebrar o identificar</p>
+              <h3 className="mt-3 font-['Saira_Condensed'] text-5xl font-black leading-[0.85] tracking-[-0.03em] md:text-7xl">
+                Personaliza lo que importa.
+              </h3>
+              <p className="mt-5 max-w-xl text-lg leading-8 text-white/76">
+                Llaveros, tags, toppers, recuerdos y decoración con nombres,
+                mensajes o diseños hechos especialmente para cada ocasión.
+              </p>
+              <div className="mt-7">
+                <Button href={siteConfig.whatsappUrl} variant="hazard" size="lg">
+                  Quiero personalizar algo <ArrowUpRight size={20} />
+                </Button>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>

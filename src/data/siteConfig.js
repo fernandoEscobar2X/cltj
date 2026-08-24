@@ -8,6 +8,7 @@ const whatsappText =
 // el nombre. Con nombre fijo, cambiar el archivo no invalida la cache y los
 // visitantes se quedaban con la version vieja hasta 24 h.
 import logoLight from "../assets/logo-tj-laser-light.webp";
+import logoDark from "../assets/logo-tj-laser-dark.webp";
 
 // Dominio canonico. Al migrar a dominio propio se cambia aqui y ademas en
 // index.html, public/robots.txt y public/sitemap.xml.
@@ -17,7 +18,7 @@ export const siteConfig = {
   siteUrl,
   name: "CorteLáser TJ",
   legalName: "TJ Láser",
-  tagline: "Corte & grabado láser en Tijuana",
+  tagline: "Letreros, señalética y personalizados en Tijuana",
   heroKicker: "Tijuana, Baja California",
   heroTitleTop: "corte & grabado",
   heroTitleBottom: "LÁSER",
@@ -32,6 +33,8 @@ export const siteConfig = {
   whatsappWebUrl: `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${whatsappText}`,
   whatsappGalleryUrl:
     "https://wa.me/526633634237?text=Hola,%20vi%20su%20galer%C3%ADa%20y%20quiero%20cotizar%20un%20proyecto%20con%20CorteL%C3%A1ser%20TJ",
+  whatsappTagsUrl:
+    "https://wa.me/526633634237?text=Hola,%20quiero%20ver%20modelos%20de%20tags%20y%20llaveros%20personalizados%20para%20mochila",
   whatsappQr: "/branding/qr-whatsapp.svg",
   // Perfiles oficiales. Se declaran aqui, y no sueltos en el footer, porque de
   // esta misma lista sale el sameAs del JSON-LD: si el enlace visible y el dato
@@ -52,6 +55,7 @@ export const siteConfig = {
   // de ancho como maximo, asi que 512 px cubre pantallas 3x de sobra.
   logo: {
     src: logoLight,
+    darkSrc: logoDark,
     width: 512,
     height: 309,
   },
@@ -59,7 +63,7 @@ export const siteConfig = {
   // para no meterla al bundle mientras ninguna superficie clara la use.
   shareImage: "/branding/og-cover.png",
   navItems: [
-    { to: "/#servicios", label: "Servicios" },
+    { to: "/#servicios", label: "Soluciones" },
     { to: "/#trabajos", label: "Trabajos" },
     { to: "/#proceso", label: "Proceso" },
     { to: "/galeria", label: "Galería" },

@@ -1,90 +1,59 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { processSteps, faqs } from "../../data/siteContent";
-import { Plus } from "lucide-react";
+import { MapPin, MessageCircle, PackageCheck, Palette, Plus } from "lucide-react";
+import { faqs, processSteps } from "../../data/siteContent";
+
+const stepIcons = [MessageCircle, Palette, PackageCheck, MapPin];
 
 export default function ProcessSection() {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"],
-  });
-
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
-    <section id="proceso" className="bg-[#0a0a0a] py-20 lg:py-32 text-white border-t-[3px] border-[var(--ink)]">
-      
-      {/* Timeline Rápido */}
-      <div className="layout-shell mb-24">
-        <div className="max-w-3xl mb-16">
-          <p className="font-mono text-[0.78rem] uppercase tracking-[0.26em] text-[var(--laser)] mb-6">
-            03 · Proceso
-          </p>
-          <h2 className="text-[3.5rem] md:text-[5.5rem] font-black leading-[0.85] tracking-tighter mb-4 text-white">
-            Sin fricción.
-            <span className="block text-white/40">Directo al corte.</span>
-          </h2>
-        </div>
-        
-        <div className="relative pt-12" ref={containerRef}>
-          {/* Desktop Horizontal Line */}
-          <div className="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-white/10" />
-          
-          {/* Mobile Vertical Line (Background) */}
-          <div className="md:hidden absolute top-12 bottom-0 left-[15px] w-[2px] bg-white/10" />
-          
-          {/* Mobile Vertical Line (Animated Laser Fill) */}
-          <motion.div 
-            className="md:hidden absolute top-12 left-[15px] w-[2px] bg-[var(--laser)] origin-top shadow-[0_0_15px_rgba(198,91,255,0.6)]"
-            style={{ height: lineHeight }}
-          />
-          
-          <div className="grid md:grid-cols-4 gap-12 md:gap-12 relative z-10">
-            {processSteps.map((step, idx) => (
-              <div key={idx} className="relative group pl-10 md:pl-0">
-                {/* Mobile Dot */}
-                <div className="md:hidden absolute left-0 top-1 w-[32px] h-[32px] rounded-full bg-[#0a0a0a] border-2 border-white/20 flex items-center justify-center transition-colors duration-500 z-10 group-hover:border-[var(--laser)]">
-                  <div className="w-2 h-2 rounded-full bg-white/20 group-hover:bg-[var(--laser)] transition-colors duration-500" />
-                </div>
-                
-                <span className="text-[var(--laser)] font-mono text-sm tracking-widest block mb-6 font-bold pt-1 md:pt-0">
-                  PASO {step.step}
-                </span>
-                <h3 className="text-2xl font-bold mb-3 text-white group-hover:text-[var(--laser)] transition-colors">{step.title}</h3>
-                <p className="text-white/60 leading-relaxed">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Preguntas Frecuentes Minimalistas */}
-      <div className="layout-shell mt-24 md:mt-32">
-        <div className="flex flex-col md:flex-row gap-12 md:gap-24 items-start border-t border-white/10 pt-16 md:pt-24">
-          
-          <div className="w-full md:w-1/3 shrink-0">
-            <h3 className="text-3xl md:text-5xl font-black text-white leading-tight mb-4 tracking-tighter">Preguntas Rápidas</h3>
-            <p className="text-white/50 text-lg">Respuestas directas para que cotices sin dudas ni fricciones.</p>
+    <section id="proceso" className="bg-[var(--laser-soft)]/55 py-20 text-[var(--ink)] lg:py-28">
+      <div className="layout-shell">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Así trabajamos</p>
+            <h2 className="max-w-[10ch] font-['Saira_Condensed'] text-[clamp(4rem,7vw,7rem)] font-black leading-[0.8] tracking-[-0.04em]">
+              De una idea a algo que puedes tocar.
+            </h2>
+            <p className="mt-7 max-w-md text-lg leading-8 text-[var(--ink-soft)]">
+              Te acompañamos desde la referencia inicial hasta la entrega. Sin
+              formularios largos y sin exigir que llegues con un archivo perfecto.
+            </p>
           </div>
 
-          <div className="w-full md:w-2/3 grid gap-0 border-t md:border-t-0 border-white/10">
-            {faqs.map((faq, idx) => (
-              <details key={idx} className="group border-b border-white/10 p-6 md:p-8 transition-colors hover:bg-white/[0.02]">
-                <summary className="flex cursor-pointer list-none items-center justify-between text-xl md:text-2xl font-bold text-white/90 group-hover:text-white">
-                  <span className="pr-8">{faq.question}</span>
-                  <Plus size={24} className="text-[var(--laser)] shrink-0 transition-transform duration-300 group-open:rotate-45" />
+          <div className="grid gap-4 sm:grid-cols-2">
+            {processSteps.map((step, index) => {
+              const Icon = stepIcons[index];
+              return (
+                <article key={step.step} className="rounded-[1rem] border border-black/10 bg-white/65 p-6 shadow-[0_14px_34px_rgba(20,16,13,0.06)] md:p-7">
+                  <div className="mb-8 flex items-center justify-between">
+                    <Icon size={27} strokeWidth={1.6} className="text-[var(--laser-deep)]" />
+                    <span className="text-sm font-bold text-[var(--ink-mute-strong)]">0{index + 1}</span>
+                  </div>
+                  <h3 className="text-2xl font-bold tracking-[-0.02em]">{step.title}</h3>
+                  <p className="mt-3 leading-7 text-[var(--ink-soft)]">{step.description}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-20 grid gap-10 border-t border-black/10 pt-14 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--laser-deep)]">Antes de cotizar</p>
+            <h3 className="mt-4 font-['Saira_Condensed'] text-5xl font-black leading-[0.86]">Preguntas rápidas, respuestas claras.</h3>
+          </div>
+          <div className="border-t border-black/12">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group border-b border-black/12 py-1">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-lg font-bold">
+                  {faq.question}
+                  <Plus size={21} strokeWidth={1.8} className="shrink-0 text-[var(--laser-deep)] transition-transform group-open:rotate-45" />
                 </summary>
-                <p className="pt-6 text-white/60 leading-relaxed text-lg pr-8">
-                  {faq.answer}
-                </p>
+                <p className="max-w-2xl pb-6 pr-10 leading-7 text-[var(--ink-soft)]">{faq.answer}</p>
               </details>
             ))}
           </div>
-
         </div>
       </div>
-
     </section>
   );
 }

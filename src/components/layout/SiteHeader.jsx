@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import BrandLogo from "../branding/BrandLogo";
 import Button from "../ui/Button";
 import MobileMenu from "./MobileMenu";
@@ -29,8 +29,8 @@ export default function SiteHeader() {
       <header
         className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-500 ${
           scrolled
-            ? "border-white/10 bg-[#050505]/80 backdrop-blur-2xl shadow-2xl"
-            : "border-transparent bg-transparent"
+            ? "border-black/10 bg-[var(--bg)]/92 shadow-[0_14px_34px_rgba(20,16,13,0.08)] backdrop-blur-2xl"
+            : "border-black/8 bg-[var(--bg)]/78 backdrop-blur-xl"
         }`}
       >
         <div className="w-full px-6 md:px-12 xl:px-[5vw] flex min-h-[76px] items-center justify-between py-3">
@@ -39,12 +39,12 @@ export default function SiteHeader() {
             to="/" 
             aria-label="CorteLáser TJ inicio"
           >
-            <BrandLogo size="sm" priority className="max-w-[120px] md:max-w-none" />
+            <BrandLogo size="sm" variant="dark" priority className="max-w-[120px] md:max-w-none" />
           </Link>
 
           {/* Desktop Navigation */}
           <nav
-            className="hidden flex-1 items-center justify-center gap-8 text-[0.78rem] font-bold uppercase tracking-[0.2em] lg:flex text-white/80"
+            className="hidden flex-1 items-center justify-center gap-8 text-[0.78rem] font-bold uppercase tracking-[0.16em] text-[var(--ink-soft)] lg:flex"
             aria-label="Navegación principal"
           >
             {siteConfig.navItems.map((item) =>
@@ -54,7 +54,7 @@ export default function SiteHeader() {
                   to={item.to}
                   className={({ isActive }) =>
                     `transition-colors duration-300 ${
-                      isActive ? "text-[var(--laser)] drop-shadow-[0_0_10px_rgba(198,91,255,0.5)]" : "hover:text-white"
+                      isActive ? "text-[var(--laser-deep)]" : "hover:text-[var(--ink)]"
                     }`
                   }
                 >
@@ -64,7 +64,7 @@ export default function SiteHeader() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="transition-colors duration-300 hover:text-white"
+                  className="transition-colors duration-300 hover:text-[var(--ink)]"
                 >
                   {item.label}
                 </Link>
@@ -73,15 +73,15 @@ export default function SiteHeader() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2 shrink-0">
-            <Button href={siteConfig.whatsappUrl} size="sm" variant="laser" className="shadow-[0_0_15px_rgba(198,91,255,0.2)] hover:shadow-[0_0_25px_rgba(198,91,255,0.4)]">
-              Cotizar
+            <Button href={siteConfig.whatsappUrl} size="sm" variant="laser">
+              Cotizar <ArrowUpRight size={15} />
             </Button>
           </div>
 
           {/* Mobile Hamburger Trigger */}
           <button
             type="button"
-            className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all active:scale-95 hover:bg-white/10 backdrop-blur-md"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-[var(--ink)] text-white transition-all active:scale-95 lg:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
             aria-expanded={menuOpen}

@@ -9,6 +9,7 @@ const sizeMap = {
 
 export default function BrandLogo({
   size = "md",
+  variant = "light",
   className = "",
   priority = false,
 }) {
@@ -16,7 +17,7 @@ export default function BrandLogo({
 
   return (
     <img
-      src={siteConfig.logo.src}
+      src={variant === "dark" ? siteConfig.logo.darkSrc : siteConfig.logo.src}
       alt={siteConfig.name}
       width={siteConfig.logo.width}
       height={siteConfig.logo.height}

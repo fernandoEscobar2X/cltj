@@ -8,6 +8,7 @@ import HeroSection from "../sections/home/HeroSection";
 import ProcessSection from "../sections/home/ProcessSection";
 import ServicesSection from "../sections/home/ServicesSection";
 import TrustSection from "../sections/home/TrustSection";
+import SeasonalPromo from "../components/layout/SeasonalPromo";
 
 // El FAQ vive dentro de ProcessSection: el texto es visible en la pagina, que
 // es lo que Google exige para aceptar FAQPage. isPartOf lo cuelga de la entidad
@@ -36,8 +37,8 @@ export default function HomePage() {
   return (
     <>
       <Seo
-        title="CorteLáser TJ | Corte y grabado láser en Tijuana"
-        description="Displays acrílicos, llaveros, señalética y piezas personalizadas con precisión láser en Tijuana. 140+ trabajos, cotización en 24h."
+        title="TJ Láser | Letreros, señalética y personalizados en Tijuana"
+        description="Letreros, señalética, displays, vinil y piezas personalizadas en acrílico o MDF. Diseño y fabricación en Tijuana con cotización por WhatsApp."
         path="/"
         jsonLd={homeSchema}
       />
@@ -47,6 +48,7 @@ export default function HomePage() {
       <FeaturedSection />
       <ProcessSection />
       <ContactSection />
+      <SeasonalPromo />
     </>
   );
 }

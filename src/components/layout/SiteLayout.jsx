@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import CookieConsent from "./CookieConsent";
-import LaserCursor from "../ui/LaserCursor";
 import NoiseOverlay from "../ui/NoiseOverlay";
 import RouteEffects from "./RouteEffects";
 import SiteFooter from "./SiteFooter";
@@ -12,7 +11,6 @@ export default function SiteLayout() {
     <>
       <RouteEffects />
       <NoiseOverlay />
-      <LaserCursor />
 
       {/* Salto al contenido: sin el, quien navega con teclado o lector de
           pantalla tiene que recorrer todo el header en cada pagina (WCAG 2.4.1).

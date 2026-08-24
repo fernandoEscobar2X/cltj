@@ -47,25 +47,25 @@ export const trustFacts = [
 export const processSteps = [
   {
     step: "01",
-    title: "Envía tu idea",
+    title: "Cuéntanos tu idea",
     description:
-      "Mándanos tu logo o descríbenos lo que necesitas por WhatsApp. Si no tienes diseño, te ayudamos.",
+      "Mándanos tu logo, una foto o descríbenos lo que necesitas por WhatsApp. No hace falta llegar con el diseño listo.",
   },
   {
     step: "02",
-    title: "Cotización gratis",
+    title: "Aterrizamos la propuesta",
     description:
-      "Precio y muestra digital en menos de 24 horas. Sin compromisos.",
+      "Revisamos medida, material y acabado para darte precio y una muestra digital clara.",
   },
   {
     step: "03",
-    title: "Producción",
+    title: "Lo hacemos realidad",
     description:
-      "Aprobado el diseño, comenzamos de inmediato. Entregas express disponibles.",
+      "Cuando apruebas el diseño, fabricamos tu pieza con el cuidado que requiere cada detalle.",
   },
   {
     step: "04",
-    title: "Entrega en Tijuana",
+    title: "Te lo entregamos",
     description:
       "A domicilio o puedes pasar a recoger. También enviamos a toda la república.",
   },
