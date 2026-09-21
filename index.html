@@ -3,14 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CorteLáser TJ | Corte y grabado láser en Tijuana</title>
+    <title>TJ Láser | Publicidad y regalos a medida en Tijuana</title>
     <meta
       name="description"
-      content="Displays acrílicos, llaveros, señalética y piezas personalizadas hechas con precisión láser en Tijuana. Cotización en menos de 24h."
+      content="Taller en Tijuana de publicidad, regalos y piezas a medida. Cotiza por WhatsApp y recibe precio en menos de 24h."
     />
-    <!-- Tiñe la barra del navegador en movil: va con el negro del hero para que
-         el marco del telefono no corte contra la pieza. -->
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content="#F5F5F7" />
     <!-- Los crawlers de WhatsApp, Facebook y X no ejecutan JavaScript: estas
          etiquetas deben vivir en el HTML estatico, no solo en react-helmet.
          El canonical NO se pone aqui: seria el mismo para todas las rutas y
@@ -18,14 +16,14 @@
          ejecute JS asume canonical propio, que es el comportamiento correcto. -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_MX" />
-    <meta property="og:site_name" content="CorteLáser TJ" />
+    <meta property="og:site_name" content="TJ Láser" />
     <meta
       property="og:title"
-      content="CorteLáser TJ | Corte y grabado láser en Tijuana"
+      content="TJ Láser | Publicidad y regalos a medida en Tijuana"
     />
     <meta
       property="og:description"
-      content="Displays acrílicos, llaveros, señalética y piezas personalizadas hechas con precisión láser en Tijuana. Cotización en menos de 24h."
+      content="Taller en Tijuana de publicidad, regalos y piezas a medida. Cotiza por WhatsApp y recibe precio en menos de 24h."
     />
     <meta property="og:url" content="https://tjlaser.com.mx/" />
     <meta
@@ -36,16 +34,16 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="CorteLáser TJ | Corte & grabado láser en Tijuana"
+      content="TJ Láser | Publicidad y regalos a medida en Tijuana"
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="CorteLáser TJ | Corte y grabado láser en Tijuana"
+      content="TJ Láser | Publicidad y regalos a medida en Tijuana"
     />
     <meta
       name="twitter:description"
-      content="Displays acrílicos, llaveros, señalética y piezas personalizadas hechas con precisión láser en Tijuana. Cotización en menos de 24h."
+      content="Taller en Tijuana de publicidad, regalos y piezas a medida. Cotiza por WhatsApp y recibe precio en menos de 24h."
     />
     <meta
       name="twitter:image"
@@ -53,33 +51,14 @@
     />
 
     <link rel="icon" href="/branding/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      as="image"
+      href="/img-featured/display-shulas.webp"
+      fetchpriority="high"
+    />
 
-    <!-- Fuentes auto-hospedadas (public/fonts). Antes esto era una hoja de
-         estilos de fonts.googleapis.com, que bloqueaba el render y obligaba a
-         resolver DNS + TLS contra dos origenes de terceros antes de pintar.
-         Solo se precargan los tres pesos que aparecen arriba del pliegue; el
-         resto lo pide el navegador bajo demanda gracias a font-display: swap. -->
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/saira-condensed-900.woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/instrument-sans-400.woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href="/fonts/jetbrains-mono-600.woff2"
-      crossorigin
-    />
+    <!-- Bricolage se carga desde @fontsource-variable en main.jsx. -->
   </head>
   <body>
     <div id="root"></div>

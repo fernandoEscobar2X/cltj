@@ -1,122 +1,154 @@
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, MapPin, Nfc, Zap } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Button from "../../components/ui/Button";
-import Sticker from "../../components/ui/Sticker";
-import GlowingEmbers from "../../components/ui/GlowingEmbers";
 import { siteConfig } from "../../data/siteConfig";
-// Importado (no desde /public) para que lleve hash y un cambio de imagen no
-// quede atrapado en la cache del navegador.
-import heroBg from "../../assets/hero-bg-laser-logo.webp";
 
-export default function HeroSection() {
-  const ref = useRef(null);
+const EASE = [0.16, 1, 0.3, 1];
+const SLIDE_MS = 5600;
+
+const { hero } = siteConfig;
+
+function Line({ text, light = false, offset = 0 }) {
   const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  
-  // Parallax effect for the background video container
-  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  const words = text.split(" ");
+  return (
+    <span className={`block ${light ? "font-light" : ""}`}>
+      {words.map((word, index) => (
+        <span key={`${word}-${index}`} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+          <motion.span
+            className="inline-block"
+            initial={reduceMotion ? false : { y: "110%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, delay: 0.4 + (offset + index) * 0.07, ease: EASE }}
+          >
+            {word}
+            {index < words.length - 1 ? "\u00a0" : null}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function Slides({ index, scale }) {
+  const reduceMotion = useReducedMotion();
+  const slide = hero.slides[index];
+
+  if (hero.video) {
+    return (
+      <motion.video
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ scale }}
+        src={hero.video}
+        poster={hero.slides[0]?.image}
+        autoPlay={!reduceMotion}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-hidden="true"
+      />
+    );
+  }
 
   return (
-    <section
-      ref={ref}
-      // min-h-svh y no min-h-screen: en moviles con barra dinamica, 100vh mide
-      // de mas y el hero queda cortado hasta que el usuario hace scroll.
-      className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-[#0a0a0a] pt-24 pb-16"
-    >
-      {/* Background Image with Slow Zoom */}
-      <motion.div 
-        style={{ y: videoY }}
-        className="absolute inset-0 h-[115%] w-full"
-      >
-        {/* Imagen ambiental: el h1 ya comunica el contenido, asi que va con alt
-            vacio para que los lectores de pantalla no la anuncien.
-            El zoom infinito se apaga con prefers-reduced-motion (WCAG 2.2.2). */}
+    <motion.div className="absolute inset-0" style={{ scale }}>
+      <AnimatePresence initial={false}>
         <motion.img
-          initial={reduceMotion ? false : { scale: 1.0 }}
-          animate={reduceMotion ? undefined : { scale: 1.08 }}
-          transition={
-            reduceMotion
-              ? undefined
-              : {
-                  duration: 25,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "linear",
-                }
-          }
-          src={heroBg}
-          alt=""
-          width="1024"
-          height="1024"
-          fetchPriority="high"
-          className="absolute inset-0 h-full w-full object-cover opacity-85"
+          key={slide.image}
+          className={`absolute inset-0 h-full w-full object-cover ${reduceMotion ? "" : "hero-drift"}`}
+          src={slide.image}
+          srcSet={slide.small ? `${slide.small} 1200w, ${slide.image} 2400w` : undefined}
+          sizes="100vw"
+          alt={slide.alt}
+          fetchPriority={index === 0 ? "high" : "auto"}
+          decoding="async"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.6, ease: "easeInOut" }}
         />
-        <GlowingEmbers />
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+// Presentación: foto a pantalla completa (slideshow o video), titular en dos
+// líneas y un solo Cotizar. El header, transparente encima, no repite el botón.
+export default function HeroSection() {
+  const reduceMotion = useReducedMotion();
+  const ref = useRef(null);
+  const [slide, setSlide] = useState(0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const drift = reduceMotion ? 0 : 1;
+  const mediaScale = useTransform(scrollYProgress, [0, 1], [1, 1 + 0.12 * drift]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, 120 * drift]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const slides = hero.slides.length;
+  const topWords = hero.titleTop.split(" ").length;
+
+  useEffect(() => {
+    if (reduceMotion || hero.video || slides < 2) return undefined;
+    const id = window.setInterval(() => setSlide((s) => (s + 1) % slides), SLIDE_MS);
+    return () => window.clearInterval(id);
+  }, [reduceMotion, slides]);
+
+  // Precarga las demás fotos para que el crossfade no parpadee.
+  useEffect(() => {
+    hero.slides.slice(1).forEach((s) => {
+      const img = new Image();
+      img.src = s.image;
+    });
+  }, []);
+
+  const current = hero.slides[slide];
+
+  return (
+    <section id="hero" ref={ref} className="relative h-[100dvh] min-h-[34rem] overflow-hidden bg-[#111113] text-white">
+      <Slides index={slide} scale={mediaScale} />
+
+      {/* Velo: oscurece arriba para el header y abajo para el titular; deja el centro limpio. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/5 to-black/80" />
+
+      <motion.div
+        className="layout-shell absolute inset-x-0 bottom-0 grid gap-8 pb-[max(2rem,env(safe-area-inset-bottom))] lg:grid-cols-12 lg:items-end lg:pb-12"
+        style={{ y: copyY, opacity: copyOpacity }}
+      >
+        <div className="lg:col-span-10">
+          <h1 className="m-0 text-[clamp(2.8rem,6.4vw,6rem)] font-semibold leading-[0.94] tracking-tight [text-shadow:0_2px_30px_rgba(0,0,0,0.35)]">
+            <Line text={hero.titleTop} />
+            <Line text={hero.titleBottom} light offset={topWords} />
+          </h1>
+          <motion.div
+            className="mt-8"
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1, ease: EASE }}
+          >
+            <Button href={siteConfig.whatsappUrl} variant="accent" size="lg">
+              {siteConfig.ctaLabel}
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Pie de foto: qué pieza y de quién. Cambia con el slide. */}
+        {!hero.video ? (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p
+              key={current.client}
+              className="m-0 hidden text-sm text-white/70 lg:col-span-2 lg:block lg:text-right"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={reduceMotion ? undefined : { opacity: 0, transition: { duration: 0.3 } }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <span className="text-white">{current.client}</span>
+              <br />
+              {current.piece}
+            </motion.p>
+          </AnimatePresence>
+        ) : null}
       </motion.div>
-      
-      {/* Dark Gradient Overlay for text readability (darker on the left) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/20" />
-
-      {/* Content */}
-      <div className="w-full px-6 md:px-12 lg:px-24 xl:px-[5vw] relative z-10 flex flex-col items-start gap-8 mt-12 md:mt-24">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-wrap items-center gap-3"
-        >
-          <Sticker variant="ghost-invert" icon={MapPin}>
-            {siteConfig.heroKicker}
-          </Sticker>
-          <Sticker variant="laser" icon={Nfc}>
-            NFC Ready
-          </Sticker>
-          <Sticker variant="hazard" icon={Zap}>
-            24H Express
-          </Sticker>
-        </motion.div>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          className="m-0 text-[clamp(4rem,10vw,18rem)] font-black tracking-tighter text-white drop-shadow-2xl"
-          style={{ lineHeight: "0.85" }}
-        >
-          <span className="block">Corte y Grabado</span>
-          <span className="block laser-text mt-2 md:mt-4 text-[1.1em]">LÁSER</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="m-0 max-w-xl text-lg leading-relaxed text-white/80 lg:text-xl drop-shadow-lg"
-        >
-          Precisión que destaca tu negocio. Displays acrílicos, señalética y piezas personalizadas con la más alta calidad en Tijuana.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          // items-start y no items-center: en movil la columna centraba los
-          // botones mientras el titulo y el parrafo iban a la izquierda.
-          className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
-        >
-          <Button href={siteConfig.whatsappUrl} variant="laser" size="lg" className="px-10 py-5 text-[1.1rem] font-bold shadow-[0_0_30px_rgba(198,91,255,0.4)] transition-all hover:shadow-[0_0_40px_rgba(198,91,255,0.6)] hover:-translate-y-1">
-            Cotizar por WhatsApp
-            <ArrowUpRight size={24} strokeWidth={2.5} />
-          </Button>
-          <Button to="/galeria" variant="ghost" size="lg" className="!border-white/40 !text-white backdrop-blur-sm hover:!bg-white/10 px-8 py-5 text-[1.1rem]">
-            Ver proyectos
-          </Button>
-        </motion.div>
-      </div>
     </section>
   );
 }

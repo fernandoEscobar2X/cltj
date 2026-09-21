@@ -1,6 +1,6 @@
 import { portfolioItems } from "./portfolio";
 import { services } from "./siteContent";
-import { siteConfig } from "./siteConfig";
+import { siteConfig, siteDescription } from "./siteConfig";
 import { toAbsoluteUrl } from "../lib/url";
 
 // Fuente unica de los datos estructurados.
@@ -9,8 +9,8 @@ import { toAbsoluteUrl } from "../lib/url";
 // los motores de respuesta veian dos negocios distintos sin relacion. Aqui se
 // define la entidad UNA vez con un @id estable y el resto de las paginas la
 // referencian por ese @id. Esa consolidacion es lo que permite que un motor
-// generativo (Gemini, ChatGPT, Perplexity) resuelva "quien hace corte laser en
-// Tijuana" hacia una sola ficha coherente en vez de fragmentos sueltos.
+// generativo (Gemini, ChatGPT, Perplexity) resuelva "quien hace piezas
+// personalizadas en Tijuana" hacia una sola ficha coherente.
 
 export const businessId = `${toAbsoluteUrl("/")}#business`;
 export const websiteId = `${toAbsoluteUrl("/")}#website`;
@@ -18,14 +18,13 @@ export const websiteId = `${toAbsoluteUrl("/")}#website`;
 /** Referencia ligera a la entidad de negocio, para enlazar desde otras paginas. */
 export const businessRef = { "@id": businessId };
 
-const businessDescription =
-  "Corte y grabado láser en Tijuana. Displays acrílicos, llaveros, señalética y piezas personalizadas con entrega express.";
+const businessDescription = siteDescription;
 
 export const businessSchema = {
   "@type": "LocalBusiness",
   "@id": businessId,
   name: siteConfig.name,
-  alternateName: siteConfig.legalName,
+  alternateName: [siteConfig.alternateName, siteConfig.legalName],
   url: toAbsoluteUrl("/"),
   logo: toAbsoluteUrl(siteConfig.shareImage),
   telephone: siteConfig.phoneIntl,
@@ -79,13 +78,14 @@ export const businessSchema = {
   },
   // Señal tematica explicita para motores generativos.
   knowsAbout: [
-    "Corte láser",
-    "Grabado láser",
-    "Displays de acrílico",
+    "Piezas personalizadas",
+    "Regalos a medida",
     "Señalética comercial",
+    "Displays de acrílico",
     "Llaveros personalizados",
-    "Llaveros NFC",
-    "Reconocimientos y placas grabadas",
+    "Papel picado personalizado",
+    "Recuerdos para eventos",
+    "Reconocimientos y placas",
     "Decoración personalizada",
     ...new Set(portfolioItems.map((item) => item.material)),
   ],

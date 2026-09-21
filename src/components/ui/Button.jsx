@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 
 const variantMap = {
   laser: "cut-btn cut-btn--laser",
+  accent: "cut-btn cut-btn--accent",
   ghost: "cut-btn cut-btn--ghost",
-  hazard: "cut-btn cut-btn--hazard",
+  hazard: "cut-btn cut-btn--accent",
 };
 
 const sizeMap = {
@@ -13,7 +14,7 @@ const sizeMap = {
 };
 
 function buildClassName(variant, size, className) {
-  return [variantMap[variant] ?? variantMap.ghost, sizeMap[size] ?? "", className]
+  return [variantMap[variant] ?? variantMap.accent, sizeMap[size] ?? "", className]
     .filter(Boolean)
     .join(" ");
 }
@@ -21,10 +22,11 @@ function buildClassName(variant, size, className) {
 export default function Button({
   to,
   href,
-  variant = "laser",
+  variant = "accent",
   size = "md",
   className = "",
   children,
+  type,
   ...props
 }) {
   const resolved = buildClassName(variant, size, className);
@@ -37,17 +39,24 @@ export default function Button({
     );
   }
 
-  const isExternal = /^https?:\/\//i.test(href ?? "");
+  if (href) {
+    const isExternal = /^https?:\/\//i.test(href);
+    return (
+      <a
+        className={resolved}
+        href={href}
+        target={isExternal ? "_blank" : props.target}
+        rel={isExternal ? "noopener noreferrer" : props.rel}
+        {...props}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <a
-      className={resolved}
-      href={href}
-      target={isExternal ? "_blank" : props.target}
-      rel={isExternal ? "noopener noreferrer" : props.rel}
-      {...props}
-    >
+    <button type={type ?? "button"} className={resolved} {...props}>
       {children}
-    </a>
+    </button>
   );
 }

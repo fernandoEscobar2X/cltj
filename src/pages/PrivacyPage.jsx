@@ -24,7 +24,7 @@ const privacySchema = {
 function Block({ title, children }) {
   return (
     <section className="grid gap-3">
-      <h2 className="font-['Saira_Condensed'] text-[clamp(1.6rem,3vw,2.2rem)] font-extrabold leading-[1] tracking-[-0.02em] text-[var(--ink)]">
+      <h2 className="text-[clamp(1.4rem,3vw,1.9rem)] font-semibold leading-tight tracking-tight text-[var(--ink)]">
         {title}
       </h2>
       <div className="grid gap-3 text-base leading-8 text-[var(--ink-soft)]">
@@ -47,8 +47,7 @@ export default function PrivacyPage() {
       <section className="bg-[var(--bg)] py-20 lg:py-28">
         <div className="layout-shell grid max-w-3xl gap-10">
           <header className="grid gap-4">
-            <p className="section-eyebrow">Legal</p>
-            <h1 className="m-0 font-['Saira_Condensed'] text-[clamp(2.8rem,7vw,5rem)] font-extrabold leading-[0.88] tracking-[-0.03em] text-[var(--ink)]">
+            <h1 className="m-0 text-[clamp(2.4rem,6vw,4.2rem)] font-semibold leading-[1.02] tracking-tight text-[var(--ink)]">
               Aviso de privacidad
             </h1>
             <p className="text-base leading-8 text-[var(--ink-soft)]">
@@ -59,7 +58,11 @@ export default function PrivacyPage() {
 
           <Block title="Quién es responsable">
             <p>
-              {siteConfig.legalName} ({siteConfig.name}), con domicilio en{" "}
+              {siteConfig.legalName}
+              {siteConfig.alternateName && siteConfig.alternateName !== siteConfig.legalName
+                ? ` (${siteConfig.alternateName})`
+                : ""}
+              , con domicilio en{" "}
               {siteConfig.location}, es responsable del tratamiento de tus datos
               personales. Puedes contactarnos por WhatsApp al{" "}
               {siteConfig.phoneDisplay}.
@@ -125,7 +128,7 @@ export default function PrivacyPage() {
             </p>
           </Block>
 
-          <p className="border-t border-[var(--line)] pt-6 font-mono text-xs uppercase tracking-[0.2em] text-[var(--ink-mute)]">
+          <p className="border-t border-[var(--line)] pt-6 text-sm text-[var(--ink-mute)]">
             Última actualización: julio 2026
           </p>
         </div>

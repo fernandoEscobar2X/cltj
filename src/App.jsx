@@ -5,6 +5,7 @@ import SiteLayout from "./components/layout/SiteLayout";
 import GalleryPage from "./pages/GalleryPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PapelPicadoPage from "./pages/PapelPicadoPage";
 import PrivacyPage from "./pages/PrivacyPage";
 
 // GalleryPage NO va en lazy(): con la ruta prerenderizada, el fallback de
@@ -20,6 +21,7 @@ export default function App() {
           <Routes>
             <Route element={<SiteLayout />}>
               <Route index element={<HomePage />} />
+              <Route path="/papel-picado" element={<PapelPicadoPage />} />
               <Route path="/galeria" element={<GalleryPage />} />
               <Route path="/privacidad" element={<PrivacyPage />} />
               <Route path="*" element={<NotFoundPage />} />

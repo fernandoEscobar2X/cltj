@@ -12,8 +12,8 @@ export default function SectionIntro({
       }`}
     >
       <div className="grid gap-3">
-        <p className="section-eyebrow">{eyebrow}</p>
-        <h2 className="max-w-[14ch] font-['Saira_Condensed'] text-[clamp(2.35rem,6vw,4.8rem)] font-extrabold leading-[0.9] tracking-[-0.02em] text-[var(--paper)]">
+        {eyebrow ? <p className="text-sm font-medium text-[var(--ink-mute)]">{eyebrow}</p> : null}
+        <h2 className="m-0 max-w-[14ch] text-[clamp(2.1rem,5vw,3.8rem)] font-semibold leading-[1.02] tracking-tight">
           {title}
         </h2>
         <p className="max-w-2xl text-base leading-7 text-[var(--paper-soft)]">

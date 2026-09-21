@@ -1,165 +1,145 @@
-import { useState, useRef } from "react";
-import { ArrowUpRight, KeyRound, Nfc, Signpost, Stamp, ChevronRight } from "lucide-react";
-import Button from "../../components/ui/Button";
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "@phosphor-icons/react";
+import Parallax from "../../components/shared/Parallax";
+import Reveal from "../../components/shared/Reveal";
+import Shot from "../../components/shared/Shot";
 import { services } from "../../data/siteContent";
-import { siteConfig } from "../../data/siteConfig";
+import { waUrl } from "../../lib/whatsappQuote";
 
-const iconMap = {
-  Signpost,
-  KeyRound,
-  Stamp,
-  Nfc,
-};
+const EASE = [0.16, 1, 0.3, 1];
+
+function Pieces({ items, className = "" }) {
+  return (
+    <ul className={`m-0 flex flex-wrap gap-x-4 gap-y-1 p-0 ${className}`}>
+      {items.map((piece) => (
+        <li key={piece} className="list-none">
+          {piece}
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function ServicesSection() {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const scrollContainerRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+  const [active, setActive] = useState(0);
+  const current = services[active] ?? services[0];
 
   return (
-    <section id="servicios" className="bg-[var(--bg)] py-20 lg:py-32 overflow-hidden">
-      <div className="layout-shell">
-        
-        {/* Intro */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-10 md:mb-16 lg:mb-24">
-          <div className="max-w-2xl">
-            <p className="font-mono text-[0.78rem] uppercase tracking-[0.26em] text-[var(--ink-mute)] mb-6">
-              01 · Lo que hacemos
-            </p>
-            <h2 className="m-0 text-[3.2rem] md:text-[5.5rem] font-black text-[var(--ink)] leading-[0.85] tracking-tighter">
-              Servicios que venden,
-              <span className="block text-[var(--laser-ink)] mt-2">señalizan y recuerdan.</span>
-            </h2>
-          </div>
-          <div className="md:text-right flex flex-col md:items-end gap-6">
-            <p className="max-w-xs text-lg leading-relaxed text-[var(--ink-soft)] hidden md:block">
-              Cortamos y grabamos con precisión láser. Cada pieza es única y
-              hecha a medida para tu negocio.
-            </p>
-            <Button href={siteConfig.whatsappUrl} variant="ghost" size="lg" className="border-[var(--ink)] text-[var(--ink)] font-bold hidden md:flex">
-              Pedir cotización
-              <ArrowUpRight size={20} strokeWidth={2.5} />
-            </Button>
-          </div>
-        </div>
+    <section id="servicios" className="bg-[var(--bg)] py-20 md:py-28">
+      <div className="layout-shell grid gap-12 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-6">
+          <h2 className="sr-only">Servicios</h2>
 
-        {/* Desktop: Interactive Typography Accordion */}
-        <div className="hidden md:block border-t-[3px] border-[var(--ink)]">
-          {services.map((service, index) => {
-            const Icon = iconMap[service.icon];
-            const isHovered = hoveredIndex === index;
-            
-            return (
-              <article
-                key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className="group border-b-[3px] border-[var(--ink)] transition-colors duration-300 hover:bg-[#050505]"
-              >
-                <div className="py-12 px-8 flex items-center justify-between gap-12 cursor-default">
-                  
-                  {/* Left: Number + Title */}
-                  <div className="flex items-center gap-12 w-1/2">
-                    <span className="font-mono text-2xl font-bold text-[var(--ink-mute)] group-hover:text-white/30 transition-colors">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="text-[3.5rem] font-black text-[var(--ink)] tracking-tighter leading-none group-hover:text-white transition-colors">
-                      {service.title}
-                    </h3>
-                  </div>
-
-                  {/* Middle: Icon */}
-                  <div className="flex justify-center w-[100px]">
-                    {Icon && (
-                      <Icon 
-                        size={48} 
-                        strokeWidth={1.5} 
-                        className={`transition-all duration-500 ${isHovered ? 'text-[var(--laser)] scale-110 opacity-100' : 'text-transparent scale-50 opacity-0'}`} 
-                      />
-                    )}
-                  </div>
-
-                  {/* Right: Description */}
-                  <div className="w-1/3 flex flex-col items-end gap-4">
-                    {service.highlight && (
-                      <span className="font-mono text-xs uppercase tracking-widest bg-[var(--laser-deep)] text-white px-3 py-1 font-bold">
-                        Nuevo · TJ
-                      </span>
-                    )}
-                    <p className="text-lg text-[var(--ink-soft)] group-hover:text-white/70 transition-colors text-right leading-relaxed">
-                      {service.description}
-                    </p>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-      </div>
-
-      {/* Mobile: Snap Scroll Impact Cards */}
-      <div className="md:hidden relative w-full mt-4">
-        <style dangerouslySetInnerHTML={{__html: `
-          .hide-scrollbar::-webkit-scrollbar { display: none; }
-          .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}} />
-        <div 
-          ref={scrollContainerRef}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-8 pt-4 hide-scrollbar"
-        >
-          {services.map((service, index) => {
-            const Icon = iconMap[service.icon];
-            return (
-              <article 
-                key={index}
-                className="relative snap-center shrink-0 w-[85vw] bg-[#050505] p-8 flex flex-col justify-between border border-white/10 shadow-2xl"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-12">
-                    {/* /20 daba 1.71:1 sobre el negro de la tarjeta y el numero
-                        no se leia; /40 es el minimo que cumple 3:1 en texto
-                        grande sin dejar de verse atenuado. */}
-                    <span className="font-mono text-3xl font-bold text-white/40">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    {Icon && (
-                      <Icon size={36} className="text-[var(--laser)] opacity-90" strokeWidth={1.5} />
-                    )}
-                  </div>
-                  
-                  {service.highlight && (
-                    <span className="inline-block font-mono text-[10px] uppercase tracking-widest bg-[var(--laser)]/20 text-white border border-[var(--laser)]/30 px-3 py-1 font-bold mb-4 rounded-full">
-                      Destacado
-                    </span>
-                  )}
-                  
-                  <h3 className="text-4xl font-black text-white tracking-tighter leading-[0.95] mb-4 font-['Saira_Condensed']">
-                    {service.title}
-                  </h3>
-                  <p className="text-base text-white/70 leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-                
-                <div className="mt-12 pt-6 border-t border-white/10">
-                  <a 
-                    href={siteConfig.whatsappUrl}
-                    className="flex items-center justify-between bg-white text-black px-6 py-4 rounded-full font-bold text-sm tracking-widest uppercase group transition-transform active:scale-95 shadow-lg"
+          {/* Móvil: tarjeta completa por servicio, con piezas y CTA. */}
+          <div className="grid gap-12 lg:hidden">
+            {services.map((service, index) => (
+              <Reveal key={service.id} delay={index * 0.05} y={24}>
+                <article>
+                  <Shot className="aspect-[4/5] bg-[var(--bg-deep)]">
+                    <img src={service.image} alt={service.imageAlt} className="h-full w-full object-cover" loading="lazy" />
+                  </Shot>
+                  <h3 className="mt-5 text-[2.2rem] font-semibold leading-[1] tracking-tight">{service.title}</h3>
+                  <Pieces items={service.pieces} className="mt-3 text-[var(--ink-soft)]" />
+                  <a
+                    href={waUrl(service.quote)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 font-medium underline-offset-4 hover:underline"
                   >
-                    Cotizar servicio
-                    <ChevronRight size={18} className="text-[var(--laser)] transition-transform group-active:translate-x-2" />
+                    {service.cta}
+                    <ArrowUpRight size={16} weight="bold" />
                   </a>
-                </div>
-              </article>
-            );
-          })}
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* Desktop: lista fluida; la info vive en el panel de la derecha. */}
+          <ul className="hidden divide-y divide-[var(--line)] lg:block">
+            {services.map((service, index) => {
+              const isActive = index === active;
+              return (
+                <li key={service.id}>
+                  <Reveal delay={index * 0.06} y={24}>
+                    <a
+                      href={waUrl(service.quote)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseEnter={() => setActive(index)}
+                      onFocus={() => setActive(index)}
+                      className="group grid grid-cols-[1fr_auto] items-center gap-5 py-8"
+                    >
+                      <span
+                        className={`block text-[clamp(2.6rem,5vw,4.6rem)] leading-[1] tracking-tight transition-[font-weight,transform] duration-300 ${
+                          isActive ? "translate-x-2 font-semibold" : "font-light"
+                        }`}
+                      >
+                        {service.title}
+                      </span>
+                      <ArrowRight
+                        size={30}
+                        className={`shrink-0 transition-all duration-300 ${
+                          isActive
+                            ? "translate-x-0 text-[var(--laser-ink)] opacity-100"
+                            : "-translate-x-3 text-[var(--ink-mute)] opacity-0"
+                        }`}
+                      />
+                    </a>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-        
-        {/* Mobile Swipe Indicator (Dots) */}
-        <div className="flex justify-center gap-2 mt-2" aria-hidden="true">
-           {services.map((_, i) => (
-             <div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--ink)] opacity-30" />
-           ))}
+
+        <div className="hidden lg:col-span-6 lg:block">
+          <Parallax distance={30} className="sticky top-28">
+            <div className="shot relative aspect-[4/5] bg-[var(--bg-deep)]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={current.id}
+                  className="absolute inset-0"
+                  initial={reduceMotion ? false : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+                  animate={{ opacity: 1, clipPath: "inset(0 0 0 0)" }}
+                  exit={reduceMotion ? undefined : { opacity: 0, transition: { duration: 0.3 } }}
+                  transition={{ duration: 0.7, ease: EASE }}
+                >
+                  <motion.img
+                    src={current.image}
+                    alt={current.imageAlt}
+                    className="h-full w-full object-cover"
+                    initial={reduceMotion ? false : { scale: 1.08 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 1.2, ease: EASE }}
+                  />
+                </motion.div>
+              </AnimatePresence>
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent pt-24" />
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={`${current.id}-info`}
+                  className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 p-7 text-white"
+                  initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -8, transition: { duration: 0.2 } }}
+                  transition={{ duration: 0.5, delay: 0.15, ease: EASE }}
+                >
+                  <Pieces items={current.pieces} className="max-w-[26rem] text-sm text-white/85" />
+                  <a
+                    href={waUrl(current.quote)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-2 border-b border-white/40 pb-0.5 font-medium transition-colors hover:border-[var(--laser)] hover:text-[var(--laser)]"
+                  >
+                    {current.cta}
+                    <ArrowUpRight size={16} weight="bold" />
+                  </a>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </Parallax>
         </div>
       </div>
     </section>

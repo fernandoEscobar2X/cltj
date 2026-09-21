@@ -1,109 +1,84 @@
-import { MapPin, Smartphone } from "lucide-react";
 import { Link } from "react-router-dom";
+import BrandLogo from "../branding/BrandLogo";
 import { siteConfig } from "../../data/siteConfig";
 
+const year = new Date().getFullYear();
+
+// Footer claro y corto: logo, navegación, contacto, legal.
 export default function SiteFooter() {
   return (
-    <footer className="bg-[#050505] text-white pb-8 overflow-hidden relative z-10">
-      <div className="w-full px-6 md:px-12 lg:px-24 xl:px-[5vw]">
-        <div className="border-t border-white/10 pt-8 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-10">
-          
-          {/* Navigation & Contact Row */}
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-8 md:gap-12">
-            {/* Nav */}
-            <div className="flex flex-wrap items-center gap-6">
-              {[
-                { to: "/#servicios", label: "Servicios" },
-                { to: "/#trabajos", label: "Trabajos" },
-                { to: "/#proceso", label: "Proceso" },
-                { to: "/galeria", label: "Galería" },
-              ].map((item) => (
-                <Link
-                  key={item.to}
-                  className="text-xs md:text-sm font-bold text-white/50 hover:text-white transition-colors uppercase tracking-widest"
-                  to={item.to}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Separator for desktop */}
-            <div className="hidden md:block w-px h-6 bg-white/10"></div>
-
-            {/* Contact Details */}
-            <div className="flex flex-wrap items-center gap-6">
-              <p className="inline-flex items-center gap-2 text-xs md:text-sm font-bold text-white/50 uppercase tracking-widest">
-                <MapPin size={16} className="text-[var(--laser)]" />
-                {siteConfig.locationShort}
-              </p>
-              <a
-                className="inline-flex items-center gap-2 text-xs md:text-sm font-bold text-white/50 hover:text-white transition-colors uppercase tracking-widest"
-                href={siteConfig.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Smartphone size={16} className="text-[var(--laser)]" />
-                {siteConfig.phoneDisplay}
-              </a>
-              
-              <div className="hidden md:block w-px h-4 bg-white/10 mx-2"></div>
-
-              <a
-                className="text-white/50 hover:text-white transition-colors"
-                href={siteConfig.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram de TJ Láser"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-              </a>
-              {/* Facebook: oculto hasta que exista la pagina.
-                  Estaba con href="#" y target="_blank", asi que al pulsarlo
-                  abria una pestaña nueva con esta misma pagina. Para los
-                  buscadores era un enlace roto, y un perfil vacio o inexistente
-                  en sameAs debilita la asociacion de la entidad en vez de
-                  reforzarla: es mejor no declararlo que declararlo mal.
-
-                  Para reactivarlo: descomenta este bloque, cambia el href por
-                  {siteConfig.social.facebook} y agrega esa clave en
-                  siteConfig.social. El JSON-LD lo recoge solo, porque sameAs
-                  sale de Object.values(siteConfig.social).
-
-              <a
-                className="text-white/50 hover:text-white transition-colors"
-                href={siteConfig.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook de TJ Láser"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </a>
-              */}
-            </div>
-          </div>
-
-          {/* Bottom Bar Logo/Copyright */}
-          <div className="flex flex-col xl:items-end gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 shrink-0">
-            <span className="text-white font-sans font-black text-xl tracking-tighter mb-1">TJ LÁSER<span className="text-[var(--laser)]">.</span></span>
-            <span>&copy; {new Date().getFullYear()} {siteConfig.legalName}</span>
-            {/* Sin este enlace, /privacidad solo seria alcanzable desde el
-                banner de cookies, que desaparece tras la primera decision:
-                quedaria huerfana para el usuario y para los buscadores. */}
-            <Link
-              className="transition-colors hover:text-white"
-              to="/privacidad"
-            >
-              Aviso de privacidad
+    <footer className="border-t border-[var(--line)] bg-[var(--bg-deep)]">
+      <div className="layout-shell py-12 md:py-14">
+        <div className="grid gap-10 md:grid-cols-12 md:items-start">
+          <div className="md:col-span-5">
+            <Link to="/" aria-label={`${siteConfig.name} inicio`} className="inline-block transition-opacity hover:opacity-70">
+              <BrandLogo size="sm" tone="dark" />
             </Link>
+            <p className="mt-4 max-w-[26ch] text-[var(--ink-soft)]">{siteConfig.tagline}</p>
           </div>
 
+          <nav className="grid grid-cols-2 gap-8 md:col-span-7 md:grid-cols-3" aria-label="Pie de página">
+            <div>
+              <p className="m-0 text-xs uppercase tracking-[0.18em] text-[var(--ink-mute)]">Sitio</p>
+              <ul className="m-0 mt-4 grid gap-2 p-0">
+                {siteConfig.navItems.map((item) => (
+                  <li key={item.to} className="list-none">
+                    <Link to={item.to} className="inline-flex items-center gap-2 text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]">
+                      {item.seasonal ? <span className="h-1.5 w-1.5 rounded-full bg-[var(--laser)]" aria-hidden="true" /> : null}
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="m-0 text-xs uppercase tracking-[0.18em] text-[var(--ink-mute)]">Contacto</p>
+              <ul className="m-0 mt-4 grid gap-2 p-0">
+                <li className="list-none">
+                  <a
+                    href={siteConfig.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+                <li className="list-none">
+                  <a
+                    href={`tel:${siteConfig.phoneIntl.replace(/\s/g, "")}`}
+                    className="text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    {siteConfig.phoneDisplay}
+                  </a>
+                </li>
+                <li className="list-none">
+                  <a
+                    href={siteConfig.social.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    Instagram
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="m-0 text-xs uppercase tracking-[0.18em] text-[var(--ink-mute)]">Taller</p>
+              <p className="m-0 mt-4 text-[var(--ink-soft)]">{siteConfig.location}</p>
+              <p className="m-0 mt-1 text-[var(--ink-mute)]">Entrega local y envíos a todo México</p>
+            </div>
+          </nav>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-2 border-t border-[var(--line)] pt-5 text-sm text-[var(--ink-mute)] sm:flex-row sm:items-center sm:justify-between">
+          <p className="m-0">
+            © {year} {siteConfig.legalName}
+          </p>
+          <Link to="/privacidad" className="transition-colors hover:text-[var(--ink)]">
+            Aviso de privacidad
+          </Link>
         </div>
       </div>
     </footer>

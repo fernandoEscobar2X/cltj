@@ -1,6 +1,7 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { useMotionValueEvent, useScroll } from "framer-motion";
+import { List } from "@phosphor-icons/react";
 import BrandLogo from "../branding/BrandLogo";
 import Button from "../ui/Button";
 import MobileMenu from "./MobileMenu";
@@ -8,91 +9,107 @@ import { siteConfig } from "../../data/siteConfig";
 
 export default function SiteHeader() {
   const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const isHome = location.pathname === "/";
+  const [overHero, setOverHero] = useState(isHome);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
 
+  // Sobre el hero (foto a pantalla completa) el header es transparente y
+  // blanco; al salir del hero se vuelve el header claro del resto del sitio.
+  const syncHero = (y) => {
+    if (!isHome) {
+      setOverHero(false);
+      return;
+    }
+    const hero = document.querySelector("#hero");
+    const limit = hero ? hero.offsetHeight - 68 : 0;
+    setOverHero(y < limit);
+  };
+
+  useEffect(() => {
+    syncHero(window.scrollY);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHome]);
+
+  useMotionValueEvent(scrollY, "change", syncHero);
+
+  const onPhoto = overHero && isHome;
+
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-500 ${
-          scrolled
-            ? "border-white/10 bg-[#050505]/80 backdrop-blur-2xl shadow-2xl"
-            : "border-transparent bg-transparent"
+        className={`fixed left-0 right-0 top-0 z-50 border-b transition-colors duration-500 ${
+          onPhoto ? "border-transparent bg-transparent" : "border-[var(--line)] bg-[var(--bg)]/85 backdrop-blur-md"
         }`}
       >
-        <div className="w-full px-6 md:px-12 xl:px-[5vw] flex min-h-[76px] items-center justify-between py-3">
-          <Link 
-            className="shrink-0 transition-transform duration-300 hover:opacity-80 active:scale-95" 
-            to="/" 
-            aria-label="CorteLáser TJ inicio"
-          >
-            <BrandLogo size="sm" priority className="max-w-[120px] md:max-w-none" />
+        <div className="grid h-[68px] w-full grid-cols-[auto_1fr_auto] items-center px-5 md:px-10 xl:px-[5vw]">
+          <Link className="shrink-0 transition-opacity hover:opacity-70" to="/" aria-label={`${siteConfig.name} inicio`}>
+            <BrandLogo size="sm" tone={onPhoto ? "light" : "dark"} priority />
           </Link>
 
-          {/* Desktop Navigation */}
           <nav
-            className="hidden flex-1 items-center justify-center gap-8 text-[0.78rem] font-bold uppercase tracking-[0.2em] lg:flex text-white/80"
+            className={`hidden items-center justify-center gap-8 text-[0.92rem] lg:flex ${
+              onPhoto ? "text-white/80" : "text-[var(--ink-soft)]"
+            }`}
             aria-label="Navegación principal"
           >
             {siteConfig.navItems.map((item) =>
-              item.to.startsWith("/galeria") ? (
+              item.to.startsWith("/#") ? (
+                <Link key={item.to} to={item.to} className={onPhoto ? "hover:text-white" : "hover:text-[var(--ink)]"}>
+                  {item.label}
+                </Link>
+              ) : (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `transition-colors duration-300 ${
-                      isActive ? "text-[var(--laser)] drop-shadow-[0_0_10px_rgba(198,91,255,0.5)]" : "hover:text-white"
+                    `inline-flex items-center gap-2 ${
+                      isActive
+                        ? onPhoto
+                          ? "font-medium text-white"
+                          : "font-medium text-[var(--ink)]"
+                        : onPhoto
+                          ? "hover:text-white"
+                          : "hover:text-[var(--ink)]"
                     }`
                   }
                 >
+                  {item.seasonal ? <span className="h-1.5 w-1.5 rounded-full bg-[var(--laser)]" aria-hidden="true" /> : null}
                   {item.label}
                 </NavLink>
-              ) : (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="transition-colors duration-300 hover:text-white"
-                >
-                  {item.label}
-                </Link>
               ),
             )}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-2 shrink-0">
-            <Button href={siteConfig.whatsappUrl} size="sm" variant="laser" className="shadow-[0_0_15px_rgba(198,91,255,0.2)] hover:shadow-[0_0_25px_rgba(198,91,255,0.4)]">
-              Cotizar
+          {/* Sobre el hero el botón vive en el hero; aquí aparece al salir de él. */}
+          <div
+            className={`hidden transition-all duration-500 lg:flex ${
+              onPhoto ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+            }`}
+            aria-hidden={onPhoto}
+          >
+            <Button href={siteConfig.whatsappUrl} size="sm" variant="accent" tabIndex={onPhoto ? -1 : undefined}>
+              {siteConfig.ctaLabel}
             </Button>
           </div>
 
-          {/* Mobile Hamburger Trigger */}
           <button
             type="button"
-            className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all active:scale-95 hover:bg-white/10 backdrop-blur-md"
+            className={`flex h-11 w-11 items-center justify-center lg:hidden ${onPhoto ? "text-white" : "text-[var(--ink)]"}`}
             onClick={() => setMenuOpen(true)}
             aria-label="Abrir menú"
             aria-expanded={menuOpen}
             aria-haspopup="dialog"
           >
-            <Menu size={20} strokeWidth={2} />
+            <List size={26} weight="regular" />
           </button>
         </div>
       </header>
 
-      {/* Mobile Fullscreen Overlay */}
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );

@@ -1,40 +1,62 @@
-import { ArrowUpRight } from "lucide-react";
+import { InstagramLogo } from "@phosphor-icons/react";
+import Reveal from "../../components/shared/Reveal";
 import { ctaFinal } from "../../data/siteContent";
 import { siteConfig } from "../../data/siteConfig";
 
+// Cierre. Titular grande, una nota de qué pasa al escribir, y una sola acción.
+// Con foto (ctaFinal.image) el bloque se vuelve fotográfico con el texto
+// encima; sin foto, es tipográfico sobre blanco.
 export default function ContactSection() {
+  const photo = ctaFinal.image;
+  const handle = siteConfig.social.instagram.replace(/\/$/, "").split("/").pop();
+  const tone = photo ? "text-white" : "text-[var(--ink)]";
+  const soft = photo ? "text-white/75" : "text-[var(--ink-soft)]";
+
   return (
-    <section id="contacto" className="relative min-h-[85vh] flex items-end pb-20 pt-32 bg-[#050505] overflow-hidden border-t-[3px] border-[var(--ink)]">
-      {/* Background glow pushed to the right corner */}
-      <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-[var(--laser)]/10 rounded-full blur-[120px] pointer-events-none translate-x-1/3 translate-y-1/3" />
-      
-      <div className="w-full px-6 md:px-12 lg:px-24 xl:px-[5vw] relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
-        
-        {/* Left side: Massive typography */}
-        <div className="flex-1">
-          <h2 className="text-[clamp(4.5rem,12vw,22rem)] font-black leading-[0.8] tracking-tighter text-white mb-8 md:mb-12">
-            HAGAMOS
-            <span className="block">TU <span className="text-[var(--laser)]">PROYECTO</span></span>
-            REALIDAD.
-          </h2>
-          <p className="text-lg md:text-xl text-white/50 font-mono uppercase tracking-widest max-w-xl">
-            {ctaFinal.subtitle}
-          </p>
-        </div>
+    <section
+      id="contacto"
+      className={`relative overflow-hidden border-t border-[var(--line)] py-24 md:py-36 ${photo ? "bg-[#111113]" : "bg-[var(--bg)]"} ${tone}`}
+    >
+      {photo ? (
+        <>
+          <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/20" />
+        </>
+      ) : null}
 
-        {/* Right side: Button pushed to the edge */}
-        <div className="shrink-0 w-full md:w-auto mt-8 md:mt-0 md:mb-8">
-          <a 
-            href={siteConfig.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative flex items-center justify-between md:justify-center gap-6 bg-[var(--laser)] text-black px-8 py-6 md:px-12 md:py-8 text-xl md:text-3xl font-black uppercase tracking-widest hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_rgba(198,91,255,0.4)] hover:shadow-[0_0_80px_rgba(198,91,255,0.8)]"
-          >
-            Cotizar ahora
-            <ArrowUpRight size={36} className="group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
-          </a>
-        </div>
+      <div className="layout-shell relative grid gap-12 lg:grid-cols-12 lg:items-end">
+        <Reveal className="lg:col-span-7">
+          <h2 className="m-0 text-[clamp(3rem,10vw,8.5rem)] font-semibold leading-[0.9] tracking-tight">{ctaFinal.title}</h2>
+        </Reveal>
 
+        <Reveal delay={0.12} className="lg:col-span-5">
+          <p className={`m-0 max-w-[30ch] text-lg leading-snug ${soft}`}>{ctaFinal.note}</p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5">
+            <a href={siteConfig.whatsappUrl} target="_blank" rel="noopener noreferrer" className="cut-btn cut-btn--accent cut-btn--lg">
+              Cotizar por WhatsApp
+            </a>
+            <a
+              href={`tel:${siteConfig.phoneIntl.replace(/\s/g, "")}`}
+              className="text-lg font-medium tabular-nums transition-colors hover:text-[var(--laser-ink)]"
+            >
+              {siteConfig.phoneDisplay}
+            </a>
+          </div>
+
+          <div className={`mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 border-t pt-6 text-sm ${photo ? "border-white/20" : "border-[var(--line)]"} ${soft}`}>
+            <a
+              href={siteConfig.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-2 transition-colors ${photo ? "hover:text-white" : "hover:text-[var(--ink)]"}`}
+            >
+              <InstagramLogo size={18} />@{handle}
+            </a>
+            <span>{siteConfig.location}</span>
+            <span>Envíos a todo México</span>
+          </div>
+        </Reveal>
       </div>
     </section>
   );

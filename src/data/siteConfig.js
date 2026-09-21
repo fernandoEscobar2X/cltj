@@ -1,28 +1,84 @@
-// El texto de estas URLs debe permanecer identico al que se publica en Google
-// Business y en el QR estatico (public/branding/qr-whatsapp.svg).
 const whatsappNumber = "526633634237";
-const whatsappText =
-  "Hola,%20quiero%20cotizar%20un%20proyecto%20con%20CorteL%C3%A1ser%20TJ";
+const whatsappText = "Hola,%20quiero%20cotizar%20una%20pieza%20personalizada";
 
-// Los logos se importan (no viven en /public) para que Vite les ponga hash en
-// el nombre. Con nombre fijo, cambiar el archivo no invalida la cache y los
-// visitantes se quedaban con la version vieja hasta 24 h.
 import logoLight from "../assets/logo-tj-laser-light.webp";
+import logoDark from "../assets/logo-tj-laser-dark.webp";
 
-// Dominio canonico. Al migrar a dominio propio se cambia aqui y ademas en
-// index.html, public/robots.txt y public/sitemap.xml.
 export const siteUrl = "https://tjlaser.com.mx";
 
+export const siteDescription =
+  "Taller en Tijuana de publicidad, regalos y piezas a medida. Cotiza por WhatsApp y recibe precio en menos de 24h.";
+
+// Campaña de temporada. El negocio base es publicidad, regalos y eventos;
+// lo estacional (papel picado hoy, otra cosa mañana) entra y sale por aquí:
+// nav, banda en el home y modal de entrada. Con `active: false` desaparece todo.
+const season = {
+  active: true,
+  label: "Temporada",
+  name: "Papel picado",
+  title: "Papel picado con tu marca",
+  to: "/papel-picado",
+  cta: "Arma el tuyo",
+  // Foto real de la tira colgada en un evento → public/promo/papel-picado.webp
+  // (horizontal ≥ 2400 px). Mientras sea null, el modal muestra la tira del
+  // simulador sobre fondo oscuro.
+  image: null,
+  modal: true,
+};
+
+const baseNav = [
+  { to: "/#servicios", label: "Servicios" },
+  { to: "/#trabajos", label: "Trabajos" },
+  { to: "/galeria", label: "Galería" },
+];
+
 export const siteConfig = {
+  season,
   siteUrl,
-  name: "CorteLáser TJ",
+  name: "TJ Láser",
   legalName: "TJ Láser",
-  tagline: "Corte & grabado láser en Tijuana",
-  heroKicker: "Tijuana, Baja California",
-  heroTitleTop: "corte & grabado",
-  heroTitleBottom: "LÁSER",
-  heroDescription:
-    "Displays acrílicos, llaveros, señalética y piezas personalizadas hechas con precisión láser para tu negocio.",
+  alternateName: "CorteLáser TJ",
+  tagline: "Publicidad y regalos a medida en Tijuana",
+  // Hero a pantalla completa. Titular fijo en dos líneas.
+  // Fondo: slideshow de fotos (crossfade) o un video en loop.
+  // - slides: 3 fotos horizontales ≥ 2400 px → public/hero/01.webp, 02.webp, 03.webp
+  //   (+ versión -small a 1200 px). Cada una es una pieza instalada en su lugar
+  //   real, con el cliente identificable en el caption.
+  // - video: opcional, 1920×1080 mp4 H.264 sin audio, 8–15 s en loop, ≤ 6 MB
+  //   → public/hero/hero.mp4. Si hay video, se usa en lugar del slideshow y
+  //   slides[0] es su poster.
+  // TEMPORAL: mientras no existan los assets se usan fotos del portafolio.
+  hero: {
+    titleTop: "Publicidad y regalos",
+    titleBottom: "que se lucen.",
+    video: null,
+    slides: [
+      {
+        image: "/img-featured/display-shulas.webp",
+        small: "/img-featured/display-shulas-small.webp",
+        alt: "Display de mostrador en acrílico espejo dorado para Shulas Boutique",
+        client: "Shulas Boutique",
+        piece: "Display de mostrador",
+      },
+      {
+        image: "/img-featured/reloj-turbo.webp",
+        small: "/img-featured/reloj-turbo-small.webp",
+        alt: "Reloj de escritorio en acrílico grabado e iluminado para Plátanos Turbo",
+        client: "Plátanos Turbo",
+        piece: "Reloj grabado con luz",
+      },
+      {
+        image: "/img-featured/llavero-espejo.webp",
+        small: "/img-featured/llavero-espejo-small.webp",
+        alt: "Llavero en acrílico espejo plateado",
+        client: "Llaveros",
+        piece: "Acrílico espejo, desde 1 pieza",
+      },
+    ],
+  },
+  ctaLabel: "Cotizar",
+  ctaSecondary: "Ver piezas",
+  ctaStudio: "Arma el tuyo",
   location: "Tijuana, Baja California",
   locationShort: "Tijuana, B.C.",
   phoneDisplay: "663 363 4237",
@@ -30,38 +86,20 @@ export const siteConfig = {
   whatsappNumber,
   whatsappUrl: `https://wa.me/${whatsappNumber}?text=${whatsappText}`,
   whatsappWebUrl: `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${whatsappText}`,
-  whatsappGalleryUrl:
-    "https://wa.me/526633634237?text=Hola,%20vi%20su%20galer%C3%ADa%20y%20quiero%20cotizar%20un%20proyecto%20con%20CorteL%C3%A1ser%20TJ",
+  whatsappGalleryUrl: `https://wa.me/${whatsappNumber}?text=Hola,%20vi%20las%20piezas%20y%20quiero%20cotizar%20una%20a%20medida`,
   whatsappQr: "/branding/qr-whatsapp.svg",
-  // Perfiles oficiales. Se declaran aqui, y no sueltos en el footer, porque de
-  // esta misma lista sale el sameAs del JSON-LD: si el enlace visible y el dato
-  // estructurado apuntan a distinto lado, Google deja de asociar el perfil con
-  // el negocio. Agregar aqui una red nueva la refleja en ambos lugares.
   social: {
     instagram: "https://www.instagram.com/tj_laser_/",
   },
-  // Pega aqui el ID de medicion de GA4 (formato G-XXXXXXXXXX). Mientras este
-  // vacio no se carga ningun script de Google ni aparece el banner de cookies:
-  // el sitio funciona igual, simplemente no mide.
   analytics: {
     ga4Id: "G-RVDJ10LG2Z",
   },
-  // Hay dos versiones del logo porque el trazo es solido: la clara para
-  // superficies oscuras (header, footer) y la oscura para fondo papel. Los PNG
-  // fuente pesaban ~370 KB cada uno; en WebP bajan a 21 KB. Se pinta a 162 px
-  // de ancho como maximo, asi que 512 px cubre pantallas 3x de sobra.
   logo: {
     src: logoLight,
+    dark: logoDark,
     width: 512,
     height: 309,
   },
-  // La variante oscura vive en src/assets/logo-tj-laser-dark.webp sin importar,
-  // para no meterla al bundle mientras ninguna superficie clara la use.
   shareImage: "/branding/og-cover.png",
-  navItems: [
-    { to: "/#servicios", label: "Servicios" },
-    { to: "/#trabajos", label: "Trabajos" },
-    { to: "/#proceso", label: "Proceso" },
-    { to: "/galeria", label: "Galería" },
-  ],
+  navItems: season.active ? [...baseNav, { to: season.to, label: season.name, seasonal: true }] : baseNav,
 };
