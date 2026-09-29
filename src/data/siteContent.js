@@ -98,14 +98,9 @@ export const services = [
 ];
 
 // Reels de Instagram del taller. Se muestran con póster propio y el iframe de
-// Instagram solo carga al dar play (no pesa en la carga inicial).
+// Instagram solo carga al dar play (no pesa en la carga inicial). El vinil de
+// Felica no va aquí: se muestra con el video propio, que se reproduce solo.
 export const reels = [
-  {
-    id: "DchASu1Bd1V",
-    poster: "reel-vinil-felica",
-    title: "Vinil para Felica Lounge",
-    caption: "Fachada que trabaja 24/7: marca, especialistas y QR para agendar.",
-  },
   {
     id: "Dd0DqNKi-fg",
     poster: "reel-imanes",

@@ -7,8 +7,9 @@ import Reveal from "../../components/shared/Reveal";
 import { reels } from "../../data/siteContent";
 import { siteConfig } from "../../data/siteConfig";
 
-// Así se ve en la calle: los reels del taller y el video del vinil, en marcos
-// de teléfono. Desktop: tres alturas con parallax. Móvil: carrusel con el dedo.
+// Así se ve en la calle: el video del vinil instalado (se reproduce solo) y el
+// reel de los imanes, en marcos de teléfono. Desktop: dos alturas con
+// parallax. Móvil: carrusel con el dedo.
 function Phone({ children, className = "" }) {
   return <div className={`rounded-[2.3rem] bg-[var(--night-3)] p-2 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.8)] ${className}`}>{children}</div>;
 }
@@ -29,9 +30,8 @@ export default function ReelsSection() {
   const ref = useRef(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const a = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const b = useTransform(scrollYProgress, [0, 1], [-40, 60]);
-  const c = useTransform(scrollYProgress, [0, 1], [140, -40]);
+  const a = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const b = useTransform(scrollYProgress, [0, 1], [140, -40]);
   const handle = siteConfig.social.instagram.replace(/\/$/, "").split("/").pop();
 
   return (
@@ -51,21 +51,16 @@ export default function ReelsSection() {
           </a>
         </Reveal>
 
-        {/* Desktop: tres marcos a distinta altura. */}
-        <div className="relative hidden grid-cols-3 gap-6 lg:col-span-8 lg:grid">
-          <m.div style={{ y: reduceMotion ? 0 : a }}>
-            <Phone>
-              <InstagramReel {...reels[0]} />
-            </Phone>
-          </m.div>
-          <m.div style={{ y: reduceMotion ? 0 : b }} className="mt-24">
+        {/* Desktop: dos marcos a distinta altura. */}
+        <div className="relative hidden grid-cols-2 gap-10 lg:col-span-7 lg:col-start-6 lg:grid">
+          <m.div style={{ y: reduceMotion ? 0 : a }} className="w-full max-w-[21rem] justify-self-end">
             <Phone>
               <VideoCard />
             </Phone>
           </m.div>
-          <m.div style={{ y: reduceMotion ? 0 : c }}>
+          <m.div style={{ y: reduceMotion ? 0 : b }} className="mt-28 w-full max-w-[21rem]">
             <Phone>
-              <InstagramReel {...reels[1]} />
+              <InstagramReel {...reels[0]} />
             </Phone>
           </m.div>
         </div>
@@ -75,17 +70,12 @@ export default function ReelsSection() {
       <ul className="snap-x-mandatory hide-scrollbar m-0 mt-12 flex gap-4 overflow-x-auto px-[clamp(1.1rem,4vw,3.5rem)] pb-4 lg:hidden">
         <li className="w-[76vw] max-w-[22rem] shrink-0 snap-center list-none">
           <Phone>
-            <InstagramReel {...reels[0]} sizes="76vw" />
-          </Phone>
-        </li>
-        <li className="w-[76vw] max-w-[22rem] shrink-0 snap-center list-none">
-          <Phone>
             <VideoCard />
           </Phone>
         </li>
         <li className="w-[76vw] max-w-[22rem] shrink-0 snap-center list-none">
           <Phone>
-            <InstagramReel {...reels[1]} sizes="76vw" />
+            <InstagramReel {...reels[0]} sizes="76vw" />
           </Phone>
         </li>
       </ul>

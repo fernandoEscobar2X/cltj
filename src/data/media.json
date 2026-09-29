@@ -243,17 +243,6 @@
   "color": "#680808",
   "lqip": "data:image/webp;base64,UklGRsAAAABXRUJQVlA4ILQAAACQBQCdASoUACQAPu1oq04ppiQiKqwBMB2JagDHJ21GUBb+2xzwad6LBGOIYBjYY2a3PvZ5jAD91coFpfntH9lAk6N9KASO4sGERgiXjXv7L0l0bxEio0PqFpyY5wL+QoPmnzU/u0XPtNNKm4sHEmOiCJstXM5BH/bGP9yE+rW90NXFsyRS1f4KnXITUcGB3SPximMYF1dnoVtWxU+GIuZRUq7KR3sc5gktIiM+/cBtmbQ5wAA="
  },
- "reel-vinil-felica": {
-  "v": "f2a51762",
-  "w": 720,
-  "h": 1280,
-  "widths": [
-   360,
-   640
-  ],
-  "color": "#c8d8f8",
-  "lqip": "data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAADQBQCdASoUACQAPu1yrlGppyQiqrgIATAdiWUAwoAIy3TibHvxnbArbDx62qAzq80VHFvKhsIAAMkiEw751JfaxHpvPJLD/oP0efk9eisUl/QoS8k1NYLIS5DN8aI6q8lWt5xwQ2Cee4J5QtsDd62TJurTvjYnTirwuUgQVl88ZCh84VQnlUwwgL9eDhNjqdxjp02kT1mcgfPJFzIRCrZA3wRh7HvSloAAAA=="
- },
  "reloj-turbo": {
   "v": "b90a3a76",
   "w": 960,
