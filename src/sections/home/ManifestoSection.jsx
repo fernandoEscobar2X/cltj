@@ -1,12 +1,12 @@
-import { useRef } from "react";
-import { m, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, m, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Img from "../../components/media/Img";
 import Reveal from "../../components/shared/Reveal";
 
 // Manifiesto: qué se corta y para qué. Dos experiencias distintas:
 // - Desktop: la frase con fotos reales metidas en el texto; las palabras se
 //   encienden con el scroll y las fotos crecen al pasar el cursor.
-// - Móvil y tablet: la frase se cuenta con el pulgar (ver MobileStory).
+// - Móvil y tablet: acordeón de franjas (ver MobileMaterials).
 const phrase = [
   { t: "Cortamos" },
   { img: "letrero-agara", alt: "Letrero de acrílico espejo dorado" },
@@ -42,7 +42,7 @@ const facts = [
   { value: "20", label: "diseños de papel picado listos para tu nombre" },
 ];
 
-// Materiales de la historia móvil: cada uno con su trabajo real de fondo.
+// Materiales del acordeón móvil: cada uno con su trabajo real.
 const materials = [
   { word: "acrílico", media: "letrero-wafflix", alt: "Letrero de acrílico espejo de Wafflix", note: "Espejo, color o transparente. Letreros, displays y trofeos." },
   { word: "espejo", media: "display-shulas", alt: "Display de acrílico espejo dorado de Shulas Boutique", note: "Dorado o plateado, para que la marca brille en el mostrador." },
@@ -56,6 +56,7 @@ const materials = [
 const FROM = "#8b857e";
 const TO_INK = "#141215";
 const TO_ACCENT = "#8a2ac9";
+const EASE = [0.16, 1, 0.3, 1];
 
 function Word({ children, progress, range, accent }) {
   const color = useTransform(progress, range, [FROM, accent ? TO_ACCENT : TO_INK]);
@@ -106,126 +107,154 @@ function DesktopPhrase() {
   );
 }
 
-// ─── Móvil: historia fija ─────────────────────────────────────────────────
-// La sección se fija a pantalla completa. "Cortamos" se queda y debajo pasa
-// una rueda de materiales (el activo en violeta láser). Cada material cambia
-// la foto de fondo, con un acercamiento lento, y trae una línea de qué se hace
-// con él. Al final entra el cierre de la frase.
+// ─── Móvil: acordeón de franjas ───────────────────────────────────────────
+// Cinco franjas con trabajos reales; la activa se abre a color con su nota y
+// las demás quedan como rendijas en gris. Se cambia tocando una franja o
+// deslizando de lado (el scroll vertical nunca se bloquea). Mientras está a la
+// vista avanza solo, con una línea láser que marca el tiempo; si la persona
+// interactúa, se detiene un rato.
 
-const ROW = 1.08; // alto de cada palabra de la rueda, en em
+const AUTO_MS = 3400;
 
-function StoryPhoto({ item, i, n, progress }) {
-  const step = 1 / (n - 1);
-  const c = i * step;
-  const last = i === n - 1;
-  const opacity = useTransform(
-    progress,
-    [c - step * 0.7, c - step * 0.2, c + step * 0.2, c + step * 0.7],
-    [i === 0 ? 1 : 0, 1, 1, last ? 1 : 0],
-  );
-  const scale = useTransform(progress, [c - step, c + step], [1.16, 1.02]);
-  return (
-    <m.div className="absolute inset-0" style={{ opacity, scale }}>
-      <Img id={item.media} alt={item.alt} sizes="100vw" className="absolute inset-0" />
-    </m.div>
-  );
-}
-
-function StoryWord({ item, i, n, progress }) {
-  const step = 1 / (n - 1);
-  const c = i * step;
-  const opacity = useTransform(progress, [c - step, c, c + step], [0.3, 1, 0.3]);
-  const color = useTransform(progress, [c - step * 0.5, c, c + step * 0.5], ["#f3efe8", "#d98bff", "#f3efe8"]);
-  return (
-    <m.li className="list-none" style={{ opacity, color, height: `${ROW}em` }}>
-      {item.word}
-    </m.li>
-  );
-}
-
-function StoryNote({ item, i, n, progress }) {
-  const step = 1 / (n - 1);
-  const c = i * step;
-  const opacity = useTransform(progress, [c - step * 0.45, c, c + step * 0.45], [0, 1, 0]);
-  const y = useTransform(progress, [c - step * 0.45, c, c + step * 0.45], [14, 0, -14]);
-  return (
-    <m.p className="absolute inset-x-0 top-0 max-w-[30ch] text-[1.12rem] leading-snug text-[var(--on-night)]" style={{ opacity, y }}>
-      {item.note}
-    </m.p>
-  );
-}
-
-const fade = "linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent)";
-
-function MobileStory() {
+function MobileMaterials() {
   const ref = useRef(null);
   const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  // El scroll táctil llega a saltos; el resorte lo vuelve continuo.
-  const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
+  const inView = useInView(ref, { amount: 0.45 });
+  const [active, setActive] = useState(0);
+  const [pausedUntil, setPausedUntil] = useState(0);
+  const touch = useRef(null);
   const n = materials.length;
-  // Los materiales ocupan hasta el 70% del recorrido; el cierre, el resto.
-  const wheel = useTransform(smooth, [0.03, 0.7], [0, 1], { clamp: true });
-  const wheelY = useTransform(wheel, [0, 1], ["0em", `${-(n - 1) * ROW}em`]);
-  const storyOpacity = useTransform(smooth, [0.72, 0.8], [1, 0]);
-  const endOpacity = useTransform(smooth, [0.76, 0.86], [0, 1]);
-  const endY = useTransform(smooth, [0.76, 0.86], [40, 0]);
-  const veil = useTransform(smooth, [0.7, 0.86], [0.5, 0.8]);
+  const running = inView && !reduceMotion && Date.now() >= pausedUntil;
 
-  if (reduceMotion) {
-    return (
-      <div className="bg-[var(--night)] px-[clamp(1.1rem,4vw,3.5rem)] py-20 text-[var(--on-night)] lg:hidden" data-header="dark">
-        <p className="font-display text-[15vw] font-extrabold uppercase leading-[0.9]">Cortamos</p>
-        <ul className="m-0 mt-2 p-0 font-display text-[15vw] font-extrabold uppercase leading-[0.95] text-[var(--laser)]">
-          {materials.map((item) => (
-            <li key={item.word} className="list-none">
-              {item.word}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-8 font-statement text-[2rem] leading-tight">para que tu marca se vea en la calle, en el mostrador y en la fiesta.</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!running) return undefined;
+    const id = window.setTimeout(() => setActive((a) => (a + 1) % n), AUTO_MS);
+    return () => window.clearTimeout(id);
+  }, [running, active, n]);
+
+  // Tras una pausa por interacción, se reanuda solo.
+  useEffect(() => {
+    if (!pausedUntil) return undefined;
+    const id = window.setTimeout(() => setPausedUntil(0), Math.max(0, pausedUntil - Date.now()));
+    return () => window.clearTimeout(id);
+  }, [pausedUntil]);
+
+  const choose = (i) => {
+    setActive((i + n) % n);
+    setPausedUntil(Date.now() + 9000);
+  };
+
+  const onPointerDown = (e) => {
+    touch.current = { x: e.clientX, y: e.clientY };
+  };
+  const onPointerUp = (e) => {
+    const start = touch.current;
+    touch.current = null;
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) choose(active + (dx < 0 ? 1 : -1));
+  };
+
+  const current = materials[active];
 
   return (
-    <div ref={ref} className="relative lg:hidden" style={{ height: `${100 + n * 60 + 70}svh` }}>
-      <div className="sticky top-0 h-[100svh] overflow-hidden bg-[var(--night)] text-[var(--on-night)]" data-header="dark">
-        {materials.map((item, i) => (
-          <StoryPhoto key={item.word} item={item} i={i} n={n} progress={wheel} />
-        ))}
-        <m.div className="absolute inset-0 bg-[var(--night)]" style={{ opacity: veil }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--night)]/70 via-transparent to-[var(--night)]/90" />
+    <div ref={ref} className="pb-4 pt-20 lg:hidden">
+      <div className="shell">
+        <p className="sr-only">Cortamos {materials.map((x) => x.word).join(", ")}.</p>
+        <p aria-hidden="true" className="font-display text-[17vw] font-extrabold uppercase leading-[0.88] md:text-[12vw]">
+          Cortamos
+        </p>
+        {/* El material activo entra como un rótulo que se cambia: sube el nuevo, sale el viejo. */}
+        <div aria-hidden="true" className="relative h-[1em] overflow-hidden font-display text-[17vw] font-extrabold uppercase leading-[1] text-[var(--laser-ink)] md:text-[12vw]">
+          <AnimatePresence initial={false} mode="popLayout">
+            <m.span
+              key={current.word}
+              className="absolute inset-x-0 top-0 block"
+              initial={reduceMotion ? { opacity: 0 } : { y: "100%" }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { y: "-100%" }}
+              transition={{ duration: 0.7, ease: EASE }}
+            >
+              {current.word}
+            </m.span>
+          </AnimatePresence>
+        </div>
+      </div>
 
-        <m.div className="absolute inset-0 flex flex-col justify-center px-[clamp(1.1rem,4vw,3.5rem)]" style={{ opacity: storyOpacity }}>
-          <p className="font-display text-[17vw] font-extrabold uppercase leading-[0.9] md:text-[12vw]">Cortamos</p>
-          {/* Rueda: una ventana de tres palabras con la activa al centro. */}
-          <div
-            className="relative mt-1 overflow-hidden font-display text-[17vw] font-extrabold uppercase leading-[1.08] md:text-[12vw]"
-            style={{ height: `${ROW * 3}em`, maskImage: fade, WebkitMaskImage: fade }}
-          >
-            <m.ul className="m-0 p-0" style={{ y: wheelY, paddingTop: `${ROW}em` }}>
-              {materials.map((item, i) => (
-                <StoryWord key={item.word} item={item} i={i} n={n} progress={wheel} />
-              ))}
-            </m.ul>
-          </div>
-          <div className="relative mt-5 h-[5.5rem]">
-            {materials.map((item, i) => (
-              <StoryNote key={item.word} item={item} i={i} n={n} progress={wheel} />
-            ))}
-          </div>
-        </m.div>
+      <div
+        className="mt-6 flex h-[min(58svh,34rem)] touch-pan-y gap-1.5 px-[clamp(1.1rem,4vw,3.5rem)]"
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => {
+          touch.current = null;
+        }}
+        role="group"
+        aria-label="Materiales"
+      >
+        {materials.map((item, i) => {
+          const on = i === active;
+          return (
+            <m.button
+              key={item.word}
+              type="button"
+              onClick={() => choose(i)}
+              aria-pressed={on}
+              aria-label={`${item.word}: ${item.note}`}
+              className="relative min-w-0 overflow-hidden rounded-[var(--radius-l)] bg-[var(--paper-3)]"
+              style={{ flexBasis: 0 }}
+              initial={false}
+              animate={{ flexGrow: on ? 7 : 1 }}
+              transition={{ duration: reduceMotion ? 0 : 0.75, ease: EASE }}
+            >
+              <Img
+                id={item.media}
+                alt=""
+                sizes="88vw"
+                className="absolute inset-0"
+                imgClassName={`transition-[filter,transform] duration-700 ${on ? "scale-100 grayscale-0" : "scale-110 grayscale brightness-90"}`}
+              />
+              <span
+                className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent transition-opacity duration-500 ${on ? "opacity-100" : "opacity-0"}`}
+                aria-hidden="true"
+              />
+              <AnimatePresence>
+                {on ? (
+                  <m.span
+                    key="note"
+                    className="absolute inset-x-0 bottom-0 block p-5 text-left text-[1.05rem] leading-snug text-white"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                    transition={{ duration: 0.5, delay: 0.25, ease: EASE }}
+                    aria-hidden="true"
+                  >
+                    {item.note}
+                  </m.span>
+                ) : null}
+              </AnimatePresence>
+            </m.button>
+          );
+        })}
+      </div>
 
-        <m.div
-          className="absolute inset-0 flex flex-col justify-end px-[clamp(1.1rem,4vw,3.5rem)] pb-[max(3.5rem,env(safe-area-inset-bottom))]"
-          style={{ opacity: endOpacity, y: endY }}
-        >
-          <p className="font-statement text-[clamp(2.4rem,10vw,4rem)] leading-[1.02]">
-            para que tu marca se vea en la calle, en el mostrador y en la{" "}
-            <span className="t-script t-script--light text-[1.3em] leading-none">fiesta.</span>
-          </p>
-        </m.div>
+      {/* Tiempo del avance automático: una línea láser que se llena. */}
+      <div className="shell mt-4">
+        <div className="h-[2px] w-full overflow-hidden rounded-full bg-[var(--line)]">
+          {running ? (
+            <m.div
+              key={`${active}-${pausedUntil}`}
+              className="h-full origin-left bg-[var(--laser)]"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: AUTO_MS / 1000, ease: "linear" }}
+            />
+          ) : null}
+        </div>
+        <p className="mt-10 font-statement text-[clamp(2rem,8.4vw,3.4rem)] leading-[1.04]">
+          para que tu marca se vea en la calle, en el mostrador y en la{" "}
+          <span className="t-script text-[1.3em] leading-none">fiesta.</span>
+        </p>
       </div>
     </div>
   );
@@ -237,7 +266,7 @@ export default function ManifestoSection() {
       <h2 id="manifiesto" className="sr-only">
         Qué hacemos
       </h2>
-      <MobileStory />
+      <MobileMaterials />
       <div className="defer-render shell pb-20 pt-10 lg:py-36">
         <DesktopPhrase />
 
