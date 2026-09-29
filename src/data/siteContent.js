@@ -1,108 +1,87 @@
+// Cada foto del home se usa una sola vez. Hero: ver siteConfig.heroCollage.
+// Trabajos: `featured: true` en portfolio.js. Aquí: una por servicio.
 export const services = [
   {
-    icon: "Signpost",
-    title: "Displays & Señalética",
-    description:
-      "Porta-menús, stands con QR codes, letreros para negocio en acrílico espejo, transparente o de color.",
+    id: "publicidad",
+    title: "Publicidad",
+    pieces: ["Letreros de acrílico", "Displays de mostrador", "QR de mesa", "Señalética"],
+    image: "/img-featured/display-santiago.webp",
+    imageAlt: "Display de mostrador en acrílico negro con códigos QR para Santiago Reyes Studio",
+    quote: "Hola, quiero cotizar publicidad para mi negocio: letreros, displays o QR.",
+    cta: "Pedir precio",
   },
   {
-    icon: "KeyRound",
-    title: "Llaveros Personalizados",
-    description:
-      "Para negocios, eventos, boda, XV años. Con tu logo o diseño especial.",
+    id: "regalos",
+    title: "Regalos",
+    pieces: ["Placas y reconocimientos", "Cuadros grabados", "Llaveros con nombre", "Cajas y detalles"],
+    image: "/img-featured/cuadro-mom.webp",
+    imageAlt: "Cuadro grabado Love You Mom",
+    quote: "Hola, quiero cotizar un regalo personalizado.",
+    cta: "Pedir precio",
   },
   {
-    icon: "Stamp",
-    title: "Grabado en Objetos",
-    description:
-      "Regalos corporativos, reconocimientos, placas y artículos personalizados con tu diseño.",
-  },
-  {
-    icon: "Nfc",
-    title: "Llaveros NFC",
-    description:
-      "Llaveros acrílico con chip NFC integrado. Un toque del celular y tus clientes ven tu menú, redes o contacto al instante.",
-    highlight: true,
+    id: "eventos",
+    title: "Eventos",
+    pieces: ["Números y letras", "Recuerdos para invitados", "Centros de mesa", "Letreros de bienvenida"],
+    image: "/img-featured/numero-50-dorado.webp",
+    imageAlt: "Número 50 dorado para decoración de evento",
+    quote: "Hola, quiero cotizar decoración o recuerdos para un evento.",
+    cta: "Pedir precio",
   },
 ];
 
-export const trustFacts = [
-  {
-    value: "140+",
-    label: "Trabajos",
-    description: "Piezas reales entregadas a negocios y clientes en Tijuana.",
-  },
-  {
-    value: "24h",
-    label: "Express",
-    description: "Cotización y muestra digital en menos de 24 horas.",
-  },
-  {
-    value: "100%",
-    label: "Personalizado",
-    description: "Cada pieza es única, hecha a medida para tu negocio o proyecto.",
-  },
-];
-
-export const processSteps = [
-  {
-    step: "01",
-    title: "Envía tu idea",
-    description:
-      "Mándanos tu logo o descríbenos lo que necesitas por WhatsApp. Si no tienes diseño, te ayudamos.",
-  },
-  {
-    step: "02",
-    title: "Cotización gratis",
-    description:
-      "Precio y muestra digital en menos de 24 horas. Sin compromisos.",
-  },
-  {
-    step: "03",
-    title: "Producción",
-    description:
-      "Aprobado el diseño, comenzamos de inmediato. Entregas express disponibles.",
-  },
-  {
-    step: "04",
-    title: "Entrega en Tijuana",
-    description:
-      "A domicilio o puedes pasar a recoger. También enviamos a toda la república.",
-  },
-];
+export const process = {
+  title: "Cómo trabajamos",
+  steps: [
+    {
+      title: "Escríbenos",
+      body: "Por WhatsApp. Una foto, un logo o la idea en una línea.",
+    },
+    {
+      title: "Precio y muestra en 24 h",
+      body: "Te mandamos el costo y una vista digital de la pieza.",
+    },
+    {
+      title: "Producimos y entregamos",
+      body: "En Tijuana a domicilio o recoges. Envíos a todo México.",
+    },
+  ],
+  facts: [
+    { label: "Mínimo", value: "1 pieza" },
+    { label: "Materiales", value: "Acrílico, espejo, madera, MDF, LED" },
+    { label: "Entrega", value: "Tijuana y envíos nacionales" },
+  ],
+};
 
 export const faqs = [
   {
-    question: "¿Qué necesito mandar para cotizar?",
+    question: "¿Qué necesito para cotizar?",
     answer:
-      "Con que nos digas qué quieres y para cuándo ya arrancamos. Si tienes logo en SVG, AI o PDF mejor. Si no, una foto o screenshot también sirve.",
+      "Dinos qué quieres y para cuándo. Si tienes logo en SVG, AI o PDF mejor. Si no, una foto sirve.",
   },
   {
-    question: "¿Solo trabajan piezas para negocio?",
+    question: "¿Hacen regalos y eventos, o solo negocios?",
     answer:
-      "No. También hacemos regalos, decoración, recuerdos para eventos, XV años, bodas y reconocimientos. Dinos qué necesitas y te decimos cómo queda mejor.",
+      "Las tres. Letreros para el local, regalos con nombre, recuerdos de boda y XV.",
   },
   {
     question: "¿Qué materiales manejan?",
     answer:
-      "Acrílico transparente, acrílico espejo dorado y plateado, acrílico de color, madera, MDF, y combinaciones con LED o chip NFC.",
+      "Acrílico transparente, espejo dorado y plateado, acrílico de color, madera, MDF, y combinaciones con LED o NFC.",
   },
   {
     question: "¿Entregan fuera de Tijuana?",
     answer:
-      "Sí. En Tijuana entregamos a domicilio o puedes pasar a recoger. Fuera de la ciudad enviamos a toda la república.",
+      "En Tijuana a domicilio o pasas a recoger. Fuera de la ciudad enviamos a toda la república.",
   },
 ];
 
-export const quoteChecklist = [
-  "Idea, medida o cantidad.",
-  "Foto del espacio o referencia visual.",
-  "Logo en vector, PDF o imagen (si ya lo tienes).",
-];
-
 export const ctaFinal = {
-  title: "¿Listo para tu proyecto?",
-  subtitle: "Cotización gratis · Respuesta rápida · Entrega en Tijuana",
+  title: "Cotiza tu pieza",
+  // Lo que pasa cuando escribes. Datos reales, sin adjetivos.
+  note: "Te contesta el taller. Precio y muestra digital en menos de 24 horas.",
+  // Foto opcional de fondo para el cierre: taller, entrega o pieza instalada,
+  // horizontal ≥ 2400 px → public/contacto/cierre.webp. Sin foto, el cierre es
+  // tipográfico sobre blanco.
+  image: null,
 };
-
-export const marqueeText = "Trabajo corte láser Tijuana";

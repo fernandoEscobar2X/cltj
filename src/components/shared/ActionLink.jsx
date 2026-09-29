@@ -6,6 +6,7 @@ const variantAlias = {
   whatsapp: "laser",
   hazard: "hazard",
   laser: "laser",
+  accent: "accent",
   ghost: "ghost",
 };
 
