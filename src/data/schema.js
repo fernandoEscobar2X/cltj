@@ -69,7 +69,7 @@ export const businessSchema = {
       "@type": "Offer",
       itemOffered: {
         "@type": "Service",
-        name: service.title,
+        name: service.long,
         description: service.description,
         areaServed: { "@type": "City", name: "Tijuana" },
         provider: businessRef,
@@ -78,15 +78,17 @@ export const businessSchema = {
   },
   // Señal tematica explicita para motores generativos.
   knowsAbout: [
-    "Piezas personalizadas",
-    "Regalos a medida",
+    "Corte láser",
+    "Grabado láser",
+    "Letreros de acrílico",
     "Señalética comercial",
-    "Displays de acrílico",
+    "Displays con código QR y NFC",
+    "Vinil para escaparates",
+    "Imanes para auto",
+    "Trofeos y reconocimientos",
     "Llaveros personalizados",
+    "Regalos personalizados",
     "Papel picado personalizado",
-    "Recuerdos para eventos",
-    "Reconocimientos y placas",
-    "Decoración personalizada",
     ...new Set(portfolioItems.map((item) => item.material)),
   ],
 };

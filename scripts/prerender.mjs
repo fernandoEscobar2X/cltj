@@ -28,6 +28,7 @@ const ROUTES = [
   // un canonical de vuelta a esa misma. Como archivo suelto responde 200 directo
   // y las tres cosas coinciden.
   { path: "/galeria", out: "galeria.html" },
+  { path: "/papel-picado", out: "papel-picado.html" },
   { path: "/privacidad", out: "privacidad.html" },
   { path: "/__404__", out: "404.html" },
 ];
@@ -78,6 +79,8 @@ const MIME = {
   ".jpeg": "image/jpeg",
   ".jpg": "image/jpeg",
   ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".mp4": "video/mp4",
   ".woff2": "font/woff2",
   ".xml": "application/xml",
   ".txt": "text/plain",
@@ -149,6 +152,33 @@ try {
         .querySelectorAll('[aria-labelledby="cookie-title"]')
         .forEach((el) => el.remove());
 
+      // El helper de import() dinámico de Vite inserta <link rel=modulepreload>
+      // con la URL ABSOLUTA de este servidor temporal (http://localhost:4178).
+      // Horneadas en el HTML apuntarían a localhost en producción y la CSP las
+      // bloquea. Esos chunks se piden solos al ejecutarse la app; se eliminan.
+      document
+        .querySelectorAll('link[rel="modulepreload"], link[rel="preload"][as="script"]')
+        .forEach((link) => {
+          if (/^https?:\/\//.test(link.getAttribute("href") ?? "")) link.remove();
+        });
+      // Decoración que solo existe en el navegador (el muro del hero): se
+      // vacía para que el HTML no la cargue antes del primer pintado.
+      document.querySelectorAll("[data-client-only]").forEach((el) => {
+        el.replaceChildren();
+        el.style.opacity = "0";
+      });
+
+      // Clases que Lenis (scroll suave) pone en <html> al arrancar: son estado
+      // de ejecución, no deben viajar en el HTML.
+      document.documentElement.classList.remove("lenis", "lenis-smooth", "lenis-scrolling", "lenis-stopped");
+      if (!document.documentElement.className) document.documentElement.removeAttribute("class");
+
+      // Lo mismo para cualquier <script src> o hoja inyectada en tiempo de ejecución.
+      document.querySelectorAll("script[src], link[rel=stylesheet]").forEach((el) => {
+        const url = el.getAttribute("src") ?? el.getAttribute("href") ?? "";
+        if (/^https?:\/\/localhost/.test(url)) el.remove();
+      });
+
       const canonicalTitle = document.title;
       const titles = [...document.querySelectorAll("head title")];
       titles.slice(1).forEach((tag) => tag.remove());
@@ -201,6 +231,18 @@ try {
     )) {
       const css = await readFile(join(DIST, href), "utf8");
       html = html.replace(tag, `<style>${css}</style>`);
+    }
+
+    // El JS de la app arranca justo después del primer pintado. El HTML ya
+    // viene completo, así que la persona ve la página de inmediato y la
+    // interactividad llega un cuadro después. Sin esto el navegador reparte
+    // ancho de banda entre el JS y lo que hay que pintar primero.
+    const entry = html.match(/<script type="module" crossorigin="" src="(\/assets\/[^"]+\.js)"><\/script>/);
+    if (entry) {
+      html = html.replace(entry[0], "");
+      html = html.replace(/<link rel="modulepreload" crossorigin="" href="\/assets\/[^"]+\.js">/g, "");
+      const boot = `<script>(function(){var d=0;function go(){if(d)return;d=1;var s=document.createElement("script");s.type="module";s.crossOrigin="";s.src="${entry[1]}";document.head.appendChild(s)}requestAnimationFrame(function(){setTimeout(go,0)});setTimeout(go,1200)})()</script>`;
+      html = html.replace("</body>", `${boot}</body>`);
     }
 
     const outPath = join(DIST, route.out);

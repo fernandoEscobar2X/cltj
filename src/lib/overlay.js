@@ -1,31 +1,40 @@
 import { useSyncExternalStore } from "react";
 
-// Señal compartida de "hay una capa a pantalla completa abierta" (menu movil,
-// lightbox). Sirve para que las animaciones decorativas del fondo se detengan
-// mientras algo las tapa: seguir animando debajo de una capa opaca no se ve, y
-// en movil le roba cuadros a la transicion que si se ve.
-let open = false;
-const listeners = new Set();
-
-export function setOverlayOpen(value) {
-  if (open === value) {
-    return;
-  }
-
-  open = value;
-  listeners.forEach((listener) => listener());
+// Señales compartidas entre capas que se pisan en pantalla.
+// - overlay: hay algo a pantalla completa (menú, lightbox). Las animaciones
+//   decorativas de fondo se pausan y el scroll suave se detiene.
+// - banner: el aviso de cookies está visible; la tarjeta de promoción espera
+//   a que se cierre para no apilar dos avisos.
+function createSignal(initial = false) {
+  let value = initial;
+  const listeners = new Set();
+  return {
+    set(next) {
+      if (value === next) return;
+      value = next;
+      listeners.forEach((listener) => listener());
+    },
+    get: () => value,
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
 }
 
-function subscribe(listener) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
+const overlay = createSignal(false);
+const banner = createSignal(false);
 
+export const setOverlayOpen = (value) => overlay.set(value);
+export const setBannerOpen = (value) => banner.set(value);
+export const isOverlayOpen = () => overlay.get();
+export const subscribeOverlay = overlay.subscribe;
+
+// El snapshot del servidor es false: durante el prerender no hay capas.
 export function useOverlayOpen() {
-  // El snapshot del servidor es false: durante el prerender no hay capas.
-  return useSyncExternalStore(
-    subscribe,
-    () => open,
-    () => false,
-  );
+  return useSyncExternalStore(overlay.subscribe, overlay.get, () => false);
+}
+
+export function useBannerOpen() {
+  return useSyncExternalStore(banner.subscribe, banner.get, () => false);
 }

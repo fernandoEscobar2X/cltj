@@ -1,114 +1,122 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useMotionValueEvent, useScroll } from "framer-motion";
-import { List } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { m, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
+import { ArrowUpRight } from "@phosphor-icons/react";
 import BrandLogo from "../branding/BrandLogo";
-import Button from "../ui/Button";
 import MobileMenu from "./MobileMenu";
 import { siteConfig } from "../../data/siteConfig";
 
+// Cabecera que se aparta al bajar y vuelve al subir. Sobre el hero del home
+// es transparente y clara; en el resto, papel con desenfoque.
 export default function SiteHeader() {
   const location = useLocation();
+  const reduceMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isHome = location.pathname === "/";
-  const [overHero, setOverHero] = useState(isHome);
+  const [hidden, setHidden] = useState(false);
+  const [onDark, setOnDark] = useState(location.pathname === "/");
   const { scrollY } = useScroll();
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+  useEffect(() => setMenuOpen(false), [location]);
 
-  // Sobre el hero (foto a pantalla completa) el header es transparente y
-  // blanco; al salir del hero se vuelve el header claro del resto del sitio.
-  const syncHero = (y) => {
-    if (!isHome) {
-      setOverHero(false);
-      return;
-    }
-    const hero = document.querySelector("#hero");
-    const limit = hero ? hero.offsetHeight - 68 : 0;
-    setOverHero(y < limit);
+  const sync = (y) => {
+    // Oscuro mientras la cabecera está sobre una sección marcada data-header="dark".
+    const probe = document.elementsFromPoint?.(window.innerWidth / 2, 36) ?? [];
+    const dark = probe.some((el) => el.closest?.('[data-header="dark"]'));
+    setOnDark(dark);
   };
 
   useEffect(() => {
-    syncHero(window.scrollY);
+    sync(window.scrollY);
+    const t = window.setTimeout(() => sync(window.scrollY), 400);
+    // Secciones que cambian de fondo sin scroll (escena de noche del estudio).
+    const onSync = () => window.requestAnimationFrame(() => sync(window.scrollY));
+    window.addEventListener("tj:header-sync", onSync);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("tj:header-sync", onSync);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHome]);
+  }, [location.pathname]);
 
-  useMotionValueEvent(scrollY, "change", syncHero);
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    if (!menuOpen) setHidden(y > 160 && y > prev + 2);
+    if (y < prev - 2) setHidden(false);
+    sync(y);
+  });
 
-  const onPhoto = overHero && isHome;
+  const solid = !onDark && scrollY.get() > 8;
+  const tone = onDark ? "text-[var(--on-night)]" : "text-[var(--ink)]";
 
   return (
     <>
-      <header
-        className={`fixed left-0 right-0 top-0 z-50 border-b transition-colors duration-500 ${
-          onPhoto ? "border-transparent bg-transparent" : "border-[var(--line)] bg-[var(--bg)]/85 backdrop-blur-md"
-        }`}
+      <m.header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
+          solid ? "bg-[color-mix(in_oklab,var(--paper)_82%,transparent)] backdrop-blur-xl" : "bg-transparent"
+        } ${tone}`}
+        animate={{ y: hidden && !reduceMotion ? "-100%" : "0%" }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="grid h-[68px] w-full grid-cols-[auto_1fr_auto] items-center px-5 md:px-10 xl:px-[5vw]">
-          <Link className="shrink-0 transition-opacity hover:opacity-70" to="/" aria-label={`${siteConfig.name} inicio`}>
-            <BrandLogo size="sm" tone={onPhoto ? "light" : "dark"} priority />
+        <div className="shell grid h-[var(--header-h)] grid-cols-[1fr_auto] items-center gap-6 lg:grid-cols-[1fr_auto_1fr]">
+          <Link className="w-fit shrink-0 transition-opacity hover:opacity-70" to="/" aria-label={`${siteConfig.name}, inicio`}>
+            <BrandLogo size="sm" tone={onDark ? "light" : "dark"} priority />
           </Link>
 
-          <nav
-            className={`hidden items-center justify-center gap-8 text-[0.92rem] lg:flex ${
-              onPhoto ? "text-white/80" : "text-[var(--ink-soft)]"
-            }`}
-            aria-label="Navegación principal"
-          >
-            {siteConfig.navItems.map((item) =>
-              item.to.startsWith("/#") ? (
-                <Link key={item.to} to={item.to} className={onPhoto ? "hover:text-white" : "hover:text-[var(--ink)]"}>
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Navegación principal">
+            {siteConfig.navItems.map((item) => {
+              const base = "group relative rounded-full px-4 py-2 text-[0.98rem] font-medium transition-colors";
+              const content = (
+                <>
+                  {item.seasonal ? (
+                    <span className="mr-2 inline-block h-2 w-2 -translate-y-px rounded-full bg-[var(--laser)] shadow-[0_0_10px_var(--laser-glow)]" />
+                  ) : null}
                   {item.label}
+                  <span className="absolute inset-x-4 bottom-1 h-px origin-left scale-x-0 bg-current transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100" />
+                </>
+              );
+              return item.to.startsWith("/#") ? (
+                <Link key={item.to} to={item.to} className={base}>
+                  {content}
                 </Link>
               ) : (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `inline-flex items-center gap-2 ${
-                      isActive
-                        ? onPhoto
-                          ? "font-medium text-white"
-                          : "font-medium text-[var(--ink)]"
-                        : onPhoto
-                          ? "hover:text-white"
-                          : "hover:text-[var(--ink)]"
-                    }`
-                  }
-                >
-                  {item.seasonal ? <span className="h-1.5 w-1.5 rounded-full bg-[var(--laser)]" aria-hidden="true" /> : null}
-                  {item.label}
+                <NavLink key={item.to} to={item.to} className={({ isActive }) => `${base} ${isActive ? "opacity-100" : "opacity-85"}`}>
+                  {content}
                 </NavLink>
-              ),
-            )}
+              );
+            })}
           </nav>
 
-          {/* Sobre el hero el botón vive en el hero; aquí aparece al salir de él. */}
-          <div
-            className={`hidden transition-all duration-500 lg:flex ${
-              onPhoto ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
-            }`}
-            aria-hidden={onPhoto}
-          >
-            <Button href={siteConfig.whatsappUrl} size="sm" variant="accent" tabIndex={onPhoto ? -1 : undefined}>
-              {siteConfig.ctaLabel}
-            </Button>
+          <div className="flex items-center justify-end gap-3">
+            <a
+              href={siteConfig.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--laser btn--sm hidden lg:inline-flex"
+            >
+              {siteConfig.ctaShort}
+              <ArrowUpRight size={16} weight="bold" />
+            </a>
+            <button
+              type="button"
+              className={`relative flex h-12 items-center gap-3 rounded-full pl-4 pr-2 text-[0.98rem] font-semibold lg:hidden ${
+                onDark ? "bg-white/10 backdrop-blur-md" : "bg-[var(--ink)] text-[var(--paper)]"
+              }`}
+              onClick={() => setMenuOpen(true)}
+              aria-label="Abrir menú"
+              aria-expanded={menuOpen}
+              aria-haspopup="dialog"
+            >
+              Menú
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--laser)]">
+                <span className="grid gap-[5px]">
+                  <span className="block h-[2px] w-4 rounded bg-[var(--ink)]" />
+                  <span className="block h-[2px] w-4 rounded bg-[var(--ink)]" />
+                </span>
+              </span>
+            </button>
           </div>
-
-          <button
-            type="button"
-            className={`flex h-11 w-11 items-center justify-center lg:hidden ${onPhoto ? "text-white" : "text-[var(--ink)]"}`}
-            onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menú"
-            aria-expanded={menuOpen}
-            aria-haspopup="dialog"
-          >
-            <List size={26} weight="regular" />
-          </button>
         </div>
-      </header>
+      </m.header>
 
       <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </>

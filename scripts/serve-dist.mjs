@@ -34,18 +34,20 @@ const MIME = {
   ".png": "image/png",
   ".jpeg": "image/jpeg",
   ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".mp4": "video/mp4",
   ".woff2": "font/woff2",
   ".xml": "application/xml",
   ".txt": "text/plain",
 };
 
-const IMMUTABLE = ["/assets/", "/fonts/"];
+const IMMUTABLE = ["/assets/", "/fonts/", "/media/", "/papel/"];
 
 function cacheFor(url) {
   if (IMMUTABLE.some((prefix) => url.startsWith(prefix))) {
     return "public, max-age=31536000, immutable";
   }
-  if (url.startsWith("/img-featured/") || url.startsWith("/branding/")) {
+  if (url.startsWith("/branding/")) {
     return "public, max-age=86400, stale-while-revalidate=2592000";
   }
   return "public, max-age=0, must-revalidate";

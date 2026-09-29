@@ -1,77 +1,75 @@
-# Reduce cada woff2 a los glifos que el sitio realmente puede usar.
+# Genera las fuentes auto-hospedadas del sitio en public/fonts/.
 #
-# Google entrega el subset "latin" completo (~244 glifos, 29 KB por peso). Este
-# sitio es 100% en espanol, asi que la mayor parte de ese archivo nunca se pinta.
-# Se conserva latin basico + latin-1 (acentos, n con virgulilla, ¿ ¡, ·, º, ª),
-# la puntuacion tipografica, las flechas (↗ del WorkTile) y ✦ (separador del
-# marquee), con margen de sobra para copy nuevo en espanol.
+# Toma los woff2 de @fontsource (node_modules) y los reduce a los glifos que un
+# sitio 100% en espanol puede pintar: latin basico + latin-1 (acentos, n, ¿ ¡),
+# puntuacion tipografica y flechas. Las variables se recortan a los ejes que el
+# sitio usa (ver cada entrada de FONTS).
 #
 # Uso: python scripts/subset-fonts.py
-import glob
+import io
 import os
 
-from fontTools.subset import Subsetter, Options
+from fontTools.subset import Options, Subsetter
 from fontTools.ttLib import TTFont
+from fontTools.varLib import instancer
 
 UNICODES = [
     (0x0020, 0x007E),  # latin basico
     (0x00A0, 0x00FF),  # latin-1: acentos, n, ¿ ¡, ·, º, ª
-    (0x0152, 0x0153),  # ligadura oe
     (0x2010, 0x2027),  # guiones, comillas tipograficas, puntos suspensivos
     (0x2030, 0x203A),
-    (0x20AC, 0x20AC),  # euro
-    (0x2122, 0x2122),  # tm
-    (0x2190, 0x21FF),  # flechas
-    (0x2713, 0x2714),  # palomitas
-    (0x2726, 0x2726),  # ✦
+    (0x2190, 0x2199),  # flechas
+]
+
+NM = "node_modules"
+FONTS = [
+    # (origen, destino, instancia de ejes variables o None)
+    # Titulares: stencil de rótulo industrial. Se fija el tamaño óptico de
+    # display y se conserva el peso variable (se anima con el scroll).
+    (f"{NM}/@fontsource-variable/big-shoulders-stencil/files/big-shoulders-stencil-latin-standard-normal.woff2", "big-shoulders-stencil.woff2", {"opsz": 72, "wght": (300, 900)}),
+    # Acento: script de rotulista.
+    (f"{NM}/@fontsource/yellowtail/files/yellowtail-latin-400-normal.woff2", "yellowtail.woff2", None),
+    # Frases y subtítulos: grotesca condensada. El sitio la usa siempre en
+    # negrita y al 82% de ancho, así que se fija esa instancia (pasa de ~120 KB
+    # a ~25 KB).
+    (f"{NM}/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2", "bricolage.woff2", {"opsz": 48, "wght": 700, "wdth": 82}),
+    # Texto corrido y UI. Ya vive subsetteada en public/fonts (variable wght 400-700).
+    ("public/fonts/instrument-sans.woff2", "instrument-sans.woff2", None),
+    # Motor de papel picado: stencils para cortar el nombre del cliente.
+    (f"{NM}/@fontsource-variable/saira-stencil/files/saira-stencil-latin-standard-normal.woff2", "saira-stencil.woff2", {"wdth": 100, "wght": 760}),
+    (f"{NM}/@fontsource/stardos-stencil/files/stardos-stencil-latin-700-normal.woff2", "stardos-stencil-700.woff2", None),
 ]
 
 wanted = set()
 for start, end in UNICODES:
     wanted.update(range(start, end + 1))
 
-total_before = 0
-total_after = 0
-
-# Los -latin-ext se eliminan: su cobertura (centroeuropeo) no aplica al sitio y
-# el subset resultante ya incluye todo lo que el espanol necesita.
-for path in sorted(glob.glob("public/fonts/*-latin-ext.woff2")):
-    os.remove(path)
-    print(f"  eliminado  {os.path.basename(path)}")
-
-for path in sorted(glob.glob("public/fonts/*-latin.woff2")):
-    before = os.path.getsize(path)
-    total_before += before
-
-    font = TTFont(path)
+for src, name, axes in FONTS:
+    dest = os.path.join("public/fonts", name)
+    with open(src, "rb") as fh:
+        font = TTFont(io.BytesIO(fh.read()))
+    size_before = os.path.getsize(src)
     options = Options()
     options.flavor = "woff2"
-    options.layout_features = ["kern", "liga", "calt", "ccmp", "locl", "mark", "mkmk"]
-    options.desubroutinize = True
+    options.layout_features = ["*"]
     options.name_IDs = ["*"]
-    options.name_legacy = False
-    options.notdef_outline = False
-    options.recalc_bounds = True
-
+    options.notdef_outline = True
     subsetter = Subsetter(options=options)
     subsetter.populate(unicodes=wanted)
     subsetter.subset(font)
-
-    out = path.replace("-latin.woff2", ".woff2")
+    if axes:
+        font = instancer.instantiateVariableFont(font, axes)
     font.flavor = "woff2"
-    font.save(out)
-    font.close()
+    font.save(dest)
+    print(f"  {name:32} {size_before // 1024:>4} KB -> {os.path.getsize(dest) // 1024:>4} KB")
 
-    if out != path:
-        os.remove(path)
-
-    after = os.path.getsize(out)
-    total_after += after
-    print(
-        f"  {os.path.basename(out):38} {before / 1024:6.1f} KB -> {after / 1024:5.1f} KB"
-    )
-
-print(
-    f"\n  total {total_before / 1024:.0f} KB -> {total_after / 1024:.0f} KB "
-    f"({100 - total_after * 100 / total_before:.0f}% menos)"
-)
+# Archivos de la tipografia anterior que ya no se usan.
+for old in os.listdir("public/fonts"):
+    if old.startswith(("jetbrains-mono-", "saira-condensed-", "instrument-serif")) or old in (
+        "instrument-sans-400.woff2",
+        "instrument-sans-500.woff2",
+        "instrument-sans-600.woff2",
+        "instrument-sans-700.woff2",
+    ):
+        os.remove(os.path.join("public/fonts", old))
+        print(f"  eliminado  {old}")

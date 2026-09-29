@@ -1,683 +1,512 @@
+@import "./fonts.css";
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ─── Sistema ───────────────────────────────────────────────────────────────
+   Taller: papel cálido de día, tinta casi negra de noche, y el violeta del
+   láser como único acento (haz, CTA, foco). Los colores del papel picado solo
+   aparecen dentro del papel picado. */
 
 :root {
-  /* Logo: blanco canvas, negro tinta, láser solo como haz/CTA. */
-  --bg: #f5f5f7;
-  --bg-raised: #ffffff;
-  --bg-deep: #ececee;
-  --bg-ink: #111113;
-  --radius-media: 0.375rem;
-  --radius-field: 0.9rem;
-  --radius-pill: 999px;
-
-  --ink: #111113;
-  --ink-soft: #3f3f46;
-  --ink-mute: #71717a;
-  --ink-mute-strong: #52525b;
-  --line: rgba(17, 17, 19, 0.1);
-  --line-strong: rgba(17, 17, 19, 0.2);
+  --paper: #f3efe8;
+  --paper-2: #e9e3d8;
+  --paper-3: #ddd5c7;
+  --card: #fbf9f5;
+  --ink: #141215;
+  --ink-2: #3a373e;
+  --ink-3: #66616a;
+  --night: #0e0d10;
+  --night-2: #18161b;
+  --night-3: #242128;
+  --on-night: #f3efe8;
+  --on-night-2: rgba(243, 239, 232, 0.72);
+  --on-night-3: rgba(243, 239, 232, 0.5);
+  --line: rgba(20, 18, 21, 0.12);
+  --line-2: rgba(20, 18, 21, 0.22);
+  --line-night: rgba(243, 239, 232, 0.14);
 
   --laser: #c65bff;
-  --laser-ink: #9a2bd4;
-  --laser-deep: #9a2bd4;
-  --laser-bright: #d084ff;
-  --laser-soft: #f4e8ff;
-  --laser-glow: transparent;
-
-  --hazard: var(--laser);
-  --hazard-deep: var(--laser-deep);
-  --magenta: var(--laser);
-  --magenta-deep: var(--laser-deep);
-
-  --surface: var(--bg-raised);
-  --surface-strong: var(--bg-deep);
-  --surface-muted: var(--bg-raised);
-  --shadow-lg: 0 18px 40px rgba(23, 23, 23, 0.1);
-  --shadow-md: 0 10px 24px rgba(23, 23, 23, 0.08);
-  --whatsapp: var(--laser);
-  --laser-strong: var(--laser-bright);
-
-  --paper: var(--ink);
-  --paper-soft: var(--ink-soft);
-  --paper-mute: var(--ink-mute);
-  --ink-line: var(--line);
-  --ink-line-strong: var(--line-strong);
-  --ink-raised: var(--bg-raised);
-  --ink-higher: var(--bg-deep);
-}
-
-html {
-  scroll-behavior: smooth;
-  background: var(--bg);
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  color: var(--ink);
-  font-family: "Bricolage Grotesque Variable", "Bricolage Grotesque", Arial, sans-serif;
-  background: var(--bg);
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-#root {
-  position: relative;
-  min-height: 100svh;
-  z-index: 1;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-::selection {
-  background: var(--laser);
-  color: var(--bg);
-}
-
-:focus-visible {
-  outline: 3px solid var(--laser);
-  outline-offset: 3px;
-}
-
-/* ─── Containers ─────────────────────────────────── */
-
-.layout-shell {
-  width: min(100% - 1.5rem, 1320px);
-  margin-inline: auto;
-}
-
-.editorial-shell {
-  width: min(100% - 1.25rem, 1500px);
-  margin-inline: auto;
-}
-
-.bleed-shell {
-  width: 100%;
-  padding-inline: clamp(1rem, 4vw, 3rem);
-}
-
-/* ─── Typography helpers ─────────────────────────── */
-
-.font-display {
-  font-family: inherit;
-  letter-spacing: -0.02em;
-}
-
-.font-mono {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
-    Consolas, monospace;
-}
-
-.section-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin: 0;
-  color: var(--ink-soft);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.section-eyebrow::before {
-  content: "";
-  width: 1.75rem;
-  height: 1px;
-  background: var(--laser);
-}
-
-/* ─── Surfaces ───────────────────────────────────── */
-
-.paper-panel {
-  background: var(--bg-raised);
-  border: 1px solid var(--line);
-}
-
-.paper-panel-deep {
-  background: var(--bg-deep);
-  border: 1px solid var(--line-strong);
-}
-
-.ink-block {
-  background: var(--bg-ink);
-  color: var(--bg);
-}
-
-/* Legacy aliases — ahora rinden paper/cream */
-.glass-panel {
-  border: 1px solid var(--line);
-  background: var(--bg-raised);
-  box-shadow: var(--shadow-md);
-}
-
-.editorial-card {
-  border-radius: var(--radius-media);
-  border: 1px solid var(--line);
-}
-
-.editorial-shot {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-media);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-lg);
-  background: var(--bg-raised);
-}
-
-.shot {
-  overflow: hidden;
-  border-radius: var(--radius-media);
-}
-
-/* ─── Laser primitives ───────────────────────────── */
-
-.laser-line {
-  height: 2px;
-  background: var(--laser);
-}
-
-.laser-text {
-  /* --laser sobre el fondo papel da 2.77:1 y WCAG pide 3:1 para texto grande.
-     Se usa una variante 4% mas oscura SOLO para texto; los rellenos, bordes y
-     glows siguen con --laser, donde el criterio de contraste no aplica. */
-  color: var(--laser-ink);
-}
-
-.laser-glow {
-  box-shadow: 0 0 0 1px var(--laser), 0 0 24px var(--laser-glow);
-}
-
-/* ─── Buttons (cut / brutalist) ──────────────────── */
-
-.cut-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 48px;
-  padding-inline: 1.35rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  border-radius: var(--radius-pill);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.28s ease,
-    color 0.28s ease, border-color 0.28s ease;
-}
-
-.cut-btn:hover {
-  transform: translateY(-1px);
-}
-
-.cut-btn:active {
-  transform: scale(0.98);
-}
-
-.cut-btn--laser {
-  background: var(--ink);
-  color: var(--bg);
-}
-
-.cut-btn--laser:hover {
-  background: var(--laser);
-  color: #111113;
-}
-
-.cut-btn--accent {
-  background: var(--laser);
-  color: #111113;
-}
-
-.cut-btn--accent:hover {
-  background: var(--laser-bright);
-  color: #111113;
-}
-
-.cut-btn--ghost {
-  border-color: rgba(17, 17, 19, 0.2);
-  color: var(--ink);
-  background: transparent;
-}
-
-.cut-btn--ghost:hover {
-  background: var(--ink);
-  color: var(--bg);
-}
-
-.cut-btn--ghost-on-dark {
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #fff;
-}
-
-.cut-btn--ghost-on-dark:hover {
-  background: #fff;
-  color: #111113;
-}
-
-.cut-btn--hazard {
-  background: var(--hazard);
-  color: var(--ink);
-  box-shadow: 0 12px 24px rgba(245, 212, 0, 0.24);
-}
-
-.cut-btn--hazard:hover {
-  background: var(--hazard-deep);
-}
-
-.cut-btn--magenta {
-  background: var(--magenta);
-  color: var(--bg);
-}
-
-.cut-btn--magenta:hover {
-  background: var(--magenta-deep);
-}
-
-.cut-btn--sm {
-  min-height: 40px;
-  padding-inline: 1rem;
-  font-size: 0.9rem;
-}
-
-.cut-btn--lg {
-  min-height: 56px;
-  padding-inline: 1.75rem;
-  font-size: 1.05rem;
-}
-
-/* ─── Typography treatments ──────────────────────── */
-
-.text-outline {
-  -webkit-text-stroke: 2px var(--ink);
-  color: transparent;
-}
-
-.text-outline-laser {
-  -webkit-text-stroke: 2px var(--laser);
-  color: transparent;
-}
-
-.text-giant {
-  font-family: inherit;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 0.82;
-  font-size: clamp(3.8rem, 14vw, 13rem);
-}
-
-.text-display-xl {
-  font-family: inherit;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.88;
-  font-size: clamp(2.6rem, 7vw, 5.8rem);
-}
-
-/* ─── Ticker band ────────────────────────────────── */
-
-.ticker-band {
-  background: var(--ink);
-  color: var(--bg);
-  padding-block: 1.1rem;
-  border-block: 1px solid var(--ink);
-  overflow: hidden;
-  position: relative;
-}
-
-.ticker-band--hazard {
-  background: var(--hazard);
-  color: var(--ink);
-}
-
-.ticker-band--laser {
-  background: var(--laser);
-  color: #111113;
-}
-
-/* ─── Blueprint overlay (WorkCard hover) ─────────── */
-
-.blueprint-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(rgba(20, 16, 13, 0.88), rgba(20, 16, 13, 0.92)),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 22px,
-      rgba(198, 91, 255, 0.22) 22px 23px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 22px,
-      rgba(198, 91, 255, 0.22) 22px 23px
-    );
-  color: var(--bg);
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-
-.work-tile:hover .blueprint-overlay,
-.work-tile:focus-within .blueprint-overlay {
-  opacity: 1;
-}
-
-.blueprint-corner {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--laser);
-  border-style: solid;
-  border-width: 0;
-}
-
-.blueprint-corner--tl { top: 8px; left: 8px; border-top-width: 2px; border-left-width: 2px; }
-.blueprint-corner--tr { top: 8px; right: 8px; border-top-width: 2px; border-right-width: 2px; }
-.blueprint-corner--bl { bottom: 8px; left: 8px; border-bottom-width: 2px; border-left-width: 2px; }
-.blueprint-corner--br { bottom: 8px; right: 8px; border-bottom-width: 2px; border-right-width: 2px; }
-
-/* ─── Process sticky number ──────────────────────── */
-
-.process-number {
-  font-family: inherit;
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 0.78;
-  font-size: clamp(9rem, 22vw, 26rem);
-  color: var(--laser);
-}
-
-/* ─── Hero image frame ───────────────────────────── */
-
-.hero-frame {
-  clip-path: polygon(
-    10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%
-  );
-  transform: rotate(-1.5deg);
-  transform-origin: center center;
-}
-
-.hero-tape {
-  position: absolute;
-  top: -1.2rem;
-  left: 12%;
-  right: 12%;
-  height: 2.4rem;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--hazard) 0 14px,
-    var(--ink) 14px 28px
-  );
-  transform: rotate(-2deg);
-  box-shadow: 0 10px 20px rgba(20, 16, 13, 0.2);
-}
-
-/* ─── Magnetic CTA wrapper ───────────────────────── */
-
-.magnetic-wrap {
-  display: inline-block;
-  transition: transform 0.2s ease;
-  will-change: transform;
-}
-
-/* ─── Hazard tape ────────────────────────────────── */
-
-.hazard-tape {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--hazard) 0 14px,
-    var(--ink) 14px 28px
-  );
-}
-
-/* ─── Stickers / badges ──────────────────────────── */
-
-.sticker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.85rem;
-  background: var(--ink);
-  color: var(--bg);
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  clip-path: polygon(
-    0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px,
-    100% calc(100% - 6px), calc(100% - 6px) 100%,
-    6px 100%, 0 calc(100% - 6px)
-  );
-}
-
-.sticker--paper {
-  background: var(--bg);
-  color: var(--ink);
-  outline: 1px solid var(--line-strong);
-  outline-offset: -1px;
-}
-
-.sticker--laser {
-  background: var(--laser);
-  color: #111113;
-}
-
-.sticker--hazard {
-  background: var(--hazard);
-  color: var(--ink);
-}
-
-.sticker--magenta {
-  background: var(--magenta);
-  color: var(--bg);
-}
-
-.sticker--ghost {
-  background: transparent;
-  color: var(--ink);
-  outline: 1px solid var(--line-strong);
-  outline-offset: -1px;
-}
-
-/* Version para secciones oscuras (hero). Hace falta como variante y no como
-   utilidad suelta: estas reglas viven fuera de las capas de Tailwind, asi que
-   .sticker--ghost le gana a un text-white/90 aplicado por className y el
-   sticker quedaba texto negro sobre fondo negro. */
-.sticker--ghost-invert {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  outline: 1px solid rgba(255, 255, 255, 0.42);
-  outline-offset: -1px;
-  backdrop-filter: blur(8px);
-}
-
-/* ─── Paper grain overlay ────────────────────────── */
-
-.noise-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  opacity: 0.1;
-  mix-blend-mode: overlay;
-}
-
-.papel-string {
-  width: 1px;
-  height: 3rem;
-  margin-inline: auto;
-  background: linear-gradient(to bottom, transparent, rgba(17, 17, 19, 0.35));
-}
-
-/* Papel colgado: balanceo suave, paneles alternos en contrafase. */
-.papel-sway {
-  transform-origin: top center;
-  animation: papel-sway 6.4s ease-in-out infinite;
-}
-
-.papel-sway--alt {
-  animation-direction: reverse;
-}
-
-@keyframes papel-sway {
-  0%,
-  100% {
-    transform: rotate(-2.2deg);
+  --laser-2: #d98bff;
+  --laser-ink: #8a2ac9; /* texto violeta sobre papel: 5.3:1 */
+  --laser-glow: rgba(198, 91, 255, 0.45);
+  --whatsapp: #25d366;
+
+  --radius-s: 0.5rem;
+  --radius-m: 0.875rem;
+  --radius-l: 1.5rem;
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --font-display: "Big Shoulders Stencil", "Arial Narrow", Impact, Arial, sans-serif;
+  --font-statement: "Bricolage", "Arial Narrow", Arial, sans-serif;
+  --font-script: "Yellowtail", "Brush Script MT", cursive;
+  --font-body: "Instrument Sans", Arial, sans-serif;
+
+  --header-h: 72px;
+
+  /* Alias de la versión anterior (páginas legales y de error). */
+  --bg: var(--paper);
+  --bg-raised: var(--card);
+  --bg-deep: var(--paper-2);
+  --bg-ink: var(--night);
+  --ink-soft: var(--ink-2);
+  --ink-mute: var(--ink-3);
+  --line-strong: var(--line-2);
+  --radius-media: var(--radius-m);
+  --radius-field: var(--radius-m);
+}
+
+@theme {
+  --font-sans: "Instrument Sans", Arial, sans-serif;
+  --font-display: "Big Shoulders Stencil", "Arial Narrow", Impact, Arial, sans-serif;
+  --font-statement: "Bricolage", "Arial Narrow", Arial, sans-serif;
+  --font-script: "Yellowtail", "Brush Script MT", cursive;
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    -webkit-text-size-adjust: 100%;
   }
-  50% {
-    transform: rotate(2.2deg);
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    background: var(--paper);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    position: relative;
+    min-height: 100svh;
+    z-index: 1;
+  }
+
+  img,
+  video,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--laser);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--laser);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p {
+    margin: 0;
   }
 }
 
-/* Zoom lentísimo en las fotos del hero: la imagen nunca está quieta del todo. */
-.hero-drift {
-  animation: hero-drift 18s ease-in-out infinite alternate;
-}
+@layer components {
+  /* ─── Contenedores ─────────────────────────────────────────────────────── */
 
-@keyframes hero-drift {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.07);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .papel-sway,
-  .hero-drift {
-    animation: none;
-  }
-}
-
-/* ─── Custom laser cursor ────────────────────────── */
-
-.laser-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--laser);
-  box-shadow: 0 0 0 2px rgba(243, 234, 215, 0.6),
-    0 0 28px var(--laser-glow);
-  pointer-events: none;
-  z-index: 90;
-  transform: translate(-50%, -50%);
-  transition: width 0.18s ease, height 0.18s ease, opacity 0.18s ease,
-    background 0.18s ease;
-}
-
-.laser-cursor--hover {
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: 1px solid var(--laser);
-}
-
-.laser-cursor--hide {
-  opacity: 0;
-}
-
-@media (hover: none) {
-  .laser-cursor { display: none; }
-}
-
-/* ─── WorkCard hover ─────────────────────────────── */
-
-.work-card__button:hover .work-card__image,
-.work-card__button:focus-visible .work-card__image {
-  transform: scale(1.04);
-}
-
-.work-card__button:hover .work-card__frame,
-.work-card__button:focus-visible .work-card__frame {
-  transform: translateY(-4px);
-}
-
-/* ─── Gallery filter scrollbar ───────────────────── */
-
-.gallery-filter::-webkit-scrollbar {
-  height: 6px;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.gallery-filter::-webkit-scrollbar-thumb {
-  background: var(--line-strong);
-  border-radius: 999px;
-}
-
-.faq-card summary::-webkit-details-marker {
-  display: none;
-}
-
-/* ─── Prefers reduced motion ─────────────────────── */
-
-@media (prefers-reduced-motion: reduce) {
-  .laser-cursor { display: none; }
-}
-
-@media (min-width: 768px) {
+  .shell,
   .layout-shell {
-    width: min(100% - 2rem, 1320px);
+    width: 100%;
+    padding-inline: clamp(1.1rem, 4vw, 3.5rem);
+    margin-inline: auto;
+    max-width: 1680px;
   }
 
-  .editorial-shell {
-    width: min(100% - 2rem, 1500px);
+  /* ─── Tipografía ───────────────────────────────────────────────────────────
+     1. Rótulo stencil (titulares) · 2. firma de rotulista (acento)
+     3. frase condensada · 4. texto. Nada por debajo de 0.95rem. */
+
+  .t-mega {
+    font-family: var(--font-display);
+    font-weight: 860;
+    font-size: clamp(4.6rem, 17.5vw, 19rem);
+    line-height: 0.8;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 820;
+    font-size: clamp(3.4rem, 9vw, 9.5rem);
+    line-height: 0.82;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+  }
+
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.8rem, 6.4vw, 6.4rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .t-script {
+    font-family: var(--font-script);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--laser-ink);
+  }
+
+  .on-night .t-script,
+  .t-script--light {
+    color: var(--laser);
+  }
+
+  .t-statement {
+    font-family: var(--font-statement);
+    font-weight: 700;
+    font-stretch: 80%;
+    font-size: clamp(1.9rem, 3.6vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+  }
+
+  .t-h3 {
+    font-family: var(--font-statement);
+    font-weight: 700;
+    font-stretch: 82%;
+    font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
+
+  .t-lead {
+    font-size: clamp(1.12rem, 1.5vw, 1.35rem);
+    line-height: 1.45;
+  }
+
+  .t-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  /* ─── Botones ──────────────────────────────────────────────────────────────
+     Píldora con un destello que cruza al pasar el cursor: el haz del láser. */
+
+  .btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding-inline: 1.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      transform 0.4s var(--ease-out),
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: -2px auto -2px -40%;
+    width: 35%;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: translateX(0) skewX(-18deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+      animation: beam 0.9s var(--ease-out) forwards;
+    }
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn svg {
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .btn:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  @keyframes beam {
+    to {
+      transform: translateX(520%) skewX(-18deg);
+    }
+  }
+
+  .btn--laser {
+    background: var(--laser);
+    color: var(--ink);
+    box-shadow: 0 10px 30px -12px var(--laser-glow);
+  }
+
+  .btn--laser:hover {
+    box-shadow: 0 16px 40px -12px var(--laser-glow);
+  }
+
+  .btn--ink {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn--light {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .btn--ghost {
+    border-color: var(--line-2);
+    color: var(--ink);
+  }
+
+  .btn--ghost:hover {
+    border-color: var(--ink);
+  }
+
+  .btn--ghost-light {
+    border-color: rgba(243, 239, 232, 0.35);
+    color: var(--on-night);
+    background: rgba(14, 13, 16, 0.55);
+  }
+
+  .btn--ghost-light:hover {
+    border-color: var(--on-night);
+  }
+
+  .btn--sm {
+    min-height: 42px;
+    padding-inline: 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  .btn--lg {
+    min-height: 60px;
+    padding-inline: 1.9rem;
+    font-size: 1.08rem;
+  }
+
+  /* Alias de la versión anterior. */
+  .cut-btn,
+  .cut-btn--accent,
+  .cut-btn--ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 50px;
+    padding-inline: 1.4rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .cut-btn--accent {
+    background: var(--laser);
+    color: var(--ink);
+  }
+
+  .cut-btn--ghost {
+    border-color: var(--line-2);
+  }
+
+  .cut-btn--lg {
+    min-height: 58px;
+  }
+
+  /* Enlace con subrayado que crece. */
+  .link-line {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.5s var(--ease-out);
+    padding-bottom: 2px;
+  }
+
+  .link-line:hover {
+    background-size: 100% 1px;
+  }
+
+  /* ─── Medios ───────────────────────────────────────────────────────────── */
+
+  .media-frame {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background-image: var(--lqip);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .media-frame img {
+    position: relative;
+    transition: transform 1.1s var(--ease-out);
+  }
+
+  /* ─── Marquee ──────────────────────────────────────────────────────────── */
+
+  .marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-speed, 38s) linear infinite;
+  }
+
+  .marquee--reverse {
+    animation-direction: reverse;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-y {
+    display: flex;
+    flex-direction: column;
+    animation: marquee-y var(--marquee-speed, 60s) linear infinite;
+  }
+
+  .marquee-y--reverse {
+    animation-direction: reverse;
+  }
+
+  @keyframes marquee-y {
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
+  /* Haz del láser que barre el hero. */
+  .laser-scan {
+    top: -2%;
+    opacity: 0;
+    animation: laser-scan 9s var(--ease-in-out) 1.6s infinite;
+  }
+
+  @keyframes laser-scan {
+    0% {
+      top: -2%;
+      opacity: 0;
+    }
+    4% {
+      opacity: 0.9;
+    }
+    30% {
+      top: 102%;
+      opacity: 0.9;
+    }
+    31%,
+    100% {
+      top: 102%;
+      opacity: 0;
+    }
+  }
+
+  /* ─── Papel picado: paredes de la escena ─────────────────────────────────── */
+
+  .wall-day {
+    background:
+      radial-gradient(120% 90% at 18% 0%, rgba(255, 250, 240, 0.95), rgba(255, 250, 240, 0) 60%),
+      radial-gradient(90% 70% at 100% 100%, rgba(120, 96, 70, 0.18), rgba(120, 96, 70, 0) 70%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.3 0 0 0 0.16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      #e7dfd2;
+  }
+
+  .wall-night {
+    background:
+      radial-gradient(80% 60% at 50% 0%, rgba(255, 170, 90, 0.22), rgba(255, 170, 90, 0) 70%),
+      radial-gradient(120% 90% at 50% 120%, rgba(90, 40, 130, 0.45), rgba(90, 40, 130, 0) 70%),
+      #120f17;
+  }
+
+  /* ─── Utilidades ───────────────────────────────────────────────────────── */
+
+  /* Secciones debajo del primer pantallazo: el navegador no calcula estilos ni
+     layout hasta que se acercan. Acelera el primer pintado y el LCP. */
+  .defer-render {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .papel-swatch {
+    -webkit-mask: var(--mask) center / contain no-repeat;
+    mask: var(--mask) center / contain no-repeat;
+    background: var(--swatch);
   }
 }
 
-.font-display {
-  font-family: "Bricolage Grotesque Variable", "Bricolage Grotesque", Arial, sans-serif;
-}
-
-.embla {
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-}
-
-.embla__container {
-  display: flex;
-  height: 100%;
-}
-
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
-  height: 100%;
-  position: relative;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

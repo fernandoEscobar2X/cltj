@@ -1,6 +1,7 @@
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 import { useEffect, useRef } from "react";
-import { siteConfig } from "../../data/siteConfig";
+import Img from "../media/Img";
+import { setOverlayOpen } from "../../lib/overlay";
 import { waUrl } from "../../lib/whatsappQuote";
 
 const FOCUSABLE =
@@ -8,6 +9,12 @@ const FOCUSABLE =
 
 function LightboxDialog({ item, index, total, onClose, onPrev, onNext }) {
   const dialogRef = useRef(null);
+
+  // Detiene el scroll suave mientras la imagen está abierta.
+  useEffect(() => {
+    setOverlayOpen(true);
+    return () => setOverlayOpen(false);
+  }, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -66,7 +73,7 @@ function LightboxDialog({ item, index, total, onClose, onPrev, onNext }) {
       onClick={onClose}
       role="presentation"
     >
-      <div className="pointer-events-none fixed inset-0 bg-[#111]/96" aria-hidden="true" />
+      <div className="pointer-events-none fixed inset-0 bg-[var(--night)]/97 backdrop-blur-sm" aria-hidden="true" />
 
       <div
         ref={dialogRef}
@@ -86,37 +93,38 @@ function LightboxDialog({ item, index, total, onClose, onPrev, onNext }) {
         </button>
 
         <div className="relative flex h-[55svh] w-full items-center justify-center p-4 md:p-8 lg:h-screen lg:w-[68vw] lg:p-16">
-          <img
-            src={item.src}
+          <Img
+            id={item.media}
             alt={item.alt}
-            width={item.width}
-            height={item.height}
-            className="max-h-full max-w-full object-contain"
+            fit="contain"
+            sizes="(min-width: 1024px) 68vw, 100vw"
+            className="h-full w-full !bg-transparent ![background-image:none]"
           />
         </div>
 
         <div className="flex min-h-[45svh] w-full flex-col justify-center border-white/10 p-6 md:p-12 lg:h-[100dvh] lg:w-[32vw] lg:border-l lg:pr-16">
-          <p className="text-sm text-white/55">
-            {index + 1} / {total}
+          <p className="text-[1rem] tabular-nums text-white/60">
+            {index + 1} de {total}
           </p>
           <h2
             id="lightbox-title"
-            className="mt-3 text-[clamp(1.8rem,4vw,2.8rem)] font-semibold leading-[1.05] tracking-tight"
+            className="mt-3 font-display text-[clamp(2.6rem,5vw,4.2rem)] font-extrabold uppercase leading-[0.9]"
           >
             {item.title}
           </h2>
-          <p className="mt-3 text-sm text-white/70">
+          <p className="mt-3 text-[1.05rem] text-white/70">
             {item.categoryLabel}
             {item.material ? ` · ${item.material}` : ""}
           </p>
+          {item.description ? <p className="mt-4 max-w-[34ch] text-[1.08rem] leading-relaxed text-white/80">{item.description}</p> : null}
 
           <a
             href={quoteHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="cut-btn cut-btn--accent mt-8 w-fit"
+            className="btn btn--laser btn--lg mt-8 w-fit"
           >
-            {siteConfig.ctaLabel}
+            Quiero algo así
           </a>
 
           <div className="mt-8 flex gap-2">
@@ -124,7 +132,7 @@ function LightboxDialog({ item, index, total, onClose, onPrev, onNext }) {
               type="button"
               onClick={onPrev}
               disabled={total < 2}
-              className="flex h-11 flex-1 items-center justify-center gap-1 rounded-full border border-white/25 text-sm disabled:opacity-30"
+              className="flex h-11 flex-1 items-center justify-center gap-1 rounded-full border border-white/25 text-[0.98rem] disabled:opacity-30"
             >
               <CaretLeft size={16} />
               Anterior
@@ -133,7 +141,7 @@ function LightboxDialog({ item, index, total, onClose, onPrev, onNext }) {
               type="button"
               onClick={onNext}
               disabled={total < 2}
-              className="flex h-11 flex-1 items-center justify-center gap-1 rounded-full border border-white/25 text-sm disabled:opacity-30"
+              className="flex h-11 flex-1 items-center justify-center gap-1 rounded-full border border-white/25 text-[0.98rem] disabled:opacity-30"
             >
               Siguiente
               <CaretRight size={16} />

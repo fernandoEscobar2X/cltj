@@ -1,9 +1,10 @@
-import { startTransition, useDeferredValue, useState } from "react";
-import ActionLink from "../components/shared/ActionLink";
+import { startTransition, useState } from "react";
+import { m, useReducedMotion } from "framer-motion";
+import { WhatsappLogo } from "@phosphor-icons/react";
+import Img from "../components/media/Img";
 import Lightbox from "../components/shared/Lightbox";
-import Reveal from "../components/shared/Reveal";
 import Seo from "../components/seo/Seo";
-import WorkCard from "../components/shared/WorkCard";
+import { Pills } from "../components/papel/StudioControls";
 import useLightbox from "../hooks/useLightbox";
 import { portfolioCategories, portfolioItems } from "../data/portfolio";
 import { breadcrumbSchema, businessRef, websiteId } from "../data/schema";
@@ -16,10 +17,10 @@ const gallerySchema = {
     {
       "@type": "CollectionPage",
       "@id": `${toAbsoluteUrl("/galeria")}#page`,
-      name: `Galería ${siteConfig.name}`,
+      name: `Galería de trabajos de ${siteConfig.name}`,
       url: toAbsoluteUrl("/galeria"),
       description:
-        "Galería de piezas personalizadas de TJ Láser en Tijuana: letreros, regalos y recuerdos a medida.",
+        "Trabajos reales de corte láser en Tijuana: letreros de acrílico, displays con QR, vinil, imanes, trofeos, regalos y papel picado.",
       inLanguage: "es-MX",
       about: businessRef,
       publisher: businessRef,
@@ -39,7 +40,6 @@ const gallerySchema = {
             contentUrl: toAbsoluteUrl(item.src),
             width: item.width,
             height: item.height,
-            material: item.material,
             genre: item.categoryLabel,
             creator: businessRef,
           },
@@ -53,105 +53,86 @@ const gallerySchema = {
   ],
 };
 
+// Las categorías vacías no se muestran como filtro.
+const categories = portfolioCategories.filter((c) => c.id === "all" || portfolioItems.some((i) => i.category === c.id));
+
 export default function GalleryPage() {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const deferredCategory = useDeferredValue(activeCategory);
-  const visibleWorks =
-    deferredCategory === "all"
-      ? portfolioItems
-      : portfolioItems.filter((item) => item.category === deferredCategory);
-  const lightbox = useLightbox(visibleWorks);
-
-  const coverWork =
-    portfolioItems.find((item) => item.id === "display-santiago") ??
-    portfolioItems[0];
-
-  const handleFilterChange = (nextCategory) => {
-    startTransition(() => {
-      setActiveCategory(nextCategory);
-    });
-  };
+  const reduceMotion = useReducedMotion();
+  const [category, setCategory] = useState("all");
+  const visible = category === "all" ? portfolioItems : portfolioItems.filter((item) => item.category === category);
+  const lightbox = useLightbox(visible);
 
   return (
-    <div className="min-h-svh bg-[var(--bg)]">
+    <div className="min-h-svh bg-[var(--paper)]">
       <Seo
-        title={`Galería de piezas | ${siteConfig.name} Tijuana`}
-        description="Piezas personalizadas en Tijuana: letreros, displays, regalos y recuerdos a medida. Mira trabajos reales y cotiza la tuya."
+        title={`Galería: letreros, trofeos, vinil y regalos hechos en Tijuana | ${siteConfig.name}`}
+        description="Trabajos reales de corte láser en Tijuana: letreros de acrílico, displays con QR, vinil, imanes, trofeos, regalos y papel picado. Mira y cotiza el tuyo."
         path="/galeria"
         jsonLd={gallerySchema}
       />
 
-      <section className="relative flex min-h-[70svh] w-full flex-col justify-end overflow-hidden bg-[var(--bg-ink)] pb-16 pt-32">
-        <div className="absolute inset-0">
-          <img
-            src={coverWork.src}
-            srcSet={`${coverWork.src.replace(/\.webp$/, "-small.webp")} ${Math.round(coverWork.width / 2)}w, ${coverWork.src} ${coverWork.width}w`}
-            sizes="100vw"
-            alt=""
-            width={coverWork.width}
-            height={coverWork.height}
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover"
+      <header className="shell pb-10 pt-[calc(var(--header-h)+3.5rem)] md:pb-14 md:pt-[calc(var(--header-h)+6rem)]">
+        <div className="flex flex-wrap items-end justify-between gap-8">
+          <div>
+            <h1 className="t-display">Galería</h1>
+            <p className="t-script -mt-[0.05em] rotate-[-3deg] text-[clamp(2.4rem,5vw,4.6rem)]">{portfolioItems.length} piezas entregadas</p>
+          </div>
+          <a href={siteConfig.whatsappGalleryUrl} target="_blank" rel="noopener noreferrer" className="btn btn--laser btn--lg">
+            <WhatsappLogo size={20} weight="fill" />
+            Quiero una pieza así
+          </a>
+        </div>
+      </header>
+
+      <div className="sticky top-0 z-20 border-y border-[var(--line)] bg-[var(--paper)]/92 py-3 backdrop-blur-xl">
+        <div className="hide-scrollbar shell overflow-x-auto">
+          <Pills
+            id="galeria"
+            items={categories}
+            value={category}
+            onChange={(id) => startTransition(() => setCategory(id))}
+            className="w-max"
           />
         </div>
+      </div>
 
-        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
-
-        <div className="relative z-10 flex w-full flex-col items-end justify-between gap-8 px-6 md:flex-row md:px-12 xl:px-[5vw]">
-          <Reveal className="flex-1">
-            <h1 className="m-0 text-[clamp(2.8rem,8vw,6rem)] font-semibold leading-[0.95] tracking-tight text-white">
-              Galería
-            </h1>
-          </Reveal>
-
-          <Reveal delay={0.2} className="mb-4 shrink-0 md:mb-8">
-            <ActionLink href={siteConfig.whatsappGalleryUrl} variant="accent">
-              {siteConfig.ctaLabel}
-            </ActionLink>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="bg-[var(--bg)] pb-20 lg:pb-32">
-        <div className="grid w-full gap-8 px-6 md:px-12 xl:px-[5vw]">
-          <div className="gallery-filter sticky top-[68px] z-20 flex gap-3 overflow-x-auto border-b border-[var(--line)] bg-[var(--bg)]/95 py-5 pr-20 lg:pr-0">
-            {portfolioCategories.map((category) => {
-              const isActive = activeCategory === category.id;
-
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  onClick={() => handleFilterChange(category.id)}
-                  className={`inline-flex min-h-11 shrink-0 items-center rounded-full border px-5 text-sm font-medium ${
-                    isActive
-                      ? "border-[var(--laser)] bg-[var(--laser)] text-[#111113]"
-                      : "border-[var(--line-strong)] text-[var(--ink-soft)] hover:border-[var(--ink)]"
-                  }`}
-                  aria-pressed={isActive}
-                >
-                  {category.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <h2 className="sr-only">Piezas del portafolio</h2>
-
-          <div className="mt-4 columns-1 gap-6 space-y-6 md:columns-2 lg:columns-3 xl:columns-4">
-            {visibleWorks.map((item, index) => (
-              <Reveal key={item.id} delay={index * 0.03} className="break-inside-avoid">
-                <WorkCard item={item} onOpen={lightbox.open} featured={false} />
-              </Reveal>
-            ))}
-          </div>
-        </div>
+      <section className="shell pb-28 pt-8 md:pt-12" aria-label="Trabajos">
+        <h2 className="sr-only">Trabajos de corte láser</h2>
+        <m.div layout={!reduceMotion} className="columns-2 gap-3 md:columns-3 md:gap-5 xl:columns-4">
+          {visible.map((item, i) => (
+            <m.button
+              key={item.id}
+              type="button"
+              layout={!reduceMotion}
+              onClick={() => lightbox.open(item.id)}
+              className="group relative mb-3 block w-full break-inside-avoid overflow-hidden rounded-[var(--radius-m)] text-left md:mb-5"
+              initial={reduceMotion ? false : { opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -8% 0px" }}
+              transition={{ duration: 0.8, delay: (i % 4) * 0.06, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Img
+                id={item.media}
+                alt={item.alt}
+                sizes="(min-width: 1280px) 24vw, (min-width: 768px) 32vw, 48vw"
+                priority={i === 0}
+                eager={i < 4}
+                style={{ aspectRatio: `${item.width} / ${item.height}` }}
+                imgClassName="transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
+              />
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 pt-14 text-white md:translate-y-2 md:p-5 md:opacity-0 md:transition-all md:duration-500 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                <span className="block font-display text-[1.5rem] font-extrabold uppercase leading-[0.9] md:text-[2rem]">{item.title}</span>
+                <span className="mt-1 hidden text-[0.98rem] text-white/80 md:block">{item.material}</span>
+              </span>
+            </m.button>
+          ))}
+        </m.div>
       </section>
 
       <Lightbox
         item={lightbox.activeItem}
         index={lightbox.activeIndex}
-        total={visibleWorks.length}
+        total={visible.length}
         onClose={lightbox.close}
         onPrev={lightbox.goPrev}
         onNext={lightbox.goNext}

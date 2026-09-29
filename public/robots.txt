@@ -1,4 +1,21 @@
 User-agent: *
 Allow: /
 
+# Buscadores y asistentes de IA: todo el sitio es público y está pensado para
+# responder "quién hace corte láser / papel picado en Tijuana".
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://tjlaser.com.mx/sitemap.xml

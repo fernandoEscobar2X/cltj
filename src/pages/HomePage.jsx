@@ -3,11 +3,15 @@ import { businessRef, businessSchema, websiteSchema } from "../data/schema";
 import { siteConfig, siteDescription } from "../data/siteConfig";
 import { faqs } from "../data/siteContent";
 import { toAbsoluteUrl } from "../lib/url";
+import ClientsBand from "../sections/home/ClientsBand";
 import ContactSection from "../sections/home/ContactSection";
-import FeaturedSection from "../sections/home/FeaturedSection";
 import HeroSection from "../sections/home/HeroSection";
+import ManifestoSection from "../sections/home/ManifestoSection";
+import PapelHookSection from "../sections/home/PapelHookSection";
 import ProcessSection from "../sections/home/ProcessSection";
+import ReelsSection from "../sections/home/ReelsSection";
 import ServicesSection from "../sections/home/ServicesSection";
+import WorksSection from "../sections/home/WorksSection";
 
 const faqSchema = {
   "@type": "FAQPage",
@@ -26,21 +30,26 @@ const homeSchema = {
   "@graph": [websiteSchema, businessSchema, faqSchema],
 };
 
-// Lógica del home: presentación → qué hacemos → prueba (trabajos) → cómo se
-// compra → cierre. Un CTA por bloque. La campaña de temporada vive en el
-// modal de entrada y en el nav, no como sección.
+// Recorrido del home: presentación (qué y dónde) → prueba social → qué se
+// corta → servicios → el gancho (papel picado en vivo) → trabajos → en la
+// calle (reels) → cómo se pide + dudas → cierre. Alterna noche y papel para
+// que cada sección se sienta como un cambio de escena.
 export default function HomePage() {
   return (
     <>
       <Seo
-        title={`${siteConfig.name} | Publicidad y regalos a medida en Tijuana`}
+        title={`Corte láser en Tijuana: letreros, trofeos, vinil y papel picado | ${siteConfig.name}`}
         description={siteDescription}
         path="/"
         jsonLd={homeSchema}
       />
       <HeroSection />
+      <ClientsBand />
+      <ManifestoSection />
       <ServicesSection />
-      <FeaturedSection />
+      <PapelHookSection />
+      <WorksSection />
+      <ReelsSection />
       <ProcessSection />
       <ContactSection />
     </>

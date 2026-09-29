@@ -1,93 +1,45 @@
-/* Fuentes auto-hospedadas y subsetteadas (ver scripts/subset-fonts.py).
-   Un archivo por familia y peso: sin unicode-range, el navegador descarga solo
-   los pesos que realmente se pintan. font-display: swap hace que el texto salga
-   de inmediato con la tipografia de respaldo, asi que ninguna de estas
-   peticiones bloquea el primer render. */
+/* Fuentes auto-hospedadas y subsetteadas (scripts/subset-fonts.py).
+   Jerarquía del sitio, pensada para un taller de rótulos y corte láser:
+   1. Big Shoulders Stencil (Google, 2025): titulares. Stencil de rótulo
+      industrial: las letras tienen puentes, como una pieza cortada. Peso
+      variable 300-900 (se anima con el scroll).
+   2. Yellowtail: acento de rotulista, a mano, en violeta láser.
+   3. Bricolage Grotesque condensada (instancia fija: negrita, 82%): frases.
+   4. Instrument Sans: texto corrido y UI.
+   Las stencil con que se corta el nombre en el papel picado (Saira Stencil,
+   Stardos Stencil) no van aquí: el motor las carga solo donde se usa.
+   Sin @font-face de respaldo con local(): en Chrome/Windows en frío resolver
+   una fuente local obliga a enumerar las del sistema y retrasa el primer
+   pintado. Los respaldos van directo en la pila de cada familia. */
 
 @font-face {
-  font-family: "Instrument Sans";
+  font-family: "Big Shoulders Stencil";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("/fonts/big-shoulders-stencil.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Yellowtail";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/fonts/instrument-sans-400.woff2") format("woff2");
+  src: url("/fonts/yellowtail.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "Instrument Sans";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/instrument-sans-500.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Instrument Sans";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/fonts/instrument-sans-600.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Instrument Sans";
+  font-family: "Bricolage";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("/fonts/instrument-sans-700.woff2") format("woff2");
+  src: url("/fonts/bricolage.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "JetBrains Mono";
+  font-family: "Instrument Sans";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 700;
   font-display: swap;
-  src: url("/fonts/jetbrains-mono-400.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/jetbrains-mono-500.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/fonts/jetbrains-mono-600.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Saira Condensed";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/fonts/saira-condensed-600.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Saira Condensed";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("/fonts/saira-condensed-700.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Saira Condensed";
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("/fonts/saira-condensed-800.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Saira Condensed";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("/fonts/saira-condensed-900.woff2") format("woff2");
+  src: url("/fonts/instrument-sans.woff2") format("woff2");
 }

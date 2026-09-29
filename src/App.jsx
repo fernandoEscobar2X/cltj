@@ -1,33 +1,39 @@
+import { useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { LazyMotion } from "framer-motion";
 import ErrorBoundary from "./components/layout/ErrorBoundary";
 import SiteLayout from "./components/layout/SiteLayout";
-import GalleryPage from "./pages/GalleryPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
-import PapelPicadoPage from "./pages/PapelPicadoPage";
-import PrivacyPage from "./pages/PrivacyPage";
+import { prefetchRoutes, RoutePage } from "./routes";
 
-// GalleryPage NO va en lazy(): con la ruta prerenderizada, el fallback de
-// Suspense sustituia la galeria ya pintada por un placeholder al hidratar y el
-// footer daba un salto de 0.17 de CLS. El chunk pesaba 1.8 KB comprimido, asi
-// que separarlo no compensaba ni de lejos.
+// Las funciones de animación (gestos, arrastre, layout) llegan en un chunk
+// aparte después del primer render: los componentes `m.*` pintan su estado
+// inicial sin esperarlas.
+const loadMotionFeatures = () => import("./lib/motionFeatures").then((mod) => mod.default);
 
 export default function App() {
+  useEffect(() => {
+    prefetchRoutes();
+  }, []);
+
   return (
     <ErrorBoundary>
       <HelmetProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<SiteLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path="/papel-picado" element={<PapelPicadoPage />} />
-              <Route path="/galeria" element={<GalleryPage />} />
-              <Route path="/privacidad" element={<PrivacyPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <LazyMotion features={loadMotionFeatures} strict>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<SiteLayout />}>
+                <Route index element={<HomePage />} />
+                <Route path="/papel-picado" element={<RoutePage path="/papel-picado" />} />
+                <Route path="/galeria" element={<RoutePage path="/galeria" />} />
+                <Route path="/privacidad" element={<RoutePage path="/privacidad" />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </LazyMotion>
       </HelmetProvider>
     </ErrorBoundary>
   );

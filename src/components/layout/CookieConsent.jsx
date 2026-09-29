@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { setBannerOpen } from "../../lib/overlay";
 import {
   analyticsConfigured,
   bootstrapAnalytics,
@@ -62,6 +63,10 @@ export default function CookieConsent() {
     };
   }, []);
 
+  useEffect(() => {
+    setBannerOpen(visible);
+  }, [visible]);
+
   const decide = (granted) => {
     updateConsent(granted);
     setVisible(false);
@@ -71,34 +76,32 @@ export default function CookieConsent() {
     return null;
   }
 
+  // Compacto: una línea de texto y dos botones. En móvil ocupa el borde
+  // inferior sin tapar el contenido; en desktop, una tarjeta a la izquierda.
   return (
     <div
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-title"
-      className="fixed bottom-4 left-4 right-4 z-[60] w-auto rounded-[var(--radius-media)] border border-[var(--line)] bg-[var(--bg-raised)] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.35)] sm:right-auto sm:w-[min(24rem,calc(100vw-2rem))] lg:bottom-6 lg:left-6"
+      className="fixed inset-x-3 bottom-3 z-[60] rounded-[var(--radius-l)] bg-[var(--night)] p-4 text-[var(--on-night)] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:left-5 sm:bottom-5 sm:w-[25rem] sm:p-5"
     >
-      <h2 id="cookie-title" className="m-0 text-xl font-semibold tracking-tight">
+      <h2 id="cookie-title" className="sr-only">
         Cookies de medición
       </h2>
-      <p className="mt-2 text-sm leading-6 text-[var(--ink-soft)]">
-        Usamos cookies solo para saber cuánta gente visita el sitio y qué trabajos ve. Nada de
-        publicidad ni de venta de datos. Puedes rechazarlas y el sitio funciona igual.
+      <p className="text-[0.98rem] leading-snug text-[var(--on-night-2)]">
+        Usamos cookies solo para medir visitas. Sin publicidad.{" "}
+        <Link className="underline underline-offset-4 hover:text-[var(--on-night)]" to="/privacidad">
+          Aviso de privacidad
+        </Link>
       </p>
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => decide(false)} className="cut-btn cut-btn--ghost">
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <button type="button" onClick={() => decide(false)} className="btn btn--ghost-light btn--sm">
           Rechazar
         </button>
-        <button type="button" onClick={() => decide(true)} className="cut-btn cut-btn--accent">
+        <button type="button" onClick={() => decide(true)} className="btn btn--laser btn--sm">
           Aceptar
         </button>
       </div>
-      <Link
-        className="mt-4 inline-block text-sm text-[var(--ink-mute)] underline underline-offset-4 hover:text-[var(--ink)]"
-        to="/privacidad"
-      >
-        Ver aviso de privacidad
-      </Link>
     </div>
   );
 }

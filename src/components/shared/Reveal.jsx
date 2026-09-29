@@ -1,24 +1,18 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 
-// Antes esto era GSAP + ScrollTrigger solo para un fade-up. Se reimplemento
-// sobre framer-motion, que ya estaba en el bundle por el parallax del hero, y
-// asi el sitio carga una sola libreria de animacion en vez de dos.
-// El start "top 84%" de ScrollTrigger equivale al margin negativo del viewport.
-export default function Reveal({
-  children,
-  className = "",
-  y = 40,
-  delay = 0,
-  once = true,
-}) {
+// Entrada suave al aparecer en pantalla. `as` permite usarlo como <li>, etc.,
+// para no romper la semántica de listas.
+export default function Reveal({ children, className = "", y = 40, delay = 0, once = true, as = "div" }) {
   const reduceMotion = useReducedMotion();
+  const Tag = as;
+  const Motion = m[as];
 
   if (reduceMotion) {
-    return <div className={className}>{children}</div>;
+    return <Tag className={className}>{children}</Tag>;
   }
 
   return (
-    <motion.div
+    <Motion
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -26,6 +20,6 @@ export default function Reveal({
       transition={{ type: "spring", stiffness: 120, damping: 22, delay }}
     >
       {children}
-    </motion.div>
+    </Motion>
   );
 }
